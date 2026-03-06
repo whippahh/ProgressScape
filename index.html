@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProgressScape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="site-title">Progress<span>Scape</span></div>
+    <nav>
+      <button class="nav-btn active" onclick="showPage('progression')">Progression</button>
+      <button class="nav-btn" onclick="showPage('randomizer')">What Next?</button>
+      <button class="nav-btn" onclick="showPage('stats')">My Stats</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== PROGRESSION PAGE ===== -->
+<div id="page-progression" class="page active">
+
+  <div class="lookup-bar">
+    <div class="lookup-inner">
+      <div class="lookup-group">
+        <label>RSN Lookup</label>
+        <input type="text" id="rsn-input" placeholder="Enter username…" onkeydown="if(event.key==='Enter') lookupRSN()">
+      </div>
+      <button class="btn" onclick="lookupRSN()">Lookup</button>
+      <span class="lookup-sep">or</span>
+      <button class="btn btn-ghost" onclick="showPage('stats')">Enter Stats Manually</button>
+    </div>
+  </div>
+
+  <div id="lookup-status" style="display:none">
+    <div class="status-msg">
+      <div id="lookup-status-inner" class="status-inner"></div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><strong id="prog-done">0</strong> / <span id="prog-total">384</span> completed</div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="progress-label"><strong id="prog-pct">0%</strong></div>
+    <div style="margin-left:auto; display:flex; gap:0.5rem; flex-shrink:0;">
+      <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.8rem" onclick="toggleShowCompleted()">
+        <span id="toggle-completed-label">Hide Completed</span>
+      </button>
+      <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.8rem" onclick="clearProgress()">Clear Progress</button>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="chip active" data-filter="all" onclick="setFilter('all')">All</button>
+    <button class="chip type-quest" data-filter="Quest" onclick="setFilter('Quest')">Quests</button>
+    <button class="chip type-boss" data-filter="Boss" onclick="setFilter('Boss')">Bosses</button>
+    <button class="chip type-activity" data-filter="Activity/Goal" onclick="setFilter('Activity/Goal')">Activities</button>
+    <button class="chip type-unlock" data-filter="Unlock" onclick="setFilter('Unlock')">Unlocks</button>
+    <button class="chip type-miniquest" data-filter="Miniquest" onclick="setFilter('Miniquest')">Miniquests</button>
+    <button class="chip type-diary" data-filter="Diary" onclick="setFilter('Diary')">Diaries</button>
+    <button class="chip" data-filter="locked" onclick="setFilter('locked')">🔒 Locked</button>
+    <button class="chip" data-filter="available" onclick="setFilter('available')">✅ Available Now</button>
+  </div>
+
+  <div class="search-row">
+    <input class="search-input" type="text" id="search-input" placeholder="Search…" oninput="renderTable()">
+    <span class="results-count" id="results-count"></span>
+  </div>
+
+  <div class="table-wrap">
+  <div class="table-scroll">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>#</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Skill Req.</th>
+          <th>Quest Prereqs</th>
+          <th>QP</th>
+          <th>Location</th>
+          <th>Notes</th>
+          <th>Notable Drops</th>
+        </tr>
+      </thead>
+      <tbody id="main-tbody"></tbody>
+    </table>
+  </div>
+  </div>
+</div>
+
+<!-- ===== RANDOMIZER PAGE ===== -->
+<div id="page-randomizer" class="page">
+  <div class="randomizer-page">
+    <div class="randomizer-header">
+      <h1>What Should I Do Next?</h1>
+      <p>Let the oracle decide your fate, adventurer.</p>
+    </div>
+
+    <div class="randomizer-filters">
+      <span class="filter-label" style="align-self:center">Include:</span>
+      <button class="chip type-quest active" data-rfilter="Quest" onclick="toggleRandFilter('Quest')">Quests</button>
+      <button class="chip type-boss active" data-rfilter="Boss" onclick="toggleRandFilter('Boss')">Bosses</button>
+      <button class="chip type-activity active" data-rfilter="Activity/Goal" onclick="toggleRandFilter('Activity/Goal')">Activities</button>
+      <button class="chip type-unlock active" data-rfilter="Unlock" onclick="toggleRandFilter('Unlock')">Unlocks</button>
+      <button class="chip type-miniquest active" data-rfilter="Miniquest" onclick="toggleRandFilter('Miniquest')">Miniquests</button>
+      <button class="chip active" id="rfilter-incomplete-btn" data-rfilter="incomplete" onclick="toggleRandFilter('incomplete')">Skip Completed</button>
+      <button class="chip active" id="rfilter-available-btn" data-rfilter="available" onclick="toggleRandFilter('available')">Available Only</button>
+    </div>
+
+    <div class="spin-area" id="spin-area">
+      <div class="spin-idle" id="spin-idle">Press the button to receive your quest…</div>
+      <div id="spin-result" style="display:none; width:100%">
+        <div class="spin-num" id="spin-num">#1</div>
+        <div class="spin-name" id="spin-name"></div>
+        <div class="spin-type" id="spin-type"></div>
+        <div class="spin-meta" id="spin-meta"></div>
+        <div class="spin-info" id="spin-info"></div>
+      </div>
+    </div>
+
+    <div class="spin-btn-row">
+      <button class="spin-btn" onclick="spinRandom()">⚔ Roll the Dice</button>
+      <button class="btn btn-ghost" onclick="markCurrentDone()">Mark Done & Roll Again</button>
+    </div>
+
+    <div class="spin-history" id="spin-history-wrap" style="display:none">
+      <h3>Recent Rolls</h3>
+      <div class="history-list" id="spin-history-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STATS PAGE ===== -->
+<div id="page-stats" class="page">
+  <div class="stats-page">
+    <h2>My Stats</h2>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.5rem;font-family:'IM Fell English',serif;font-style:italic">
+      Enter your skill levels to unlock requirement checking across the progression list. You can also use the RSN Lookup on the Progression page to auto-fill.
+    </p>
+    <div class="skills-grid" id="skills-grid"></div>
+    <div class="stats-actions">
+      <button class="btn" onclick="saveStats()">Save Stats</button>
+      <button class="btn btn-ghost" onclick="clearStats()">Reset</button>
+      <span id="stats-saved-msg" style="color:var(--green-light);font-size:0.85rem;align-self:center;display:none">✓ Saved</span>
+    </div>
+    <div style="display:flex;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap">
+      <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase">Combat Level</span>
+        <span id="combat-level-display" style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">—</span>
+      </div>
+      <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase">Total Level</span>
+        <span id="total-level-display" style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">—</span>
+      </div>
+    </div>
+    <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:1rem 1.25rem;margin-top:1rem;">
+      <p style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem">Quest Points</p>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <input type="number" id="qp-input" min="0" max="300" placeholder="0"
+          style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:3px;color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;padding:0.4rem 0.75rem;width:80px;outline:none;text-align:center">
+        <span style="font-size:0.85rem;color:var(--text-muted)">Current quest points (used to check QP requirements)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+      <div>
+        <div class="detail-title" id="detail-title"></div>
+        <div id="detail-subtitle" style="margin-top:0.3rem"></div>
+      </div>
+      <button class="detail-close" onclick="closeDetailBtn()">✕</button>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+    <div class="detail-actions" id="detail-actions"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
