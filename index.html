@@ -1327,9 +1327,19 @@
     border-top: 2px solid var(--tier-color, var(--gold-dark)) !important;
     border-bottom: 1px solid var(--stone-lighter) !important;
     background: linear-gradient(90deg, var(--tier-bg-dark, #1a1408) 0%, var(--tier-bg, var(--stone-mid)) 60%, transparent 100%) !important;
-    position: sticky;
-    top: calc(var(--header-h, 64px) + var(--thead-h, 38px));
-    z-index: 15;
+  }
+
+  /* Floating tier header overlay — single fixed div, only one active at a time */
+  #tier-float {
+    display: none;
+    position: fixed;
+    left: 0; right: 0;
+    z-index: 18;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  #tier-float .tier-header-inner {
+    padding: 0.6rem 2rem;
   }
 
   .tier-header-row:first-child td {
@@ -2502,6 +2512,7 @@ function toggleTier(tierId) {
   }
   saveToStorage();
   renderTable();
+  setTimeout(updateTierFloat, 20);
 }
 
 // ============================================================
@@ -3254,11 +3265,64 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-window.addEventListener('scroll', () => {
-  const btn = document.getElementById('back-to-top');
+window.addEventListener('scroll', onPageScroll);
+function onPageScroll() {
+  var btn = document.getElementById('back-to-top');
   if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+  updateTierFloat();
+}
 
-});
+function updateTierFloat() {
+  var float = document.getElementById('tier-float');
+  if (!float) return;
+  var page = document.getElementById('page-progression');
+  if (!page || !page.classList.contains('active')) { float.style.display = 'none'; return; }
+
+  var headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 64;
+  var theadH  = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--thead-h')) || 38;
+  var pinTop  = headerH + theadH;
+
+  var rows = document.querySelectorAll('.tier-header-row');
+  var active = null;
+  rows.forEach(function(row) {
+    if (row.getBoundingClientRect().top < pinTop) active = row;
+  });
+
+  if (!active) { float.style.display = 'none'; return; }
+
+  // Hide if section is collapsed (next sibling is another tier header)
+  var nextSib = active.nextElementSibling;
+  if (!nextSib || nextSib.classList.contains('tier-header-row')) { float.style.display = 'none'; return; }
+
+  // Hide if next tier header has already reached the pin (sections bumping)
+  var sibling = nextSib;
+  while (sibling) {
+    if (sibling.classList.contains('tier-header-row')) {
+      if (sibling.getBoundingClientRect().top <= pinTop + 2) { float.style.display = 'none'; return; }
+      break;
+    }
+    sibling = sibling.nextElementSibling;
+  }
+
+  var inner = active.querySelector('.tier-header-inner');
+  if (!inner) { float.style.display = 'none'; return; }
+
+  float.innerHTML = inner.outerHTML;
+  float.setAttribute('data-tier', active.getAttribute('data-tier') || '');
+
+  var cs = getComputedStyle(active);
+  var bgDark  = cs.getPropertyValue('--tier-bg-dark').trim() || '#1a1408';
+  var bg      = cs.getPropertyValue('--tier-bg').trim() || '#1a1408';
+  var color   = cs.getPropertyValue('--tier-color').trim() || '#c8a84b';
+  float.style.cssText = 'display:block;position:fixed;left:0;right:0;z-index:18;cursor:pointer;' +
+    'top:' + pinTop + 'px;' +
+    'background:linear-gradient(90deg,' + bgDark + ' 0%,' + bg + ' 60%,' + bgDark + ' 100%);' +
+    'border-top:2px solid ' + color + ';' +
+    'border-bottom:1px solid rgba(255,255,255,0.08);' +
+    'box-shadow:0 3px 12px rgba(0,0,0,0.8);';
+
+  float.onclick = function() { toggleTier(active.getAttribute('data-tier')); };
+}
 
 
 
@@ -3673,5 +3737,6 @@ function importPlan(e) {
 }
 
 </script>
+<div id="tier-float"></div>
 </body>
 </html>
