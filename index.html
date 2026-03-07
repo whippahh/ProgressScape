@@ -320,15 +320,25 @@
   }
   .table-scroll {
     overflow-x: auto;
-    overflow-y: auto;
-    max-height: calc(100vh - var(--header-h, 64px) - 160px);
     padding: 0 2rem;
   }
-  .table-scroll thead th {
+  thead th {
     position: sticky;
-    top: 0;
-    z-index: 10;
+    top: var(--header-h, 64px);
+    z-index: 20;
   }
+  /* Fixed column widths prevent shifting on accordion expand/collapse */
+  #main-table { table-layout: fixed; width: 100%; }
+  #main-table th:nth-child(1)  { width: 44px; }
+  #main-table th:nth-child(2)  { width: 44px; }
+  #main-table th:nth-child(3)  { min-width: 140px; }
+  #main-table th:nth-child(4)  { width: 110px; }
+  #main-table th:nth-child(5)  { width: 130px; }
+  #main-table th:nth-child(6)  { width: 150px; }
+  #main-table th:nth-child(7)  { width: 38px; }
+  #main-table th:nth-child(8)  { width: 120px; }
+  #main-table th:nth-child(9)  { width: 160px; }
+  #main-table th:nth-child(10) { width: 130px; }
 
   table {
     width: 100%;
@@ -350,6 +360,9 @@
   }
 
   thead th:first-child { width: 48px; text-align: center; }
+
+  /* card-detail is mobile-only — hidden on desktop */
+  .card-detail { display: none; }
 
   tbody tr {
     border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -1136,6 +1149,7 @@
 
     /* Card detail line */
     .card-detail {
+      display: block;
       font-size: 0.7rem;
       color: var(--text-muted);
       margin-top: 0.2rem;
@@ -1311,6 +1325,9 @@
     border-top: 2px solid var(--tier-color, var(--gold-dark)) !important;
     border-bottom: 1px solid var(--stone-lighter) !important;
     background: linear-gradient(90deg, var(--tier-bg-dark, #1a1408) 0%, var(--tier-bg, var(--stone-mid)) 60%, transparent 100%) !important;
+    position: sticky;
+    top: calc(var(--header-h, 64px) + 37px);
+    z-index: 15;
   }
 
   .tier-header-row:first-child td {
