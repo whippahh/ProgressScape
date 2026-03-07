@@ -1326,7 +1326,7 @@
     border-bottom: 1px solid var(--stone-lighter) !important;
     background: linear-gradient(90deg, var(--tier-bg-dark, #1a1408) 0%, var(--tier-bg, var(--stone-mid)) 60%, transparent 100%) !important;
     position: sticky;
-    top: calc(var(--header-h, 64px) + 37px);
+    top: calc(var(--header-h, 64px) + var(--thead-h, 37px));
     z-index: 15;
   }
 
@@ -1961,6 +1961,7 @@ function init() {
   updateProgress();
   updateCombatDisplay();
   renderFloatingHistory();
+  setTimeout(updateHeaderHeight, 50); // re-measure after fonts load
 }
 
 function loadFromStorage() {
@@ -2845,8 +2846,12 @@ window.addEventListener('scroll', () => {
 function updateHeaderHeight() {
   const h = document.querySelector('header');
   if (h) document.documentElement.style.setProperty('--header-h', h.offsetHeight + 'px');
+  const th = document.querySelector('#main-table thead');
+  if (th) document.documentElement.style.setProperty('--thead-h', th.offsetHeight + 'px');
 }
 window.addEventListener('resize', updateHeaderHeight);
+// Also re-measure after first render when thead is populated
+window.addEventListener('load', updateHeaderHeight);
 updateHeaderHeight();
 init();
 
