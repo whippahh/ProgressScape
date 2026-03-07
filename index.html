@@ -319,13 +319,13 @@
     padding: 0 0 3rem;
   }
   .table-scroll {
-    overflow-x: auto;
+    overflow-x: visible;
     padding: 0 2rem;
   }
   thead th {
     position: sticky;
-    top: var(--header-h, 64px);
-    z-index: 20;
+    top: 64px;
+    z-index: 110;
     background: #1a1408;
     border-bottom: 2px solid var(--gold-dark);
     box-shadow: 0 2px 8px rgba(0,0,0,0.6);
@@ -3509,89 +3509,91 @@ function initPlanDragDrop() {
 
 function openPlannerModal(mode, editId) {
   planEditId = editId || null;
-  var overlay = document.getElementById('planner-modal-overlay');
-  var titleEl = document.getElementById('planner-modal-title');
-  var body = document.getElementById('planner-modal-body');
-  var footer = document.getElementById('planner-modal-footer');
+  window._planMode = mode;  // store for planSave() dispatcher
+
+  var overlay  = document.getElementById('planner-modal-overlay');
+  var titleEl  = document.getElementById('planner-modal-title');
+  var body     = document.getElementById('planner-modal-body');
+  var footer   = document.getElementById('planner-modal-footer');
   if (!overlay || !body) return;
 
-  var editing = planEditId ? planItems.filter(function(i) { return i.id === planEditId; })[0] : null;
+  var editing = planEditId
+    ? planItems.filter(function(i) { return i.id === planEditId; })[0]
+    : null;
 
+  // Footer is static — save button always calls planSave()
   if (mode === 'existing') {
     titleEl.textContent = 'Add Existing Task';
+    footer.innerHTML = '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>';
     body.innerHTML =
       '<div class="planner-field">' +
         '<label>Search Tasks</label>' +
-        '<input type="text" id="plan-search-input" placeholder="Type task name..." autocomplete="off">' +
+        '<input type="text" id="plan-search-input" placeholder="Type task name..." autocomplete="off" oninput="planSearchResults(this.value)">' +
         '<div class="planner-search-results" id="plan-search-results">' +
           '<div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.82rem;font-style:italic">Start typing to search...</div>' +
         '</div>' +
       '</div>';
-    footer.innerHTML = '<button class="btn btn-ghost" id="plan-cancel-btn">Cancel</button>';
     setTimeout(function() {
       var inp = document.getElementById('plan-search-input');
-      if (inp) { inp.focus(); inp.addEventListener('input', function() { planSearchResults(inp.value); }); }
-      var cancel = document.getElementById('plan-cancel-btn');
-      if (cancel) cancel.addEventListener('click', closePlannerModal);
-    }, 30);
+      if (inp) inp.focus();
+    }, 50);
   }
 
   else if (mode === 'custom') {
     titleEl.textContent = editing ? 'Edit Custom Task' : 'Add Custom Task';
+    footer.innerHTML =
+      '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>' +
+      '<button class="btn" onclick="planSave()">Save Task</button>';
     var typeOpts = ['', 'Quest', 'Boss', 'Activity/Goal', 'Unlock', 'Miniquest', 'Diary'].map(function(t) {
-      var sel = editing && editing.type === t ? ' selected' : '';
+      var sel = (editing && editing.type === t) ? ' selected' : '';
       return '<option value="' + t + '"' + sel + '>' + (t || '— None —') + '</option>';
     }).join('');
     body.innerHTML =
       '<div class="planner-field"><label>Task Name *</label>' +
-        '<input type="text" id="pf-name" placeholder="e.g. Get 70 Attack" value="' + (editing ? (editing.name || '') : '') + '">' +
+        '<input type="text" id="pf-name" placeholder="e.g. Get 70 Attack" value="' + (editing ? esc(editing.name) : '') + '">' +
       '</div>' +
       '<div class="planner-field"><label>Type</label>' +
         '<select id="pf-type">' + typeOpts + '</select>' +
       '</div>' +
       '<div class="planner-field"><label>Skill Requirements</label>' +
-        '<input type="text" id="pf-reqs" placeholder="e.g. Attack 70; Defence 60" value="' + (editing ? (editing.skillReqs || '') : '') + '">' +
+        '<input type="text" id="pf-reqs" placeholder="e.g. Attack 70; Defence 60" value="' + (editing ? esc(editing.skillReqs) : '') + '">' +
       '</div>' +
       '<div class="planner-field"><label>Location</label>' +
-        '<input type="text" id="pf-loc" placeholder="e.g. Lumbridge" value="' + (editing ? (editing.location || '') : '') + '">' +
+        '<input type="text" id="pf-loc" placeholder="e.g. Lumbridge" value="' + (editing ? esc(editing.location) : '') + '">' +
       '</div>' +
       '<div class="planner-field"><label>Notes</label>' +
-        '<textarea id="pf-notes" placeholder="Any notes...">' + (editing ? (editing.notes || '') : '') + '</textarea>' +
+        '<textarea id="pf-notes" placeholder="Any notes...">' + (editing ? esc(editing.notes) : '') + '</textarea>' +
       '</div>';
-    footer.innerHTML =
-      '<button class="btn btn-ghost" id="plan-cancel-btn">Cancel</button>' +
-      '<button class="btn" id="plan-save-btn">Save Task</button>';
-    setTimeout(function() {
-      var inp = document.getElementById('pf-name');
-      if (inp) inp.focus();
-      var cancel = document.getElementById('plan-cancel-btn');
-      if (cancel) cancel.addEventListener('click', closePlannerModal);
-      var save = document.getElementById('plan-save-btn');
-      if (save) save.addEventListener('click', savePlanCustom);
-    }, 30);
+    setTimeout(function() { var n = document.getElementById('pf-name'); if (n) n.focus(); }, 50);
   }
 
   else if (mode === 'note') {
     titleEl.textContent = editing ? 'Edit Note' : 'Add Note';
+    footer.innerHTML =
+      '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>' +
+      '<button class="btn" onclick="planSave()">Save Note</button>';
     body.innerHTML =
       '<div class="planner-field"><label>Note Text</label>' +
-        '<textarea id="pf-note-text" placeholder="Write your progress note here..." style="min-height:100px">' + (editing ? (editing.text || '') : '') + '</textarea>' +
+        '<textarea id="pf-note-text" placeholder="Write your progress note here..." style="min-height:100px">' + (editing ? esc(editing.text) : '') + '</textarea>' +
       '</div>';
-    footer.innerHTML =
-      '<button class="btn btn-ghost" id="plan-cancel-btn">Cancel</button>' +
-      '<button class="btn" id="plan-save-btn">Save Note</button>';
-    setTimeout(function() {
-      var inp = document.getElementById('pf-note-text');
-      if (inp) inp.focus();
-      var cancel = document.getElementById('plan-cancel-btn');
-      if (cancel) cancel.addEventListener('click', closePlannerModal);
-      var save = document.getElementById('plan-save-btn');
-      if (save) save.addEventListener('click', savePlanNote);
-    }, 30);
+    setTimeout(function() { var n = document.getElementById('pf-note-text'); if (n) n.focus(); }, 50);
   }
 
   overlay.classList.add('open');
 }
+
+// Safe HTML escape for values injected into attributes
+function esc(v) {
+  return (v || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Single save dispatcher — called from static onclick in footer HTML
+function planSave() {
+  var mode = window._planMode;
+  if (mode === 'custom') savePlanCustom();
+  else if (mode === 'note') savePlanNote();
+}
+
 
 function plannerOverlayClick(e) {
   if (e.target === document.getElementById('planner-modal-overlay')) closePlannerModal();
