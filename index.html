@@ -1320,9 +1320,6 @@
   .tier-header-row {
     cursor: pointer;
     user-select: none;
-    position: sticky;
-    top: calc(var(--header-h, 64px) + var(--thead-h, 38px));
-    z-index: 15;
   }
 
   .tier-header-row td {
@@ -1330,8 +1327,9 @@
     border-top: 2px solid var(--tier-color, var(--gold-dark)) !important;
     border-bottom: 1px solid var(--stone-lighter) !important;
     background: linear-gradient(90deg, var(--tier-bg-dark, #1a1408) 0%, var(--tier-bg, var(--stone-mid)) 60%, transparent 100%) !important;
-    position: relative;
-    z-index: 1;
+    position: sticky;
+    top: calc(var(--header-h, 64px) + var(--thead-h, 38px));
+    z-index: 15;
   }
 
   .tier-header-row:first-child td {
@@ -3465,16 +3463,13 @@ function openPlannerModal(mode, editId) {
           '<div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.82rem;font-style:italic">Start typing to search...</div>' +
         '</div>' +
       '</div>';
-    footer.innerHTML =
-      '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>';
-    // Wire search separately to avoid inline handler issues
+    footer.innerHTML = '<button class="btn btn-ghost" id="plan-cancel-btn">Cancel</button>';
     setTimeout(function() {
       var inp = document.getElementById('plan-search-input');
-      if (inp) {
-        inp.focus();
-        inp.addEventListener('input', function() { planSearchResults(inp.value); });
-      }
-    }, 50);
+      if (inp) { inp.focus(); inp.addEventListener('input', function() { planSearchResults(inp.value); }); }
+      var cancel = document.getElementById('plan-cancel-btn');
+      if (cancel) cancel.addEventListener('click', closePlannerModal);
+    }, 30);
   }
 
   else if (mode === 'custom') {
@@ -3500,12 +3495,16 @@ function openPlannerModal(mode, editId) {
         '<textarea id="pf-notes" placeholder="Any notes...">' + (editing ? (editing.notes || '') : '') + '</textarea>' +
       '</div>';
     footer.innerHTML =
-      '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>' +
-      '<button class="btn" onclick="savePlanCustom()">Save Task</button>';
+      '<button class="btn btn-ghost" id="plan-cancel-btn">Cancel</button>' +
+      '<button class="btn" id="plan-save-btn">Save Task</button>';
     setTimeout(function() {
       var inp = document.getElementById('pf-name');
       if (inp) inp.focus();
-    }, 50);
+      var cancel = document.getElementById('plan-cancel-btn');
+      if (cancel) cancel.addEventListener('click', closePlannerModal);
+      var save = document.getElementById('plan-save-btn');
+      if (save) save.addEventListener('click', savePlanCustom);
+    }, 30);
   }
 
   else if (mode === 'note') {
@@ -3515,12 +3514,16 @@ function openPlannerModal(mode, editId) {
         '<textarea id="pf-note-text" placeholder="Write your progress note here..." style="min-height:100px">' + (editing ? (editing.text || '') : '') + '</textarea>' +
       '</div>';
     footer.innerHTML =
-      '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>' +
-      '<button class="btn" onclick="savePlanNote()">Save Note</button>';
+      '<button class="btn btn-ghost" id="plan-cancel-btn">Cancel</button>' +
+      '<button class="btn" id="plan-save-btn">Save Note</button>';
     setTimeout(function() {
       var inp = document.getElementById('pf-note-text');
       if (inp) inp.focus();
-    }, 50);
+      var cancel = document.getElementById('plan-cancel-btn');
+      if (cancel) cancel.addEventListener('click', closePlannerModal);
+      var save = document.getElementById('plan-save-btn');
+      if (save) save.addEventListener('click', savePlanNote);
+    }, 30);
   }
 
   overlay.classList.add('open');
@@ -3554,12 +3557,19 @@ function planSearchResults(query) {
   }
 
   container.innerHTML = results.map(function(item) {
-    return '<div class="planner-search-result" onclick="addExistingToPlan(' + item.order + ')">' +
+    return '<div class="planner-search-result" data-order="' + item.order + '">' +
       '<span class="planner-search-result-name">' + item.name + '</span>' +
       '<span class="type-badge" style="font-size:0.65rem;padding:0.1rem 0.4rem">' + item.type + '</span>' +
       '<span class="planner-search-result-order">#' + item.order + '</span>' +
     '</div>';
   }).join('');
+  // Wire clicks via event delegation - no inline onclick needed
+  var rows = container.querySelectorAll('.planner-search-result');
+  rows.forEach(function(row) {
+    row.addEventListener('click', function() {
+      addExistingToPlan(parseInt(row.dataset.order, 10));
+    });
+  });
 }
 
 function addExistingToPlan(order) {
