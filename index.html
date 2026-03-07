@@ -1,0 +1,2815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProgressScape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+    --gold: #c8a84b;
+    --gold-light: #e8c96a;
+    --gold-dark: #8a6e2a;
+    --stone: #2a2518;
+    --stone-mid: #3d3526;
+    --stone-light: #524839;
+    --stone-lighter: #6b5f48;
+    --parchment: #f0e8d0;
+    --parchment-dark: #d4c89a;
+    --red: #8b2020;
+    --red-light: #c43030;
+    --green: #2a6b2a;
+    --green-light: #3d9e3d;
+    --blue: #1a3a6b;
+    --blue-light: #2a5aa0;
+    --text-light: #f0e8d0;
+    --text-muted: #b8a87a;
+    --shadow: rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; max-width: 100vw; }
+
+  body {
+    background-color: var(--stone);
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(200,168,75,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(200,168,75,0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%232a2518'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%2330291d' opacity='0.5'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%2330291d' opacity='0.5'/%3E%3C/svg%3E");
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(180deg, #1a1408 0%, var(--stone) 100%);
+    border-bottom: 2px solid var(--gold-dark);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 64px;
+  }
+
+  .site-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 20px rgba(200,168,75,0.4);
+    white-space: nowrap;
+  }
+
+  .site-title span {
+    color: var(--gold-light);
+  }
+
+  nav {
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.45rem 1.1rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover {
+    color: var(--gold-light);
+    border-color: var(--gold-dark);
+    background: rgba(200,168,75,0.08);
+  }
+
+  .nav-btn.active {
+    color: var(--gold);
+    border-color: var(--gold);
+    background: rgba(200,168,75,0.12);
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== LOOKUP BAR ===== */
+  .lookup-bar {
+    background: linear-gradient(180deg, var(--stone-mid) 0%, var(--stone) 100%);
+    border-bottom: 1px solid var(--stone-lighter);
+    padding: 1.25rem 2rem;
+  }
+
+  .lookup-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .lookup-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .lookup-group label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .lookup-group input {
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.85rem;
+    width: 240px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .lookup-group input:focus {
+    border-color: var(--gold-dark);
+  }
+
+  .lookup-group input::placeholder {
+    color: var(--stone-lighter);
+  }
+
+  .btn {
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+    border: 1px solid var(--gold-dark);
+    border-radius: 3px;
+    color: var(--stone);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.55rem 1.4rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+
+  .btn:hover {
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+    box-shadow: 0 3px 12px rgba(200,168,75,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--stone-lighter);
+    color: var(--text-muted);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(200,168,75,0.08);
+    border-color: var(--gold-dark);
+    color: var(--gold-light);
+    box-shadow: none;
+    transform: none;
+  }
+
+  .lookup-sep {
+    color: var(--stone-lighter);
+    font-size: 0.8rem;
+    padding-bottom: 0.6rem;
+    align-self: flex-end;
+  }
+
+  /* ===== FILTERS ===== */
+  .filters-bar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.9rem 2rem;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 0.2rem;
+  }
+
+  .chip {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 2px;
+    color: var(--text-muted);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chip:hover { border-color: var(--gold-dark); color: var(--gold-light); }
+
+  .chip.active {
+    background: rgba(200,168,75,0.15);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .chip.type-quest.active { background: rgba(42,107,42,0.2); border-color: var(--green-light); color: #6fc96f; }
+  .chip.type-boss.active { background: rgba(139,32,32,0.2); border-color: var(--red-light); color: #e06060; }
+  .chip.type-activity.active { background: rgba(26,58,107,0.2); border-color: var(--blue-light); color: #7ab0f0; }
+  .chip.type-unlock.active { background: rgba(120,80,200,0.2); border-color: #8a50c8; color: #b080f0; }
+  .chip.type-miniquest.active { background: rgba(180,120,30,0.2); border-color: #c89030; color: #e8b848; }
+
+  /* ===== SEARCH ===== */
+  .search-row {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem 0.75rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .search-input {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.85rem;
+    width: 260px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--gold-dark); }
+  .search-input::placeholder { color: var(--stone-lighter); }
+
+  .results-count {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-left: auto;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.04em;
+  }
+
+  /* ===== STATUS MESSAGE ===== */
+  .status-msg {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem 0.75rem;
+  }
+
+  .status-inner {
+    background: rgba(200,168,75,0.08);
+    border: 1px solid var(--gold-dark);
+    border-radius: 3px;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-inner.error { background: rgba(139,32,32,0.15); border-color: var(--red-light); color: #e08080; }
+  .status-inner.success { background: rgba(42,107,42,0.15); border-color: var(--green-light); color: #80d080; }
+
+  /* ===== TABLE ===== */
+  .table-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 0 3rem;
+  }
+  .table-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - var(--header-h, 64px) - 160px);
+    padding: 0 2rem;
+  }
+  .table-scroll thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  thead th {
+    background: var(--stone-mid);
+    border-bottom: 2px solid var(--gold-dark);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0.7rem 0.85rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  thead th:first-child { width: 48px; text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+
+  tbody tr:hover { background: rgba(200,168,75,0.06); }
+
+  tbody tr.completed {
+    background: rgba(42, 107, 42, 0.18);
+  }
+
+  tbody tr.completed:hover {
+    background: rgba(42, 107, 42, 0.26);
+  }
+
+  tbody tr.completed td {
+    color: rgba(111, 201, 111, 0.85);
+  }
+
+  tbody tr.completed .td-name a,
+  tbody tr.completed .td-name {
+    color: #6fc96f;
+  }
+
+  tbody tr.completed .type-badge {
+    opacity: 0.7;
+  }
+
+  tbody tr.completed .qp-badge {
+    color: rgba(111, 201, 111, 0.8);
+  }
+
+  tbody tr.row-locked {
+    opacity: 0.5;
+  }
+
+  tbody tr.row-achievable {
+    background: rgba(42,107,42,0.08);
+    border-left: 2px solid rgba(42,107,42,0.4);
+  }
+
+  tbody tr.row-achievable:hover {
+    background: rgba(42,107,42,0.15);
+  }
+
+  tbody tr.row-kc-progress {
+    background: rgba(40,140,200,0.08);
+    border-left: 2px solid rgba(40,140,200,0.5);
+  }
+
+  tbody tr.row-kc-progress:hover {
+    background: rgba(40,140,200,0.15);
+  }
+
+  tbody tr.row-kc-complete {
+    background: rgba(42,107,42,0.08);
+    border-left: 2px solid rgba(42,107,42,0.4);
+  }
+
+  tbody tr.row-kc-complete:hover {
+    background: rgba(42,107,42,0.15);
+  }
+
+  .drops-cell {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    max-width: 200px;
+    line-height: 1.6;
+  }
+
+  tbody tr.row-locked .td-name,
+  tbody tr.row-locked .td-name a {
+    color: var(--text-muted);
+  }
+
+  td {
+    padding: 0.55rem 0.85rem;
+    vertical-align: top;
+    color: var(--text-light);
+  }
+
+  td:first-child {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    width: 48px;
+  }
+
+  .td-name {
+    font-weight: 600;
+    color: var(--parchment);
+  }
+
+  .td-name a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .td-name a:hover { color: var(--gold-light); text-decoration: underline; }
+
+  .type-badge {
+    display: inline-block;
+    border-radius: 2px;
+    font-size: 0.7rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .badge-Quest { background: rgba(42,107,42,0.25); color: #6fc96f; border: 1px solid rgba(42,107,42,0.5); }
+  .badge-Boss { background: rgba(139,32,32,0.25); color: #e06060; border: 1px solid rgba(139,32,32,0.5); }
+  .badge-Activity\/Goal, .badge-Activity { background: rgba(26,58,107,0.25); color: #7ab0f0; border: 1px solid rgba(26,58,107,0.5); }
+  .badge-Unlock { background: rgba(120,80,200,0.25); color: #b080f0; border: 1px solid rgba(120,80,200,0.5); }
+  .badge-Miniquest { background: rgba(180,120,30,0.25); color: #e8b848; border: 1px solid rgba(180,120,30,0.5); }
+  .badge-Diary { background: rgba(80,150,200,0.25); color: #80c8f0; border: 1px solid rgba(80,150,200,0.5); }
+  .chip.type-diary.active { background: rgba(80,150,200,0.2); border-color: #60a8d8; color: #80c8f0; }
+
+  .boss-tier {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .tier-easy { color: #6fc96f; }
+  .tier-medium { color: #e8b848; }
+  .tier-hard { color: #e09030; }
+  .tier-elite { color: #e06060; }
+  .tier-master { color: #c050c0; }
+  .tier-grandmaster { color: #ff4040; text-shadow: 0 0 8px rgba(255,64,64,0.5); }
+
+  .skill-req {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    max-width: 260px;
+  }
+
+  .req-unmet { color: #e06060; }
+
+  .info-cell {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    max-width: 320px;
+    line-height: 1.4;
+  }
+
+  .qp-badge {
+    color: var(--gold-light);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .location-cell {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* completed checkbox */
+  .check-cell {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--stone-lighter);
+    border-radius: 2px;
+    background: var(--stone-mid);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .check-box:hover { border-color: var(--gold-dark); }
+  .check-box.checked { background: var(--green); border-color: var(--green-light); }
+  .check-box.checked::after { content: '✓'; color: #6fc96f; font-size: 11px; line-height: 1; }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.75rem 2rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--stone-mid);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--stone-lighter);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .progress-label strong { color: var(--gold); }
+
+  /* ===== DETAIL PANEL ===== */
+  .detail-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    backdrop-filter: blur(3px);
+  }
+
+  .detail-overlay.open { display: flex; align-items: center; justify-content: center; }
+
+  .detail-panel {
+    background: var(--stone-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(200,168,75,0.1);
+    max-width: 560px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .detail-header {
+    background: linear-gradient(180deg, var(--stone-light) 0%, var(--stone-mid) 100%);
+    border-bottom: 1px solid var(--gold-dark);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+  }
+
+  .detail-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+  }
+
+  .detail-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0.1rem;
+    transition: color 0.15s;
+  }
+
+  .detail-close:hover { color: var(--gold); }
+
+  .detail-body { padding: 1.25rem 1.5rem; }
+
+  .detail-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+    align-items: flex-start;
+  }
+
+  .detail-row-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    width: 110px;
+    flex-shrink: 0;
+    padding-top: 0.05rem;
+  }
+
+  .detail-row-val {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .detail-divider {
+    border: none;
+    border-top: 1px solid var(--stone-lighter);
+    margin: 1rem 0;
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem 1.25rem;
+    border-top: 1px solid var(--stone-lighter);
+  }
+
+  /* ===== RANDOMIZER PAGE ===== */
+  .randomizer-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .randomizer-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .randomizer-header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(200,168,75,0.3);
+    margin-bottom: 0.5rem;
+  }
+
+  .randomizer-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+  }
+
+  .randomizer-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .spin-area {
+    background: var(--stone-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 6px;
+    padding: 2.5rem;
+    text-align: center;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.4), 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .spin-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(200,168,75,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .spin-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .spin-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(200,168,75,0.4);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spinAnim {
+    0% { opacity: 0.3; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .spin-name.spinning {
+    animation: spinAnim 0.08s ease infinite alternate;
+  }
+
+  .spin-type { margin-bottom: 1rem; }
+
+  .spin-meta {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .spin-meta-item {
+    text-align: center;
+  }
+
+  .spin-meta-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .spin-meta-val {
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+
+  .spin-info {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 500px;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+  }
+
+  .spin-idle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--stone-lighter);
+  }
+
+  .spin-btn-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .spin-btn {
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+    border: 1px solid var(--gold-dark);
+    border-radius: 4px;
+    color: var(--stone);
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.85rem 2.5rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+
+  .spin-btn:hover {
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+    box-shadow: 0 6px 20px rgba(200,168,75,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+  }
+
+  .spin-btn:active { transform: translateY(0); }
+
+  .spin-history {
+    margin-top: 2.5rem;
+  }
+
+  .spin-history h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .history-item {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    padding: 0.5rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: background 0.15s;
+  }
+
+  .history-item:hover { background: var(--stone-light); }
+
+  .history-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--stone-lighter);
+    width: 24px;
+  }
+
+  .history-name {
+    color: var(--parchment-dark);
+    font-weight: 600;
+    flex: 1;
+  }
+
+  /* ===== STATS PAGE ===== */
+  .stats-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .stats-page h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .skill-input-row {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+    gap: 0.6rem;
+    transition: border-color 0.15s;
+  }
+
+  .skill-input-row:focus-within { border-color: var(--gold-dark); }
+
+  .skill-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .skill-name-lbl {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    width: 90px;
+    flex-shrink: 0;
+  }
+
+  .skill-level-input {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: 40px;
+    text-align: right;
+    outline: none;
+  }
+
+  .skill-level-input::-webkit-inner-spin-button { opacity: 0; }
+
+  .stats-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--stone); }
+  ::-webkit-scrollbar-thumb { background: var(--stone-light); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--stone-lighter); }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 700px) {
+    header { padding: 0 0.75rem; }
+    .header-inner {
+      flex-direction: column;
+      height: auto;
+      padding: 0.5rem 0;
+      gap: 0.35rem;
+      align-items: stretch;
+    }
+    .site-title {
+      font-size: 1rem;
+      text-align: center;
+      padding: 0.15rem 0;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.2rem;
+      flex-wrap: nowrap;
+    }
+    .nav-btn {
+      font-size: 0.68rem;
+      padding: 0.3rem 0.5rem;
+      flex: 1;
+      text-align: center;
+    }
+    .lookup-inner { gap: 0.75rem; }
+    .lookup-group input { width: 100%; }
+    td { padding: 0.4rem 0.5rem; }
+  }
+
+  /* ===== MOBILE CARD VIEW ===== */
+  @media (max-width: 768px) {
+    .table-scroll {
+      overflow-x: unset;
+      overflow-y: unset;
+      max-height: unset;
+      padding: 0 0.75rem;
+    }
+
+    table, thead, tbody, tr, td, th { display: block; }
+
+    thead { display: none; }
+
+    .table-wrap {
+      padding: 0 0 2rem;
+    }
+
+    tbody tr {
+      background: var(--stone-mid);
+      border: 1px solid rgba(200,168,75,0.12);
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 40px 1fr 90px;
+      grid-template-rows: auto auto;
+      gap: 0;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    tbody tr:hover {
+      border-color: rgba(200,168,75,0.3);
+      background: rgba(61,53,38,0.9);
+    }
+
+    tbody tr.completed {
+      background: rgba(42,107,42,0.15);
+      border-color: rgba(42,107,42,0.3);
+    }
+
+    tbody tr.row-locked {
+      opacity: 0.5;
+    }
+
+    /* Checkbox cell */
+    tbody tr td:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 0.5rem;
+      width: auto;
+    }
+
+    /* Order number cell */
+    tbody tr td:nth-child(2) {
+      grid-column: 2;
+      grid-row: 1;
+      padding: 0.55rem 0.5rem 0.1rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+    }
+
+    /* Name cell */
+    tbody tr td:nth-child(3) {
+      grid-column: 2;
+      grid-row: 2;
+      padding: 0 0.5rem 0.55rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--parchment);
+    }
+
+    /* Type badge cell */
+    tbody tr td:nth-child(4) {
+      grid-column: 3;
+      grid-row: 1 / 3;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0.55rem 0.5rem 0.55rem 0.25rem;
+      gap: 0.3rem;
+      overflow: hidden;
+    }
+
+    tbody tr td:nth-child(4) .type-badge {
+      white-space: nowrap;
+      font-size: 0.6rem;
+      padding: 0.15rem 0.35rem;
+    }
+
+    tbody tr td:nth-child(4) .boss-tier {
+      white-space: nowrap;
+      font-size: 0.58rem;
+      text-align: right;
+      display: block;
+    }
+
+    /* Skill req, quest prereqs, QP, location, notes — hidden on mobile */
+    tbody tr td:nth-child(5),
+    tbody tr td:nth-child(6),
+    tbody tr td:nth-child(7),
+    tbody tr td:nth-child(8),
+    tbody tr td:nth-child(9) {
+      display: none;
+    }
+
+    /* Completed state tweaks */
+    tbody tr.completed td:nth-child(3) { color: #6fc96f; }
+
+    /* Progress bar padding */
+    .progress-bar-wrap {
+      padding: 0.5rem 0.75rem 0;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.75rem;
+    }
+    .progress-bar-wrap .progress-track { min-width: 60px; }
+    .progress-bar-wrap > div:last-child { width: 100%; justify-content: flex-end; margin-left: 0; }
+
+    /* Filter chips */
+    .filter-bar { padding: 0.6rem 0.75rem; gap: 0.4rem; }
+    .search-row { padding: 0.5rem 0.75rem; }
+
+    /* Card detail line */
+    .card-detail {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+      line-height: 1.35;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+
+  }
+
+
+  /* ===== MOBILE: RANDOMIZER PAGE ===== */
+  @media (max-width: 768px) {
+    .randomizer-page {
+      padding: 1.5rem 0.75rem;
+    }
+
+    .randomizer-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .randomizer-header h1 {
+      font-size: 1.35rem;
+    }
+
+    .randomizer-header p {
+      font-size: 0.85rem;
+    }
+
+    .randomizer-filters {
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+      justify-content: flex-start;
+    }
+
+    .randomizer-filters .chip {
+      font-size: 0.72rem;
+      padding: 0.3rem 0.6rem;
+    }
+
+    .spin-area {
+      padding: 1.5rem 1rem;
+      min-height: 220px;
+    }
+
+    .spin-name {
+      font-size: 1.25rem;
+    }
+
+    .spin-meta {
+      gap: 1rem;
+    }
+
+    .spin-btn-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+    }
+
+    .spin-btn {
+      padding: 0.85rem 1rem;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .btn-ghost {
+      text-align: center;
+    }
+
+    .spin-history {
+      margin-top: 1.5rem;
+    }
+  }
+
+
+  /* ===== USER NOTES ===== */
+  .user-note-ta {
+    width: 100%;
+    min-height: 80px;
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--text-light);
+    font-family: 'IM Fell English', serif;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    padding: 0.5rem 0.6rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+  }
+
+  .user-note-ta:focus {
+    border-color: var(--gold-dark);
+  }
+
+  .user-note-ta::placeholder {
+    color: var(--stone-lighter);
+    font-style: italic;
+  }
+
+  .note-indicator {
+    font-size: 0.7rem;
+    margin-left: 0.4rem;
+    opacity: 0.7;
+    vertical-align: middle;
+    cursor: default;
+  }
+
+
+  /* ===== IRONMAN TOGGLE ===== */
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .ironman-toggle-btn {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .ironman-toggle-btn:hover {
+    border-color: var(--gold-dark);
+    color: var(--gold);
+  }
+
+  .ironman-toggle-btn.active {
+    background: rgba(200,168,75,0.12);
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 8px rgba(200,168,75,0.2);
+  }
+
+  .im-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    background: rgba(200,168,75,0.15);
+    border: 1px solid var(--gold-dark);
+    border-radius: 3px;
+    color: var(--gold);
+    margin-left: 0.4rem;
+    font-family: 'Cinzel', serif;
+    vertical-align: middle;
+  }
+
+  /* ===== ACCORDION TIERS ===== */
+  .tier-header-row {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .tier-header-row td {
+    padding: 0 !important;
+    background: linear-gradient(90deg, #1a1408 0%, var(--stone-mid) 100%) !important;
+    border-top: 2px solid var(--gold-dark) !important;
+    border-bottom: 1px solid var(--stone-lighter) !important;
+  }
+
+  .tier-header-row:first-child td {
+    border-top: none !important;
+  }
+
+  .tier-header-row:hover td {
+    background: linear-gradient(90deg, #1e1708 0%, #453c2c 100%) !important;
+  }
+
+  .tier-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    gap: 1rem;
+  }
+
+  .tier-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  .tier-chevron {
+    font-size: 0.65rem;
+    color: var(--gold-dark);
+    width: 12px;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+
+  .tier-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .tier-done-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--green-light);
+    background: rgba(61,158,61,0.12);
+    border: 1px solid rgba(61,158,61,0.4);
+    border-radius: 3px;
+    padding: 0.1rem 0.45rem;
+    letter-spacing: 0.04em;
+  }
+
+  .tier-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .tier-progress-wrap {
+    width: 120px;
+    height: 6px;
+    background: var(--stone);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .tier-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .tier-count {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 48px;
+    text-align: right;
+  }
+
+  .tier-complete .tier-label {
+    color: var(--text-muted);
+  }
+
+  .tier-complete .tier-chevron {
+    color: var(--green-light);
+  }
+
+  .tier-complete .tier-progress-bar {
+    background: linear-gradient(90deg, var(--green), var(--green-light));
+  }
+
+  /* ===== BACK TO TOP ===== */
+  .back-to-top {
+    position: fixed;
+    bottom: 5.5rem;
+    right: 1.25rem;
+    z-index: 200;
+    background: var(--stone-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 50%;
+    color: var(--gold);
+    font-size: 0.9rem;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .back-to-top:hover {
+    background: rgba(200,168,75,0.15);
+  }
+
+  /* ===== FLOATING RANDOM PANEL ===== */
+  .floating-rand-trigger {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 300;
+    background: linear-gradient(135deg, #2a1f0a, var(--stone-mid));
+    border: 1px solid var(--gold-dark);
+    border-radius: 8px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.6);
+    transition: all 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .floating-rand-trigger:hover {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, #3a2a0e, #4a3c28);
+    box-shadow: 0 4px 24px rgba(200,168,75,0.25);
+  }
+
+  .floating-rand-panel {
+    position: fixed;
+    bottom: 4.5rem;
+    right: 1.25rem;
+    z-index: 299;
+    width: 320px;
+    max-width: calc(100vw - 2.5rem);
+    background: linear-gradient(160deg, #1e1708, var(--stone-mid));
+    border: 1px solid var(--gold-dark);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    transform: translateY(20px) scale(0.97);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    overflow: hidden;
+  }
+
+  .floating-rand-panel.open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .frand-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem 0.6rem;
+    border-bottom: 1px solid var(--stone-lighter);
+  }
+
+  .frand-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+  }
+
+  .frand-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    transition: color 0.15s;
+  }
+
+  .frand-close:hover { color: var(--text-light); }
+
+  .frand-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--stone-lighter);
+  }
+
+  .frand-filters .chip {
+    font-size: 0.68rem;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .frand-result-area {
+    min-height: 90px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--stone-lighter);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .frand-idle {
+    color: var(--text-muted);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .frand-order {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .frand-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+    transition: opacity 0.15s;
+  }
+
+  .frand-name.spinning {
+    opacity: 0.5;
+  }
+
+  .frand-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+
+  .frand-btns {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem 0.3rem;
+  }
+
+  .frand-spin-btn {
+    flex: 1;
+    font-size: 0.78rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .frand-suggest-btn {
+    background: linear-gradient(135deg, rgba(42,107,42,0.3), rgba(61,158,61,0.1));
+    border-color: rgba(61,158,61,0.5);
+    color: var(--green-light);
+  }
+
+  .frand-suggest-btn:hover {
+    border-color: var(--green-light);
+    background: rgba(61,158,61,0.2);
+  }
+
+  .frand-subbtns {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0 0.75rem 0.6rem;
+  }
+
+  .frand-subbtns .btn {
+    flex: 1;
+  }
+
+  .frand-hist-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem 0.3rem;
+    border-top: 1px solid var(--stone-lighter);
+  }
+
+  .frand-hist-list {
+    max-height: 140px;
+    overflow-y: auto;
+    padding: 0 0.5rem 0.5rem;
+  }
+
+  .float-hist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .float-hist-item:hover {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .float-hist-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--stone-lighter);
+    width: 14px;
+    flex-shrink: 0;
+  }
+
+  .float-hist-name {
+    flex: 1;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 500px) {
+    .floating-rand-panel {
+      right: 0.75rem;
+      bottom: 4.2rem;
+      width: calc(100vw - 1.5rem);
+    }
+    .floating-rand-trigger {
+      right: 0.75rem;
+      bottom: 0.75rem;
+    }
+    .back-to-top {
+      right: 0.75rem;
+      bottom: 5rem;
+    }
+  }
+
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="site-title">Progress<span>Scape</span></div>
+    <nav>
+      <button class="nav-btn active" onclick="showPage('progression')">Progression</button>
+      <button class="nav-btn" onclick="showPage('stats')">My Stats</button>
+    </nav>
+    <div class="header-right">
+      <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
+        <span class="im-icon">🪓</span> Ironman
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== PROGRESSION PAGE ===== -->
+<div id="page-progression" class="page active">
+
+  <div class="lookup-bar">
+    <div class="lookup-inner">
+      <div class="lookup-group">
+        <label>RSN Lookup</label>
+        <input type="text" id="rsn-input" placeholder="Enter username…" onkeydown="if(event.key==='Enter') lookupRSN()">
+      </div>
+      <button class="btn" onclick="lookupRSN()">Lookup</button>
+      <span class="lookup-sep">or</span>
+      <button class="btn btn-ghost" onclick="showPage('stats')">Enter Stats Manually</button>
+    </div>
+  </div>
+
+  <div id="lookup-status" style="display:none">
+    <div class="status-msg">
+      <div id="lookup-status-inner" class="status-inner"></div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><strong id="prog-done">0</strong> / <span id="prog-total">477</span> completed</div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="progress-label"><strong id="prog-pct">0%</strong></div>
+    <div style="margin-left:auto; display:flex; gap:0.5rem; flex-shrink:0;">
+      <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.8rem" onclick="toggleShowCompleted()">
+        <span id="toggle-completed-label">Hide Completed</span>
+      </button>
+      <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.8rem" onclick="clearProgress()">Clear Progress</button>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="chip active" data-filter="all" onclick="setFilter('all')">All</button>
+    <button class="chip type-quest" data-filter="Quest" onclick="setFilter('Quest')">Quests</button>
+    <button class="chip type-boss" data-filter="Boss" onclick="setFilter('Boss')">Bosses</button>
+    <button class="chip type-activity" data-filter="Activity/Goal" onclick="setFilter('Activity/Goal')">Activities</button>
+    <button class="chip type-unlock" data-filter="Unlock" onclick="setFilter('Unlock')">Unlocks</button>
+    <button class="chip type-miniquest" data-filter="Miniquest" onclick="setFilter('Miniquest')">Miniquests</button>
+    <button class="chip type-diary" data-filter="Diary" onclick="setFilter('Diary')">Diaries</button>
+    <button class="chip" data-filter="locked" onclick="setFilter('locked')">🔒 Locked</button>
+    <button class="chip" data-filter="available" onclick="setFilter('available')">✅ Available Now</button>
+  </div>
+
+  <div class="search-row">
+    <input class="search-input" type="text" id="search-input" placeholder="Search…" oninput="renderTable()">
+    <span class="results-count" id="results-count"></span>
+  </div>
+
+  <div class="table-wrap">
+  <div class="table-scroll">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>#</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Skill Req.</th>
+          <th>Quest Prereqs</th>
+          <th>QP</th>
+          <th>Location</th>
+          <th>Notes</th>
+          <th>Notable Drops</th>
+        </tr>
+      </thead>
+      <tbody id="main-tbody"></tbody>
+    </table>
+  </div>
+  </div>
+</div>
+
+<!-- ===== STATS PAGE ===== -->
+<div id="page-stats" class="page">
+  <div class="stats-page">
+    <h2>My Stats</h2>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.5rem;font-family:'IM Fell English',serif;font-style:italic">
+      Enter your skill levels to unlock requirement checking across the progression list. You can also use the RSN Lookup on the Progression page to auto-fill.
+    </p>
+    <div class="skills-grid" id="skills-grid"></div>
+    <div class="stats-actions">
+      <button class="btn" onclick="saveStats()">Save Stats</button>
+      <button class="btn btn-ghost" onclick="clearStats()">Reset</button>
+      <span id="stats-saved-msg" style="color:var(--green-light);font-size:0.85rem;align-self:center;display:none">✓ Saved</span>
+    </div>
+    <div style="display:flex;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap">
+      <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase">Combat Level</span>
+        <span id="combat-level-display" style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">—</span>
+      </div>
+      <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase">Total Level</span>
+        <span id="total-level-display" style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">—</span>
+      </div>
+    </div>
+    <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:1rem 1.25rem;margin-top:1rem;">
+      <p style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem">Quest Points</p>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <input type="number" id="qp-input" min="0" max="300" placeholder="0"
+          style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:3px;color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;padding:0.4rem 0.75rem;width:80px;outline:none;text-align:center">
+        <span style="font-size:0.85rem;color:var(--text-muted)">Current quest points (used to check QP requirements)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+      <div>
+        <div class="detail-title" id="detail-title"></div>
+        <div id="detail-subtitle" style="margin-top:0.3rem"></div>
+      </div>
+      <button class="detail-close" onclick="closeDetailBtn()">✕</button>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+    <div class="detail-actions" id="detail-actions"></div>
+  </div>
+</div>
+
+<!-- ===== FLOATING RANDOM TASK PANEL ===== -->
+<div class="floating-rand-trigger" onclick="toggleRandomPanel()" title="Random Task">
+  🎲 <span>Random</span>
+</div>
+
+<div id="floating-rand-panel" class="floating-rand-panel">
+  <div class="frand-header">
+    <span class="frand-title">⚔ Task Oracle</span>
+    <button class="frand-close" onclick="closeRandomPanel()">✕</button>
+  </div>
+
+  <div class="frand-filters">
+    <button class="chip type-quest active" data-rfilter="Quest" onclick="toggleRandFilter('Quest')">Quests</button>
+    <button class="chip type-boss active" data-rfilter="Boss" onclick="toggleRandFilter('Boss')">Bosses</button>
+    <button class="chip type-activity active" data-rfilter="Activity/Goal" onclick="toggleRandFilter('Activity/Goal')">Activities</button>
+    <button class="chip type-unlock active" data-rfilter="Unlock" onclick="toggleRandFilter('Unlock')">Unlocks</button>
+    <button class="chip active" data-rfilter="incomplete" onclick="toggleRandFilter('incomplete')">Skip Done</button>
+  </div>
+
+  <div class="frand-result-area">
+    <div id="float-spin-idle" class="frand-idle">Press a button to receive your task…</div>
+    <div id="float-spin-result" style="display:none">
+      <div id="float-spin-order" class="frand-order"></div>
+      <div id="float-spin-name" class="frand-name"></div>
+      <div id="float-spin-type" style="margin:0.4rem 0"></div>
+      <div id="float-spin-meta" class="frand-meta"></div>
+    </div>
+  </div>
+
+  <div class="frand-btns">
+    <button class="spin-btn frand-spin-btn" onclick="floatSpin(false)">🎲 Surprise Me</button>
+    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="floatSpin(true)" title="Suggests tasks within ±10 levels of your stats">💡 Suggest Task</button>
+  </div>
+  <div class="frand-subbtns">
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="floatMarkDone()">✓ Mark Done & Roll Again</button>
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearSpinHistory()">🗑 Clear</button>
+  </div>
+
+  <div id="float-history-wrap" style="display:none">
+    <div class="frand-hist-title">Recent Rolls</div>
+    <div id="float-history-list" class="frand-hist-list"></div>
+  </div>
+</div>
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">▲</button>
+
+<script src="data.js"></script>
+<script>
+// ============================================================
+// TIER DEFINITIONS
+// ============================================================
+const TIERS = [
+  { id: 'early',  label: 'Early Game Content',  minOrder: 1,   maxOrder: 148 },
+  { id: 'mid',    label: 'Mid Game Content',     minOrder: 149, maxOrder: 277 },
+  { id: 'late',   label: 'Late Game Content',    minOrder: 278, maxOrder: 396 },
+  { id: 'end',    label: 'End Game Content',     minOrder: 397, maxOrder: Infinity },
+];
+
+function getTierForOrder(order) {
+  return TIERS.find(t => order >= t.minOrder && order <= t.maxOrder) || TIERS[TIERS.length - 1];
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let playerStats = {};
+let playerQP = 0;
+let completedSet = new Set();
+let activeFilters = new Set(['all']);
+let showCompleted = true;
+let randFilters = new Set(['Quest','Boss','Activity/Goal','Unlock','Miniquest','Diary','incomplete']);
+let bossKC = {};
+let obtainedDrops = {};
+let spinHistory = [];
+let currentSpinItem = null;
+let userNotes = {};
+let ironmanMode = false;
+// Track which accordion tiers are open (by tier id)
+let openTiers = new Set();
+
+const SKILLS = [
+  {name:'Attack',emoji:'⚔️'},{name:'Strength',emoji:'💪'},{name:'Defence',emoji:'🛡️'},
+  {name:'Hitpoints',emoji:'❤️'},{name:'Ranged',emoji:'🏹'},{name:'Prayer',emoji:'✨'},
+  {name:'Magic',emoji:'🔮'},{name:'Cooking',emoji:'🍳'},{name:'Woodcutting',emoji:'🪓'},
+  {name:'Fletching',emoji:'🪶'},{name:'Fishing',emoji:'🎣'},{name:'Firemaking',emoji:'🔥'},
+  {name:'Crafting',emoji:'✂️'},{name:'Smithing',emoji:'🔨'},{name:'Mining',emoji:'⛏️'},
+  {name:'Herblore',emoji:'🌿'},{name:'Agility',emoji:'🏃'},{name:'Thieving',emoji:'🦝'},
+  {name:'Slayer',emoji:'💀'},{name:'Farming',emoji:'🌱'},{name:'Runecraft',emoji:'🔷'},
+  {name:'Hunter',emoji:'🦊'},{name:'Construction',emoji:'🏠'},{name:'Sailing',emoji:'⛵'},
+];
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  loadFromStorage();
+  buildSkillsGrid();
+  autoDetectOpenTier();
+  renderTable();
+  updateProgress();
+  updateCombatDisplay();
+  renderFloatingHistory();
+}
+
+function loadFromStorage() {
+  try {
+    const s = localStorage.getItem('osrs_spine_stats');
+    if (s) playerStats = JSON.parse(s);
+    const q = localStorage.getItem('osrs_spine_qp');
+    if (q) playerQP = parseInt(q) || 0;
+    const c = localStorage.getItem('osrs_spine_completed');
+    if (c) completedSet = new Set(JSON.parse(c));
+    const n = localStorage.getItem('osrs_spine_notes');
+    if (n) userNotes = JSON.parse(n);
+    const k = localStorage.getItem('osrs_spine_kc');
+    if (k) bossKC = JSON.parse(k);
+    const od = localStorage.getItem('osrs_spine_drops');
+    if (od) obtainedDrops = JSON.parse(od);
+    const sh = localStorage.getItem('osrs_spine_spinhistory');
+    if (sh) spinHistory = JSON.parse(sh);
+    const im = localStorage.getItem('osrs_spine_ironman');
+    if (im) ironmanMode = JSON.parse(im);
+    const ot = localStorage.getItem('osrs_spine_opentiers');
+    if (ot) openTiers = new Set(JSON.parse(ot));
+  } catch(e) {}
+}
+
+function saveToStorage() {
+  localStorage.setItem('osrs_spine_stats', JSON.stringify(playerStats));
+  localStorage.setItem('osrs_spine_qp', playerQP);
+  localStorage.setItem('osrs_spine_completed', JSON.stringify([...completedSet]));
+  localStorage.setItem('osrs_spine_notes', JSON.stringify(userNotes));
+  localStorage.setItem('osrs_spine_kc', JSON.stringify(bossKC));
+  localStorage.setItem('osrs_spine_drops', JSON.stringify(obtainedDrops));
+  localStorage.setItem('osrs_spine_spinhistory', JSON.stringify(spinHistory));
+  localStorage.setItem('osrs_spine_ironman', JSON.stringify(ironmanMode));
+  localStorage.setItem('osrs_spine_opentiers', JSON.stringify([...openTiers]));
+}
+
+function saveNote(order, text) {
+  if (text.trim()) {
+    userNotes[order] = text;
+  } else {
+    delete userNotes[order];
+  }
+  localStorage.setItem('osrs_spine_notes', JSON.stringify(userNotes));
+  const row = document.querySelector(`tr[data-order="${order}"]`);
+  if (row) {
+    const ind = row.querySelector('.note-indicator');
+    if (text.trim()) {
+      if (!ind) {
+        const nameCell = row.querySelector('.td-name');
+        if (nameCell) nameCell.insertAdjacentHTML('beforeend', '<span class="note-indicator" title="Has notes">📝</span>');
+      }
+    } else {
+      if (ind) ind.remove();
+    }
+  }
+}
+
+// ============================================================
+// IRONMAN TOGGLE
+// ============================================================
+function toggleIronman() {
+  ironmanMode = !ironmanMode;
+  const btn = document.getElementById('ironman-toggle-btn');
+  if (btn) {
+    btn.classList.toggle('active', ironmanMode);
+    btn.title = ironmanMode ? 'Ironman Mode: ON' : 'Ironman Mode: OFF';
+  }
+  saveToStorage();
+  autoDetectOpenTier();
+  renderTable();
+}
+
+function getActiveData() {
+  if (!ironmanMode) return SPINE_DATA;
+  // Build ordered list using IRONMAN_DATA
+  const nameToSpine = {};
+  SPINE_DATA.forEach(e => { nameToSpine[e.name] = e; });
+  const seen = new Set();
+  const result = [];
+  IRONMAN_DATA.forEach((imEntry, idx) => {
+    const spine = nameToSpine[imEntry.name];
+    if (!spine) return;
+    const key = `${imEntry.name}-${imEntry.type}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    result.push({ ...spine, imOrder: imEntry.imOrder, imType: imEntry.type, order: idx + 1 });
+  });
+  return result;
+}
+
+// ============================================================
+// AUTO-DETECT OPEN TIER
+// ============================================================
+function autoDetectOpenTier() {
+  // If user has manually set openTiers, keep them unless empty
+  if (openTiers.size > 0) return;
+
+  const data = getActiveData();
+  // Find first tier that isn't 100% complete
+  for (const tier of TIERS) {
+    const tierItems = data.filter(item => {
+      const order = ironmanMode ? item.imOrder || item.order : item.order;
+      return order >= tier.minOrder && order <= tier.maxOrder;
+    });
+    if (tierItems.length === 0) continue;
+    const allDone = tierItems.every(item => completedSet.has(SPINE_DATA.find(s=>s.name===item.name)?.order || item.order));
+    if (!allDone) {
+      openTiers.add(tier.id);
+      return;
+    }
+  }
+  // All done — open end game
+  openTiers.add('end');
+}
+
+function toggleTier(tierId) {
+  if (openTiers.has(tierId)) {
+    openTiers.delete(tierId);
+  } else {
+    openTiers.add(tierId);
+  }
+  saveToStorage();
+  renderTable();
+}
+
+// ============================================================
+// SKILL REQUIREMENTS PARSING
+// ============================================================
+function parseSkillReqs(reqStr) {
+  if (!reqStr) return [];
+  const results = [];
+  const parts = reqStr.split(';').map(s => s.trim());
+  for (const part of parts) {
+    const m = part.match(/^(.+?)\s+(\d+)(\s*\(.*?\))?$/);
+    if (m) {
+      results.push({
+        skill: m[1].trim(),
+        level: parseInt(m[2]),
+        note: m[3] ? m[3].trim() : '',
+        boostable: part.toLowerCase().includes('boostable') && !part.toLowerCase().includes('unboostable'),
+        unboostable: part.toLowerCase().includes('unboostable'),
+        isQP: m[1].trim().toLowerCase().includes('quest point')
+      });
+    }
+  }
+  return results;
+}
+
+function getCombatLevel() {
+  const s = playerStats;
+  if (!s || Object.keys(s).length === 0) return 3;
+  const defence = s.defence || 1;
+  const hitpoints = s.hitpoints || 10;
+  const prayer = s.prayer || 1;
+  const attack = s.attack || 1;
+  const strength = s.strength || 1;
+  const ranged = s.ranged || 1;
+  const magic = s.magic || 1;
+  const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+  const melee = 0.325 * (attack + strength);
+  const rangedCalc = 0.325 * Math.floor(ranged * 1.5);
+  const magicCalc = 0.325 * Math.floor(magic * 1.5);
+  return Math.floor(base + Math.max(melee, rangedCalc, magicCalc));
+}
+
+function getTotalLevel() {
+  if (!playerStats || Object.keys(playerStats).length === 0) return 0;
+  return Object.values(playerStats).reduce((sum, v) => sum + (v || 1), 0);
+}
+
+function meetsReqs(item) {
+  const hasSkillStats = Object.keys(playerStats).length > 0;
+  const hasQP = playerQP > 0;
+  if (!hasSkillStats && !hasQP) return null;
+  const reqs = parseSkillReqs(item.skillReqs);
+  for (const req of reqs) {
+    if (req.isQP) {
+      if (!hasQP) continue;
+      if (playerQP < req.level) return false;
+    } else if (req.skill.toLowerCase() === 'combat') {
+      if (!hasSkillStats) continue;
+      if (getCombatLevel() < req.level) return false;
+    } else if (req.skill.toLowerCase() === 'total level' || req.skill.toLowerCase() === 'total') {
+      if (!hasSkillStats) continue;
+      if (getTotalLevel() < req.level) return false;
+    } else {
+      if (!hasSkillStats) continue;
+      const have = playerStats[req.skill.toLowerCase()] || 1;
+      if (have < req.level) return false;
+    }
+  }
+  if (item.questPrereqs) {
+    const prereqs = item.questPrereqs.split(';').map(s => s.trim()).filter(Boolean);
+    for (const prereq of prereqs) {
+      const found = SPINE_DATA.find(d => d.name.toLowerCase() === prereq.toLowerCase());
+      if (found && !completedSet.has(found.order)) return false;
+    }
+  }
+  return true;
+}
+
+function isAutoAchievable(item) {
+  if (!item.skillReqs || item.type !== 'Activity/Goal') return false;
+  const baseMatch = item.skillReqs.match(/All skills\s+(\d+)\+/i);
+  if (baseMatch) {
+    if (Object.keys(playerStats).length === 0) return false;
+    const needed = parseInt(baseMatch[1]);
+    const skillNames = ['attack','strength','defence','hitpoints','ranged','prayer','magic','cooking','woodcutting','fletching','fishing','firemaking','crafting','smithing','mining','herblore','agility','thieving','slayer','farming','runecraft','hunter','construction','sailing'];
+    return skillNames.every(sk => (playerStats[sk] || 1) >= needed);
+  }
+  return false;
+}
+
+// Check if item is within ±10 of player's skill levels (for Suggest Task)
+function isAchievableNear(item) {
+  const reqs = parseSkillReqs(item.skillReqs);
+  if (!reqs.length) return meetsReqs(item) !== false;
+  const hasStats = Object.keys(playerStats).length > 0;
+  if (!hasStats) return false;
+  let hasAnySkillReq = false;
+  for (const req of reqs) {
+    if (req.isQP || req.skill.toLowerCase() === 'combat' || req.skill.toLowerCase() === 'total') continue;
+    hasAnySkillReq = true;
+    const have = playerStats[req.skill.toLowerCase()] || 1;
+    if (have < req.level) {
+      if (req.level - have > 10) return false; // more than 10 levels away
+    }
+  }
+  // Also must not fail QP or quest prereqs
+  if (item.questPrereqs) {
+    const prereqs = item.questPrereqs.split(';').map(s=>s.trim()).filter(Boolean);
+    for (const prereq of prereqs) {
+      const found = SPINE_DATA.find(d => d.name.toLowerCase() === prereq.toLowerCase());
+      if (found && !completedSet.has(found.order)) return false;
+    }
+  }
+  return true;
+}
+
+// ============================================================
+// RSN LOOKUP
+// ============================================================
+async function lookupRSN() {
+  const rsn = document.getElementById('rsn-input').value.trim();
+  if (!rsn) return;
+  const statusDiv = document.getElementById('lookup-status');
+  const statusInner = document.getElementById('lookup-status-inner');
+  statusDiv.style.display = 'block';
+  statusInner.className = 'status-inner';
+  statusInner.textContent = '⏳ Looking up ' + rsn + '…';
+  try {
+    const proxy = 'https://corsproxy.io/?';
+    const url = proxy + `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('Player not found');
+    const data = await resp.json();
+    const skillMap = {
+      'Attack':'attack','Defence':'defence','Strength':'strength','Hitpoints':'hitpoints',
+      'Ranged':'ranged','Prayer':'prayer','Magic':'magic','Cooking':'cooking',
+      'Woodcutting':'woodcutting','Fletching':'fletching','Fishing':'fishing',
+      'Firemaking':'firemaking','Crafting':'crafting','Smithing':'smithing',
+      'Mining':'mining','Herblore':'herblore','Agility':'agility','Thieving':'thieving',
+      'Slayer':'slayer','Farming':'farming','Runecraft':'runecraft','Hunter':'hunter',
+      'Construction':'construction','Sailing':'sailing'
+    };
+    const newStats = {};
+    (data.skills || []).forEach(s => {
+      const key = skillMap[s.name];
+      if (key && s.level > 0) newStats[key] = Math.max(1, s.level);
+    });
+    playerStats = newStats;
+    const spineNameMap = {};
+    SPINE_DATA.forEach(item => {
+      if (item.entryType === 'boss' || item.type === 'Boss') {
+        const norm = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        spineNameMap[norm] = item.order;
+      }
+    });
+    let kcUpdated = 0;
+    (data.activities || []).forEach(activity => {
+      const kc = activity.score;
+      if (!kc || kc < 1) return;
+      const norm = activity.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (spineNameMap[norm] !== undefined) { bossKC[spineNameMap[norm]] = kc; kcUpdated++; return; }
+      for (const [spineName, order] of Object.entries(spineNameMap)) {
+        if (norm.includes(spineName) || spineName.includes(norm)) { bossKC[order] = kc; kcUpdated++; break; }
+      }
+    });
+    saveToStorage();
+    syncSkillsGridFromStats();
+    SPINE_DATA.forEach(item => {
+      if (isAutoAchievable(item) && !completedSet.has(item.order)) completedSet.add(item.order);
+    });
+    SPINE_DATA.forEach(item => {
+      if ((item.entryType === 'boss' || item.type === 'Boss') && bossKC[item.order] > 0) {
+        if (!item.notableDrops || item.notableDrops.length === 0) {
+          if (!completedSet.has(item.order)) completedSet.add(item.order);
+        }
+      }
+    });
+    autoDetectOpenTier();
+    renderTable();
+    updateProgress();
+    updateCombatDisplay();
+    statusInner.className = 'status-inner success';
+    statusInner.textContent = `✓ Loaded stats for ${rsn} — ${kcUpdated} boss KC synced`;
+  } catch (e) {
+    statusInner.className = 'status-inner error';
+    statusInner.textContent = '✗ Could not load stats. Player may not exist or Hiscores may be unavailable.';
+  }
+}
+
+// ============================================================
+// FILTERS & RENDERING
+// ============================================================
+function setFilter(f) {
+  if (f === 'all') {
+    activeFilters = new Set(['all']);
+  } else {
+    activeFilters.delete('all');
+    if (activeFilters.has(f)) {
+      activeFilters.delete(f);
+      if (activeFilters.size === 0) activeFilters.add('all');
+    } else {
+      activeFilters.add(f);
+    }
+  }
+  document.querySelectorAll('.chip[data-filter]').forEach(el => {
+    el.classList.toggle('active', activeFilters.has(el.dataset.filter));
+  });
+  renderTable();
+}
+
+function renderTable() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const tbody = document.getElementById('main-tbody');
+  const data = getActiveData();
+
+  const typeFilters = ['Quest','Boss','Activity/Goal','Unlock','Miniquest','Diary'].filter(t => activeFilters.has(t));
+  const hasLocked = activeFilters.has('locked');
+  const hasAvailable = activeFilters.has('available');
+  const isFiltered = !activeFilters.has('all') || search || !showCompleted;
+
+  let filteredData = data.filter(item => {
+    if (activeFilters.has('all')) return true;
+    let pass = false;
+    if (typeFilters.length > 0 && typeFilters.includes(item.type)) pass = true;
+    if (hasLocked || hasAvailable) {
+      const m = meetsReqs(item);
+      if (hasLocked && m === false) pass = true;
+      if (hasAvailable && (m === true || m === null)) pass = true;
+    }
+    return pass;
+  });
+
+  if (search) {
+    filteredData = filteredData.filter(item =>
+      item.name.toLowerCase().includes(search) ||
+      item.location.toLowerCase().includes(search) ||
+      item.type.toLowerCase().includes(search)
+    );
+  }
+
+  if (!showCompleted) {
+    filteredData = filteredData.filter(item => !completedSet.has(item.order));
+  }
+
+  document.getElementById('results-count').textContent = `${filteredData.length} items`;
+
+  // When filtering/searching, render flat (no accordions)
+  if (isFiltered && (search || !activeFilters.has('all') || !showCompleted)) {
+    const html = filteredData.map(item => buildRowHtml(item)).join('');
+    tbody.innerHTML = html || `<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:'IM Fell English',serif;font-style:italic">No items match the current filters.</td></tr>`;
+    return;
+  }
+
+  // Accordion rendering by tier
+  let html = '';
+  for (const tier of TIERS) {
+    const tierItems = filteredData.filter(item => {
+      const ord = ironmanMode ? (item.imOrder || item.order) : item.order;
+      return ord >= tier.minOrder && ord <= tier.maxOrder;
+    });
+    if (tierItems.length === 0) continue;
+
+    // Calculate tier completion
+    const tierDone = tierItems.filter(item => completedSet.has(item.order)).length;
+    const tierTotal = tierItems.length;
+    const tierPct = Math.round((tierDone / tierTotal) * 100);
+    const allComplete = tierDone === tierTotal;
+    const isOpen = openTiers.has(tier.id);
+
+    // Accordion header row
+    html += `<tr class="tier-header-row ${allComplete ? 'tier-complete' : ''}" onclick="toggleTier('${tier.id}')">
+      <td colspan="10">
+        <div class="tier-header-inner">
+          <div class="tier-header-left">
+            <span class="tier-chevron ${isOpen ? 'open' : ''}">${isOpen ? '▼' : '▶'}</span>
+            <span class="tier-label">${tier.label}</span>
+            ${allComplete ? '<span class="tier-done-badge">✓ Complete</span>' : ''}
+          </div>
+          <div class="tier-header-right">
+            <div class="tier-progress-wrap">
+              <div class="tier-progress-bar" style="width:${tierPct}%"></div>
+            </div>
+            <span class="tier-count">${tierDone}/${tierTotal}</span>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+
+    if (isOpen) {
+      html += tierItems.map(item => buildRowHtml(item)).join('');
+    }
+  }
+
+  tbody.innerHTML = html || `<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">No items found.</td></tr>`;
+}
+
+function buildRowHtml(item) {
+  const done = completedSet.has(item.order);
+  const met = meetsReqs(item);
+  const hasStats = Object.keys(playerStats).length > 0 || playerQP > 0;
+  const autoAchieve = hasStats && !done && isAutoAchievable(item) && met !== false;
+
+  let reqHtml = '';
+  if (item.skillReqs) {
+    const reqs = parseSkillReqs(item.skillReqs);
+    reqHtml = reqs.map(r => {
+      const have = r.isQP ? playerQP : r.skill.toLowerCase() === 'combat' ? getCombatLevel() : (playerStats[r.skill.toLowerCase()] || 1);
+      const fail = hasStats && have < r.level;
+      return `<span class="${fail ? 'req-unmet' : ''}">${r.isQP ? 'QP' : r.skill} ${r.level}${r.boostable ? ' (b)' : r.unboostable ? ' (u)' : ''}</span>`;
+    }).join('<br>');
+  }
+
+  const prereqHtml = item.questPrereqs
+    ? item.questPrereqs.split(';').map(p => p.trim()).filter(Boolean)
+        .map(p => {
+          const found = SPINE_DATA.find(d => d.name.toLowerCase() === p.toLowerCase());
+          const prereqDone = found && completedSet.has(found.order);
+          return `<span class="${found && !prereqDone ? 'req-unmet' : ''}" style="font-size:0.78rem">${p}</span>`;
+        }).join('<br>')
+    : '';
+
+  let tierHtml = '';
+  if (item.bossTier) {
+    const tierClass = item.bossTier.toLowerCase().replace(' tier','').trim();
+    tierHtml = `<span class="boss-tier tier-${tierClass}">${item.bossTier}</span>`;
+  }
+
+  // Ironman type badge
+  let imBadge = '';
+  if (ironmanMode && item.imType && item.imType !== 'direct') {
+    const imLabels = { partial: '⚡ Partial', unlock: '🔓 Unlock', unlock_teleport: '🔓 Teleport' };
+    imBadge = `<span class="im-badge">${imLabels[item.imType] || item.imType}</span>`;
+  }
+
+  const hasKC = bossKC[item.order] > 0;
+  let allDropsDone = false;
+  let hasDrops = item.notableDrops && item.notableDrops.length > 0;
+  if (hasKC && hasDrops) {
+    allDropsDone = item.notableDrops.every(([dropName]) => !!obtainedDrops[`${item.order}-${dropName}`]);
+  }
+  const rowClass = done ? 'completed'
+    : (hasKC && hasDrops && allDropsDone) ? 'row-kc-complete'
+    : (hasKC && hasDrops && !allDropsDone) ? 'row-kc-progress'
+    : (hasKC && !hasDrops) ? 'row-kc-complete'
+    : autoAchieve ? 'row-achievable'
+    : (met === false && hasStats ? 'row-locked' : '');
+
+  const mobileDetail = [];
+  if (item.skillReqs) mobileDetail.push(item.skillReqs.split(';').map(s=>s.trim()).join(' · '));
+  if (item.questPrereqs) mobileDetail.push('🔑 ' + item.questPrereqs.split(';').map(s=>s.trim()).join(', '));
+  if (item.location) mobileDetail.push('📍 ' + item.location);
+  const mobileDetailHtml = mobileDetail.length ? `<div class="card-detail">${mobileDetail.join(' &nbsp;|&nbsp; ')}</div>` : '';
+
+  const displayOrder = ironmanMode ? (item.imOrder || item.order) : item.order;
+
+  return `<tr class="${rowClass}" data-order="${item.order}" onclick="openDetail(${item.order})">
+    <td>
+      <div class="check-cell" onclick="event.stopPropagation(); toggleDone(${item.order})">
+        <div class="check-box ${done ? 'checked' : ''}"></div>
+      </div>
+    </td>
+    <td>${displayOrder}</td>
+    <td class="td-name">${item.source ? `<a href="${item.source}" target="_blank" onclick="event.stopPropagation()">${item.name}</a>` : item.name}${imBadge}${userNotes[item.order] ? '<span class="note-indicator" title="Has notes">📝</span>' : ''}${mobileDetailHtml}</td>
+    <td><span class="type-badge badge-${item.type.replace('/','\\/')}">${item.type}</span>${tierHtml}</td>
+    <td class="skill-req">${reqHtml}</td>
+    <td class="skill-req">${prereqHtml}</td>
+    <td class="qp-badge">${item.questPoints > 0 ? item.questPoints : ''}</td>
+    <td class="location-cell">${item.location}</td>
+    <td class="info-cell">${item.info.length > 100 ? item.info.substring(0,100)+'…' : item.info}</td>
+    <td class="drops-cell">${(item.notableDrops && item.notableDrops.length) ? item.notableDrops.slice(0,3).map(d => `<span style="font-size:0.75rem;color:var(--text-muted)">${d[0]}<span style="color:var(--stone-lighter)"> ${d[1]}</span></span>`).join('<br>') : ''}</td>
+  </tr>`;
+}
+
+function toggleDone(order) {
+  const item = SPINE_DATA.find(d => d.order === order);
+  if (completedSet.has(order)) {
+    completedSet.delete(order);
+    if (item && item.qp > 0) {
+      playerQP = Math.max(0, playerQP - item.qp);
+      const qpInput = document.getElementById('qp-input');
+      if (qpInput) qpInput.value = playerQP;
+    }
+  } else {
+    completedSet.add(order);
+    if (item && item.qp > 0) {
+      playerQP += item.qp;
+      const qpInput = document.getElementById('qp-input');
+      if (qpInput) qpInput.value = playerQP;
+    }
+  }
+  saveToStorage();
+  renderTable();
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = completedSet.size;
+  const total = SPINE_DATA.length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('prog-done').textContent = done;
+  document.getElementById('prog-total').textContent = total;
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+}
+
+function toggleShowCompleted() {
+  showCompleted = !showCompleted;
+  document.getElementById('toggle-completed-label').textContent = showCompleted ? 'Hide Completed' : 'Show Completed';
+  renderTable();
+}
+
+function clearProgress() {
+  if (!confirm('Clear all progress? This cannot be undone.')) return;
+  completedSet.clear();
+  playerQP = 0;
+  openTiers.clear();
+  autoDetectOpenTier();
+  saveToStorage();
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) qpInput.value = 0;
+  renderTable();
+  updateProgress();
+}
+
+// ============================================================
+// DETAIL MODAL
+// ============================================================
+function openDetail(order) {
+  const item = SPINE_DATA.find(d => d.order === order);
+  if (!item) return;
+  document.getElementById('detail-title').textContent = item.name;
+  const badgeHtml = `<span class="type-badge badge-${item.type}">${item.type}</span>`;
+  document.getElementById('detail-subtitle').innerHTML = badgeHtml +
+    (item.bossTier ? ` <span class="boss-tier tier-${item.bossTier.toLowerCase().replace(' tier','').trim()}" style="margin-left:0.5rem">${item.bossTier}</span>` : '');
+  const hasStats = Object.keys(playerStats).length > 0;
+  const rows = [];
+  rows.push(['Order', `#${item.order}`]);
+  if (item.location) rows.push(['Location', item.location]);
+  if (item.questPoints > 0) rows.push(['Quest Points', `<span class="qp-badge">${item.questPoints} QP</span>`]);
+  if (item.type === 'Boss') {
+    const currentKC = bossKC[item.order] || 0;
+    rows.push(['Kill Count', `<div style="display:flex;align-items:center;gap:0.75rem">
+      <input type="number" min="0" id="kc-input-${item.order}" value="${currentKC}"
+        style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:3px;color:var(--gold);font-family:'Cinzel',serif;font-size:1rem;font-weight:700;padding:0.3rem 0.6rem;width:90px;outline:none;text-align:center"
+        onchange="updateKC(${item.order}, this.value)" oninput="updateKC(${item.order}, this.value)">
+      <span style="font-size:0.8rem;color:var(--text-muted)">kills logged</span>
+    </div>`]);
+  }
+  if (item.skillReqs) {
+    const reqs = parseSkillReqs(item.skillReqs);
+    const html = reqs.map(r => {
+      const have = r.isQP ? playerQP : r.skill.toLowerCase() === 'combat' ? getCombatLevel() : r.skill.toLowerCase() === 'total level' ? getTotalLevel() : (playerStats[r.skill.toLowerCase()] || 1);
+      const fail = hasStats && have < r.level;
+      return `<div style="margin-bottom:0.2rem"><span class="${fail ? 'req-unmet' : ''}">
+        ${r.isQP ? 'Quest Points' : r.skill} ${r.level}${r.unboostable ? ' (unboostable)' : r.boostable ? ' (boostable)' : ''}
+        ${hasStats ? `<span style="color:var(--text-muted);font-size:0.78rem;margin-left:0.3rem">[you: ${have}]</span>` : ''}
+      </span></div>`;
+    }).join('');
+    rows.push(['Skill Reqs', html]);
+  }
+  if (item.questPrereqs) {
+    const prereqs = item.questPrereqs.split(';').map(s => s.trim()).filter(Boolean);
+    const html = prereqs.map(p => {
+      const found = SPINE_DATA.find(d => d.name.toLowerCase() === p.toLowerCase());
+      const done = found && completedSet.has(found.order);
+      return `<div style="margin-bottom:0.2rem">${done ? '<span style="color:var(--green-light)">✓</span>' : '<span style="color:var(--text-muted)">○</span>'} ${p}</div>`;
+    }).join('');
+    rows.push(['Quest Prereqs', html]);
+  }
+  if (item.info) rows.push(['Notes', `<span style="font-family:'IM Fell English',serif;font-style:italic">${item.info}</span>`]);
+  if (item.notableDrops && item.notableDrops.length > 0) {
+    const dropsHtml = item.notableDrops.map(([dropName, dropRate]) => {
+      const dropKey = `${item.order}-${dropName}`;
+      const mainEntry = SPINE_DATA.find(d => d.order !== item.order && d.name.toLowerCase() === dropName.toLowerCase());
+      const dropDone = !!obtainedDrops[dropKey];
+      return `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.35rem;padding:0.3rem 0.5rem;background:rgba(0,0,0,0.2);border-radius:3px">
+        <div class="check-box ${dropDone ? 'checked' : ''}" style="width:14px;height:14px;flex-shrink:0"
+          onclick="toggleDropDone('${dropKey}', ${item.order}, ${mainEntry ? mainEntry.order : 'null'})" title="Mark obtained"></div>
+        <span style="flex:1;font-size:0.83rem;color:${dropDone ? '#6fc96f' : 'var(--text-light)'}${mainEntry ? ';cursor:pointer' : ''}"
+          ${mainEntry ? `onclick="closeDetailBtn(); setTimeout(()=>openDetail(${mainEntry.order}),50)"` : ''}>
+          ${dropName}${mainEntry ? ' <span style="color:var(--gold-dark);font-size:0.7rem">→</span>' : ''}
+        </span>
+        <span style="font-size:0.73rem;color:var(--stone-lighter);white-space:nowrap">${dropRate}</span>
+      </div>`;
+    }).join('');
+    rows.push(['Notable Drops', dropsHtml]);
+  }
+  rows.push(['My Notes', `<textarea id="user-note-ta" class="user-note-ta" placeholder="Add your own notes…" onblur="saveNote(${item.order}, this.value)" onclick="event.stopPropagation()">${userNotes[item.order] || ''}</textarea>`]);
+  if (item.source) rows.push(['Guide', `<a href="${item.source}" target="_blank" style="color:var(--gold-light)">${item.source.replace(/https?:\/\//,'').substring(0,50)}…</a>`]);
+  document.getElementById('detail-body').innerHTML = rows.map(([l,v]) =>
+    `<div class="detail-row"><div class="detail-row-label">${l}</div><div class="detail-row-val">${v}</div></div>`
+  ).join('');
+  const done = completedSet.has(item.order);
+  document.getElementById('detail-actions').innerHTML = `
+    <button class="btn" onclick="toggleDone(${item.order}); closeDetailBtn()">${done ? '✗ Mark Incomplete' : '✓ Mark Complete'}</button>
+    ${item.source ? `<a href="${item.source}" target="_blank"><button class="btn btn-ghost">Open Guide ↗</button></a>` : ''}
+  `;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function updateKC(order, value) {
+  bossKC[order] = Math.max(0, parseInt(value) || 0);
+  saveToStorage();
+}
+
+function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
+  if (obtainedDrops[dropKey]) {
+    delete obtainedDrops[dropKey];
+  } else {
+    obtainedDrops[dropKey] = true;
+  }
+  const item = SPINE_DATA.find(d => d.order === sourceOrder);
+  if (item && item.notableDrops && item.notableDrops.length > 0) {
+    const allDone = item.notableDrops.every(([dropName]) => !!obtainedDrops[`${sourceOrder}-${dropName}`]);
+    if (allDone) completedSet.add(sourceOrder);
+    else completedSet.delete(sourceOrder);
+  }
+  saveToStorage();
+  renderTable();
+  updateProgress();
+  openDetail(sourceOrder);
+}
+
+function closeDetail(e) {
+  if (e.target === document.getElementById('detail-overlay')) closeDetailBtn();
+}
+
+function closeDetailBtn() {
+  document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ============================================================
+// FLOATING RANDOM TASK PANEL
+// ============================================================
+function toggleRandomPanel() {
+  const panel = document.getElementById('floating-rand-panel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) renderFloatingHistory();
+}
+
+function closeRandomPanel() {
+  document.getElementById('floating-rand-panel').classList.remove('open');
+}
+
+function getSpinPool(suggestionMode = false) {
+  return SPINE_DATA.filter(item => {
+    if (!randFilters.has(item.type) && !(item.type === 'Activity/Goal' && randFilters.has('Activity/Goal'))) return false;
+    if (randFilters.has('incomplete') && completedSet.has(item.order)) return false;
+    if (suggestionMode) {
+      if (completedSet.has(item.order)) return false;
+      return isAchievableNear(item);
+    }
+    if (randFilters.has('available')) {
+      const met = meetsReqs(item);
+      if (met === false) return false;
+    }
+    return true;
+  });
+}
+
+function floatSpin(suggestionMode = false) {
+  const pool = getSpinPool(suggestionMode);
+  const resultEl = document.getElementById('float-spin-result');
+  const idleEl = document.getElementById('float-spin-idle');
+
+  if (!pool.length) {
+    resultEl.style.display = 'none';
+    idleEl.style.display = 'block';
+    idleEl.textContent = suggestionMode
+      ? 'No tasks found within your skill range. Add stats on My Stats page!'
+      : 'No items match your filters!';
+    return;
+  }
+
+  // Shuffle animation
+  idleEl.style.display = 'none';
+  resultEl.style.display = 'block';
+  const nameEl = document.getElementById('float-spin-name');
+  nameEl.classList.add('spinning');
+
+  let ticks = 0;
+  const interval = setInterval(() => {
+    const rand = pool[Math.floor(Math.random() * pool.length)];
+    nameEl.textContent = rand.name;
+    ticks++;
+    if (ticks > 15) {
+      clearInterval(interval);
+      nameEl.classList.remove('spinning');
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+      currentSpinItem = chosen;
+      showFloatResult(chosen);
+      addToSpinHistory(chosen);
+    }
+  }, 55);
+}
+
+function showFloatResult(item) {
+  document.getElementById('float-spin-name').textContent = item.name;
+  document.getElementById('float-spin-order').textContent = `#${item.order}`;
+  document.getElementById('float-spin-type').innerHTML =
+    `<span class="type-badge badge-${item.type.replace('/','\\/')}">${item.type}</span>` +
+    (item.bossTier ? ` <span class="boss-tier tier-${item.bossTier.toLowerCase().replace(' tier','').trim()}">${item.bossTier}</span>` : '');
+
+  const metaEl = document.getElementById('float-spin-meta');
+  const parts = [];
+  if (item.location) parts.push(`📍 ${item.location}`);
+  if (item.skillReqs) parts.push(`⚔ ${item.skillReqs.split(';')[0].trim()}${item.skillReqs.includes(';') ? '…' : ''}`);
+  metaEl.textContent = parts.join('  ·  ');
+
+  document.getElementById('float-spin-result').style.display = 'block';
+  document.getElementById('float-spin-idle').style.display = 'none';
+}
+
+function floatMarkDone() {
+  if (currentSpinItem) {
+    completedSet.add(currentSpinItem.order);
+    saveToStorage();
+    updateProgress();
+    renderTable();
+  }
+  floatSpin(false);
+}
+
+function addToSpinHistory(item) {
+  spinHistory = spinHistory.filter(h => h.order !== item.order);
+  spinHistory.unshift({ order: item.order, name: item.name, type: item.type });
+  if (spinHistory.length > 10) spinHistory.pop();
+  saveToStorage();
+  renderFloatingHistory();
+}
+
+function renderFloatingHistory() {
+  const list = document.getElementById('float-history-list');
+  const wrap = document.getElementById('float-history-wrap');
+  if (!list) return;
+  if (!spinHistory.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = spinHistory.map((h, i) =>
+    `<div class="float-hist-item" onclick="openDetail(${h.order}); closeRandomPanel()">
+      <span class="float-hist-num">${i + 1}</span>
+      <span class="float-hist-name">${h.name}</span>
+      <span class="type-badge badge-${h.type.replace('/','\\/')}" style="font-size:0.65rem;padding:0.1rem 0.4rem">${h.type}</span>
+    </div>`
+  ).join('');
+}
+
+function clearSpinHistory() {
+  spinHistory = [];
+  currentSpinItem = null;
+  saveToStorage();
+  document.getElementById('float-spin-result').style.display = 'none';
+  document.getElementById('float-spin-idle').style.display = 'block';
+  document.getElementById('float-spin-idle').textContent = 'Press a button to receive your task…';
+  renderFloatingHistory();
+}
+
+function toggleRandFilter(f) {
+  if (randFilters.has(f)) {
+    randFilters.delete(f);
+  } else {
+    randFilters.add(f);
+  }
+  // Update chips inside floating panel
+  document.querySelectorAll(`[data-rfilter="${f}"]`).forEach(el => {
+    el.classList.toggle('active', randFilters.has(f));
+  });
+}
+
+// ============================================================
+// STATS PAGE
+// ============================================================
+function buildSkillsGrid() {
+  const grid = document.getElementById('skills-grid');
+  grid.innerHTML = SKILLS.map(s =>
+    `<div class="skill-input-row">
+      <span class="skill-name-lbl">${s.name}</span>
+      <input class="skill-level-input" type="number" min="1" max="99"
+        id="skill-${s.name.toLowerCase()}"
+        value="${playerStats[s.name.toLowerCase()] || ''}"
+        placeholder="1">
+    </div>`
+  ).join('');
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) qpInput.value = playerQP || '';
+}
+
+function syncSkillsGridFromStats() {
+  SKILLS.forEach(s => {
+    const el = document.getElementById(`skill-${s.name.toLowerCase()}`);
+    if (el) el.value = playerStats[s.name.toLowerCase()] || '';
+  });
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) qpInput.value = playerQP || '';
+}
+
+function saveStats() {
+  SKILLS.forEach(s => {
+    const el = document.getElementById(`skill-${s.name.toLowerCase()}`);
+    if (el && el.value) playerStats[s.name.toLowerCase()] = Math.min(99, Math.max(1, parseInt(el.value) || 1));
+  });
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) playerQP = parseInt(qpInput.value) || 0;
+  SPINE_DATA.forEach(item => {
+    if (isAutoAchievable(item) && !completedSet.has(item.order)) completedSet.add(item.order);
+  });
+  saveToStorage();
+  renderTable();
+  updateProgress();
+  updateCombatDisplay();
+  const msg = document.getElementById('stats-saved-msg');
+  msg.style.display = 'inline';
+  setTimeout(() => msg.style.display = 'none', 2000);
+}
+
+function updateCombatDisplay() {
+  const combatEl = document.getElementById('combat-level-display');
+  const totalEl = document.getElementById('total-level-display');
+  if (combatEl) combatEl.textContent = Object.keys(playerStats).length > 0 ? getCombatLevel() : '—';
+  if (totalEl) totalEl.textContent = Object.keys(playerStats).length > 0 ? getTotalLevel() : '—';
+}
+
+function clearStats() {
+  if (!confirm('Reset all stats?')) return;
+  playerStats = {};
+  playerQP = 0;
+  saveToStorage();
+  buildSkillsGrid();
+  renderTable();
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`page-${name}`).classList.add('active');
+  const btn = document.querySelector(`.nav-btn[onclick="showPage('${name}')"]`);
+  if (btn) btn.classList.add('active');
+  if (name === 'stats') { buildSkillsGrid(); updateCombatDisplay(); }
+}
+
+// ============================================================
+// SCROLL TO TOP
+// ============================================================
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('back-to-top');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+});
+
+// ============================================================
+// START
+// ============================================================
+function updateHeaderHeight() {
+  const h = document.querySelector('header');
+  if (h) document.documentElement.style.setProperty('--header-h', h.offsetHeight + 'px');
+}
+window.addEventListener('resize', updateHeaderHeight);
+updateHeaderHeight();
+init();
+
+</script>
+</body>
+</html>
