@@ -1441,6 +1441,20 @@
     background: linear-gradient(90deg, var(--green), var(--green-light));
   }
 
+  /* Floating overlay tier header — shown while scrolling through a section */
+  .tier-sticky-overlay {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 18;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.8);
+  }
+  .tier-sticky-overlay .tier-header-inner {
+    padding: 0.7rem 3rem;
+  }
+
   /* ===== BACK TO TOP ===== */
   .back-to-top {
     position: fixed;
@@ -1715,6 +1729,368 @@
   }
 
 
+  /* ===== CUSTOM PATH PLANNER ===== */
+  .planner-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 4rem;
+  }
+
+  .planner-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .planner-toolbar-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin-right: auto;
+  }
+
+  .planner-add-btn {
+    background: linear-gradient(135deg, rgba(200,168,75,0.15), rgba(200,168,75,0.05));
+    border: 1px solid var(--gold-dark);
+    border-radius: 5px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .planner-add-btn:hover {
+    background: rgba(200,168,75,0.2);
+    border-color: var(--gold);
+  }
+  .planner-add-btn.add-existing { border-color: #4a9e4a; color: #7dd87d; background: rgba(74,158,74,0.1); }
+  .planner-add-btn.add-existing:hover { background: rgba(74,158,74,0.2); }
+  .planner-add-btn.add-custom { border-color: #4a7fc8; color: #8abcf8; background: rgba(74,127,200,0.1); }
+  .planner-add-btn.add-custom:hover { background: rgba(74,127,200,0.2); }
+  .planner-add-btn.add-note { border-color: #c8a030; color: #f0c858; background: rgba(200,160,48,0.1); }
+  .planner-add-btn.add-note:hover { background: rgba(200,160,48,0.2); }
+
+  .planner-io-btns {
+    display: flex;
+    gap: 0.4rem;
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 1px solid var(--stone-lighter);
+  }
+
+  .planner-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1rem;
+    border: 1px dashed var(--stone-lighter);
+    border-radius: 6px;
+  }
+  .planner-empty span {
+    display: block;
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.4;
+  }
+
+  /* Planner list */
+  .planner-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .planner-item {
+    display: grid;
+    grid-template-columns: 32px 32px 1fr auto auto;
+    align-items: center;
+    gap: 0;
+    background: var(--stone-mid);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 5px;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .planner-item:hover { border-color: rgba(200,168,75,0.2); }
+  .planner-item.done { background: rgba(42,107,42,0.15); border-color: rgba(42,107,42,0.25); }
+  .planner-item.item-note {
+    background: rgba(200,160,48,0.06);
+    border-color: rgba(200,160,48,0.2);
+    border-left: 3px solid #c8a030;
+  }
+  .planner-item.item-custom { border-left: 3px solid #4a7fc8; }
+  .planner-item.item-existing { border-left: 3px solid #4a9e4a; }
+
+  .planner-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 48px;
+    color: var(--stone-lighter);
+    font-size: 0.9rem;
+    cursor: grab;
+    user-select: none;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+  }
+  .planner-drag-handle:hover { opacity: 1; }
+  .planner-drag-handle:active { cursor: grabbing; }
+
+  .planner-check-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 48px;
+    cursor: pointer;
+  }
+
+  .planner-item-body {
+    padding: 0.6rem 0.75rem 0.6rem 0.25rem;
+    min-width: 0;
+  }
+
+  .planner-item-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .planner-item.done .planner-item-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .planner-item-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .planner-item-note-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    color: #d4b84a;
+    padding: 0.5rem 0.75rem 0.5rem 0.25rem;
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .planner-item-type {
+    padding: 0 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .planner-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0 0.4rem;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .planner-item:hover .planner-item-actions { opacity: 1; }
+
+  .planner-action-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.25rem 0.35rem;
+    border-radius: 3px;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .planner-action-btn:hover { color: var(--text-light); background: rgba(255,255,255,0.07); }
+  .planner-action-btn.del:hover { color: #e06060; }
+
+  /* Planner progress bar */
+  .planner-progress-wrap {
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .planner-progress-track {
+    flex: 1;
+    height: 5px;
+    background: var(--stone-mid);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--stone-lighter);
+  }
+  .planner-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .planner-progress-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .planner-progress-label strong { color: var(--gold); }
+
+  /* === ADD MODAL === */
+  .planner-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 250;
+    backdrop-filter: blur(3px);
+    align-items: center;
+    justify-content: center;
+  }
+  .planner-modal-overlay.open { display: flex; }
+
+  .planner-modal {
+    background: var(--stone-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    width: 480px;
+    max-width: 94vw;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .planner-modal-header {
+    background: linear-gradient(180deg, var(--stone-light) 0%, var(--stone-mid) 100%);
+    border-bottom: 1px solid var(--gold-dark);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .planner-modal-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .planner-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+  }
+  .planner-modal-close:hover { color: var(--text-light); }
+
+  .planner-modal-body { padding: 1.25rem; }
+
+  .planner-field {
+    margin-bottom: 1rem;
+  }
+  .planner-field label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .planner-field input,
+  .planner-field textarea,
+  .planner-field select {
+    width: 100%;
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    padding: 0.5rem 0.7rem;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+  }
+  .planner-field input:focus,
+  .planner-field textarea:focus,
+  .planner-field select:focus { border-color: var(--gold-dark); }
+  .planner-field textarea { min-height: 70px; resize: vertical; }
+  .planner-field select option { background: var(--stone-mid); }
+
+  .planner-search-results {
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    margin-top: 0.4rem;
+    background: var(--stone);
+  }
+  .planner-search-result {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.1s;
+  }
+  .planner-search-result:last-child { border-bottom: none; }
+  .planner-search-result:hover { background: rgba(200,168,75,0.08); }
+  .planner-search-result-name {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    flex: 1;
+  }
+  .planner-search-result-order {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--stone-lighter);
+  }
+
+  .planner-modal-footer {
+    padding: 0.75rem 1.25rem 1.25rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  /* Drag-over highlight */
+  .planner-item.drag-over {
+    border-color: var(--gold);
+    background: rgba(200,168,75,0.08);
+  }
+  .planner-item.dragging {
+    opacity: 0.4;
+  }
+
+
 </style>
 </head>
 <body>
@@ -1725,6 +2101,7 @@
     <nav>
       <button class="nav-btn active" onclick="showPage('progression')">Progression</button>
       <button class="nav-btn" onclick="showPage('stats')">My Stats</button>
+      <button class="nav-btn" onclick="showPage('planner')">Custom Path</button>
     </nav>
     <div class="header-right">
       <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
@@ -1901,6 +2278,47 @@
   </div>
 </div>
 
+
+<!-- ===== CUSTOM PATH PLANNER PAGE ===== -->
+<div id="page-planner" class="page">
+  <div class="planner-page">
+    <div class="planner-toolbar">
+      <span class="planner-toolbar-title">⚔ Custom Path Planner</span>
+      <button class="planner-add-btn add-existing" onclick="openPlannerModal('existing')">＋ Add Existing Task</button>
+      <button class="planner-add-btn add-custom" onclick="openPlannerModal('custom')">＋ Add Custom Task</button>
+      <button class="planner-add-btn add-note" onclick="openPlannerModal('note')">＋ Add Note</button>
+      <div class="planner-io-btns">
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="exportPlan()">⬇ Export</button>
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="importPlanClick()">⬆ Import</button>
+        <input type="file" id="plan-import-input" accept=".json" style="display:none" onchange="importPlan(event)">
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem;color:#e06060" onclick="clearPlan()">🗑 Clear</button>
+      </div>
+    </div>
+    <div id="planner-progress-wrap" class="planner-progress-wrap" style="display:none">
+      <span class="planner-progress-label"><strong id="planner-done-count">0</strong> / <span id="planner-total-count">0</span></span>
+      <div class="planner-progress-track"><div class="planner-progress-fill" id="planner-prog-fill" style="width:0%"></div></div>
+      <span class="planner-progress-label"><strong id="planner-prog-pct">0%</strong></span>
+    </div>
+    <div id="planner-list" class="planner-list"></div>
+    <div id="planner-empty" class="planner-empty">
+      <span>📜</span>
+      Your custom path is empty.<br>Add tasks from the main list, create your own, or drop in notes to track your goals.
+    </div>
+  </div>
+</div>
+
+<!-- ===== PLANNER MODAL ===== -->
+<div class="planner-modal-overlay" id="planner-modal-overlay" onclick="closePlannerModal(event)">
+  <div class="planner-modal" id="planner-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="planner-modal-title">Add Task</span>
+      <button class="planner-modal-close" onclick="closePlannerModalBtn()">✕</button>
+    </div>
+    <div class="planner-modal-body" id="planner-modal-body"></div>
+    <div class="planner-modal-footer" id="planner-modal-footer"></div>
+  </div>
+</div>
+
 <!-- ===== BACK TO TOP ===== -->
 <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">▲</button>
 
@@ -1954,12 +2372,14 @@ const SKILLS = [
 // ============================================================
 function init() {
   loadFromStorage();
+  loadPlan();
   buildSkillsGrid();
   autoDetectOpenTier();
   renderTable();
   updateProgress();
   updateCombatDisplay();
   renderFloatingHistory();
+  renderPlanner();
   setTimeout(updateHeaderHeight, 50); // re-measure after fonts load
 }
 
@@ -2825,6 +3245,11 @@ function showPage(name) {
   const btn = document.querySelector(`.nav-btn[onclick="showPage('${name}')"]`);
   if (btn) btn.classList.add('active');
   if (name === 'stats') { buildSkillsGrid(); updateCombatDisplay(); }
+  if (name === 'planner') renderPlanner();
+  // Hide sticky tier overlay when leaving progression page
+  const overlay = document.getElementById('tier-sticky-overlay');
+  if (overlay) overlay.style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 // ============================================================
@@ -2837,7 +3262,53 @@ function scrollToTop() {
 window.addEventListener('scroll', () => {
   const btn = document.getElementById('back-to-top');
   if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+  updateStickyTierHeader();
 });
+
+function updateStickyTierHeader() {
+  const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 64;
+  const theadH  = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--thead-h')) || 37;
+  const stickyTop = headerH + theadH;
+
+  // Get or create the floating overlay
+  let overlay = document.getElementById('tier-sticky-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'tier-sticky-overlay';
+    overlay.className = 'tier-sticky-overlay';
+    overlay.onclick = () => {
+      const tierId = overlay.dataset.tier;
+      if (tierId) toggleTier(tierId);
+    };
+    document.body.appendChild(overlay);
+  }
+
+  const rows = document.querySelectorAll('.tier-header-row');
+  let activeRow = null;
+
+  rows.forEach(row => {
+    const rect = row.getBoundingClientRect();
+    if (rect.top <= stickyTop) activeRow = row;
+  });
+
+  if (activeRow) {
+    const next = activeRow.nextElementSibling;
+    // Only show if section is open and there's content below still in view
+    if (next && !next.classList.contains('tier-header-row')) {
+      const inner = activeRow.querySelector('.tier-header-inner');
+      if (inner) {
+        overlay.innerHTML = inner.outerHTML;
+        overlay.dataset.tier = activeRow.dataset.tier;
+        overlay.className = 'tier-sticky-overlay tier-header-row';
+        overlay.setAttribute('data-tier', activeRow.dataset.tier);
+        overlay.style.top = stickyTop + 'px';
+        overlay.style.display = 'block';
+        return;
+      }
+    }
+  }
+  overlay.style.display = 'none';
+}
 
 // ============================================================
 // START
@@ -2853,6 +3324,363 @@ window.addEventListener('resize', updateHeaderHeight);
 window.addEventListener('load', updateHeaderHeight);
 updateHeaderHeight();
 init();
+
+// ============================================================
+// CUSTOM PATH PLANNER
+// ============================================================
+let planItems = [];       // { id, itemType:'existing'|'custom'|'note', done, ...fields }
+let planDragSrc = null;
+let planEditId = null;
+let planModalMode = null;
+
+function loadPlan() {
+  try {
+    const p = localStorage.getItem('osrs_custom_plan');
+    if (p) planItems = JSON.parse(p);
+  } catch(e) { planItems = []; }
+}
+
+function savePlan() {
+  localStorage.setItem('osrs_custom_plan', JSON.stringify(planItems));
+}
+
+function planId() {
+  return 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+}
+
+// ---- RENDER ----
+function renderPlanner() {
+  const list = document.getElementById('planner-list');
+  const empty = document.getElementById('planner-empty');
+  const progWrap = document.getElementById('planner-progress-wrap');
+  if (!list) return;
+
+  if (!planItems.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    progWrap.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  progWrap.style.display = 'flex';
+
+  const nonNote = planItems.filter(i => i.itemType !== 'note');
+  const done = nonNote.filter(i => i.done).length;
+  const total = nonNote.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('planner-done-count').textContent = done;
+  document.getElementById('planner-total-count').textContent = total;
+  document.getElementById('planner-prog-fill').style.width = pct + '%';
+  document.getElementById('planner-prog-pct').textContent = pct + '%';
+
+  list.innerHTML = planItems.map((item, idx) => buildPlanItemHtml(item, idx)).join('');
+  initDragDrop();
+}
+
+function buildPlanItemHtml(item, idx) {
+  if (item.itemType === 'note') {
+    return `<div class="planner-item item-note ${item.done ? 'done' : ''}" data-id="${item.id}" draggable="true">
+      <div class="planner-drag-handle">⠿</div>
+      <div class="planner-check-cell" onclick="togglePlanDone('${item.id}')">
+        <div class="check-box ${item.done ? 'checked' : ''}"></div>
+      </div>
+      <div class="planner-item-note-text" onclick="openPlannerModal('note','${item.id}')">
+        📝 ${item.text || '<em style="opacity:0.5">Empty note — click to edit</em>'}
+      </div>
+      <div class="planner-item-actions">
+        <button class="planner-action-btn del" onclick="deletePlanItem('${item.id}')" title="Delete">✕</button>
+      </div>
+    </div>`;
+  }
+
+  const typeCls = item.type ? `badge-${item.type.replace('/','\\/')}` : '';
+  const meta = [];
+  if (item.skillReqs) meta.push('⚔ ' + item.skillReqs.split(';')[0].trim());
+  if (item.location) meta.push('📍 ' + item.location);
+
+  return `<div class="planner-item item-${item.itemType} ${item.done ? 'done' : ''}" data-id="${item.id}" draggable="true">
+    <div class="planner-drag-handle">⠿</div>
+    <div class="planner-check-cell" onclick="togglePlanDone('${item.id}')">
+      <div class="check-box ${item.done ? 'checked' : ''}"></div>
+    </div>
+    <div class="planner-item-body">
+      <div class="planner-item-name">${item.name || 'Unnamed Task'}</div>
+      ${meta.length ? `<div class="planner-item-meta">${meta.join('  ·  ')}</div>` : ''}
+    </div>
+    <div class="planner-item-type">
+      ${item.type ? `<span class="type-badge ${typeCls}">${item.type}</span>` : ''}
+      ${item.itemType === 'custom' ? '<span class="im-badge" style="border-color:#4a7fc8;color:#8abcf8">Custom</span>' : ''}
+    </div>
+    <div class="planner-item-actions">
+      <button class="planner-action-btn" onclick="openPlannerModal('${item.itemType}','${item.id}')" title="Edit">✎</button>
+      <button class="planner-action-btn del" onclick="deletePlanItem('${item.id}')" title="Delete">✕</button>
+    </div>
+  </div>`;
+}
+
+function togglePlanDone(id) {
+  const item = planItems.find(i => i.id === id);
+  if (item) { item.done = !item.done; savePlan(); renderPlanner(); }
+}
+
+function deletePlanItem(id) {
+  planItems = planItems.filter(i => i.id !== id);
+  savePlan();
+  renderPlanner();
+}
+
+function clearPlan() {
+  if (!planItems.length) return;
+  if (!confirm('Clear your entire custom plan? This cannot be undone.')) return;
+  planItems = [];
+  savePlan();
+  renderPlanner();
+}
+
+// ---- DRAG AND DROP ----
+function initDragDrop() {
+  const items = document.querySelectorAll('.planner-item[draggable="true"]');
+  items.forEach(el => {
+    el.addEventListener('dragstart', e => {
+      planDragSrc = el;
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('dragend', () => {
+      el.classList.remove('dragging');
+      document.querySelectorAll('.planner-item').forEach(i => i.classList.remove('drag-over'));
+    });
+    el.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (el !== planDragSrc) {
+        document.querySelectorAll('.planner-item').forEach(i => i.classList.remove('drag-over'));
+        el.classList.add('drag-over');
+      }
+    });
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      if (planDragSrc && planDragSrc !== el) {
+        const srcId = planDragSrc.dataset.id;
+        const dstId = el.dataset.id;
+        const srcIdx = planItems.findIndex(i => i.id === srcId);
+        const dstIdx = planItems.findIndex(i => i.id === dstId);
+        if (srcIdx !== -1 && dstIdx !== -1) {
+          const [item] = planItems.splice(srcIdx, 1);
+          planItems.splice(dstIdx, 0, item);
+          savePlan();
+          renderPlanner();
+        }
+      }
+    });
+  });
+}
+
+// ---- MODAL ----
+function openPlannerModal(mode, editId) {
+  planModalMode = mode;
+  planEditId = editId || null;
+  const overlay = document.getElementById('planner-modal-overlay');
+  const title = document.getElementById('planner-modal-title');
+  const body = document.getElementById('planner-modal-body');
+  const footer = document.getElementById('planner-modal-footer');
+
+  const editing = editId ? planItems.find(i => i.id === editId) : null;
+
+  if (mode === 'existing') {
+    title.textContent = '＋ Add Existing Task';
+    body.innerHTML = `
+      <div class="planner-field">
+        <label>Search Tasks</label>
+        <input type="text" id="plan-search-input" placeholder="Type task name…" oninput="planSearchResults(this.value)" autofocus>
+        <div class="planner-search-results" id="plan-search-results">
+          <div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.82rem;font-style:italic">Start typing to search…</div>
+        </div>
+      </div>`;
+    footer.innerHTML = `<button class="btn btn-ghost" onclick="closePlannerModalBtn()">Cancel</button>`;
+  }
+  else if (mode === 'custom') {
+    title.textContent = editing ? '✎ Edit Custom Task' : '＋ Add Custom Task';
+    body.innerHTML = `
+      <div class="planner-field">
+        <label>Task Name *</label>
+        <input type="text" id="pf-name" placeholder="e.g. Get 70 Attack" value="${editing?.name || ''}">
+      </div>
+      <div class="planner-field">
+        <label>Type</label>
+        <select id="pf-type">
+          ${['','Quest','Boss','Activity/Goal','Unlock','Miniquest','Diary'].map(t =>
+            `<option value="${t}" ${editing?.type===t?'selected':''}>${t || '— None —'}</option>`
+          ).join('')}
+        </select>
+      </div>
+      <div class="planner-field">
+        <label>Skill Requirements</label>
+        <input type="text" id="pf-reqs" placeholder="e.g. Attack 70; Defence 60" value="${editing?.skillReqs || ''}">
+      </div>
+      <div class="planner-field">
+        <label>Location</label>
+        <input type="text" id="pf-loc" placeholder="e.g. Lumbridge" value="${editing?.location || ''}">
+      </div>
+      <div class="planner-field">
+        <label>Notes</label>
+        <textarea id="pf-notes" placeholder="Any notes about this task…">${editing?.notes || ''}</textarea>
+      </div>`;
+    footer.innerHTML = `
+      <button class="btn btn-ghost" onclick="closePlannerModalBtn()">Cancel</button>
+      <button class="btn" onclick="savePlanCustom()">Save Task</button>`;
+  }
+  else if (mode === 'note') {
+    title.textContent = editing ? '✎ Edit Note' : '＋ Add Note';
+    body.innerHTML = `
+      <div class="planner-field">
+        <label>Note Text</label>
+        <textarea id="pf-note-text" placeholder="Write your progress note here…" style="min-height:100px">${editing?.text || ''}</textarea>
+      </div>`;
+    footer.innerHTML = `
+      <button class="btn btn-ghost" onclick="closePlannerModalBtn()">Cancel</button>
+      <button class="btn" onclick="savePlanNote()">Save Note</button>`;
+  }
+
+  overlay.classList.add('open');
+  const firstInput = body.querySelector('input, textarea');
+  if (firstInput) setTimeout(() => firstInput.focus(), 50);
+}
+
+function planSearchResults(query) {
+  const container = document.getElementById('plan-search-results');
+  if (!query.trim()) {
+    container.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.82rem;font-style:italic">Start typing to search…</div>';
+    return;
+  }
+  const q = query.toLowerCase();
+  const results = SPINE_DATA.filter(item =>
+    item.name.toLowerCase().includes(q) ||
+    item.type.toLowerCase().includes(q)
+  ).slice(0, 30);
+
+  if (!results.length) {
+    container.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.82rem">No matches found.</div>';
+    return;
+  }
+
+  container.innerHTML = results.map(item => `
+    <div class="planner-search-result" onclick="addExistingToPlan(${item.order})">
+      <span class="planner-search-result-name">${item.name}</span>
+      <span class="type-badge badge-${item.type.replace('/','\\/')}" style="font-size:0.65rem;padding:0.1rem 0.4rem">${item.type}</span>
+      <span class="planner-search-result-order">#${item.order}</span>
+    </div>`
+  ).join('');
+}
+
+function addExistingToPlan(order) {
+  const spine = SPINE_DATA.find(d => d.order === order);
+  if (!spine) return;
+  planItems.push({
+    id: planId(),
+    itemType: 'existing',
+    spineOrder: order,
+    name: spine.name,
+    type: spine.type,
+    skillReqs: spine.skillReqs,
+    location: spine.location,
+    notes: spine.info,
+    done: false,
+  });
+  savePlan();
+  renderPlanner();
+  // Keep modal open for adding more — just clear search
+  const inp = document.getElementById('plan-search-input');
+  if (inp) { inp.value = ''; planSearchResults(''); inp.focus(); }
+}
+
+function savePlanCustom() {
+  const name = document.getElementById('pf-name').value.trim();
+  if (!name) { document.getElementById('pf-name').focus(); return; }
+  const item = {
+    id: planEditId || planId(),
+    itemType: 'custom',
+    name,
+    type: document.getElementById('pf-type').value,
+    skillReqs: document.getElementById('pf-reqs').value.trim(),
+    location: document.getElementById('pf-loc').value.trim(),
+    notes: document.getElementById('pf-notes').value.trim(),
+    done: planEditId ? (planItems.find(i => i.id === planEditId)?.done || false) : false,
+  };
+  if (planEditId) {
+    const idx = planItems.findIndex(i => i.id === planEditId);
+    if (idx !== -1) planItems[idx] = item;
+  } else {
+    planItems.push(item);
+  }
+  savePlan();
+  renderPlanner();
+  closePlannerModalBtn();
+}
+
+function savePlanNote() {
+  const text = document.getElementById('pf-note-text').value.trim();
+  const item = {
+    id: planEditId || planId(),
+    itemType: 'note',
+    text,
+    done: planEditId ? (planItems.find(i => i.id === planEditId)?.done || false) : false,
+  };
+  if (planEditId) {
+    const idx = planItems.findIndex(i => i.id === planEditId);
+    if (idx !== -1) planItems[idx] = item;
+  } else {
+    planItems.push(item);
+  }
+  savePlan();
+  renderPlanner();
+  closePlannerModalBtn();
+}
+
+function closePlannerModal(e) {
+  if (e.target === document.getElementById('planner-modal-overlay')) closePlannerModalBtn();
+}
+function closePlannerModalBtn() {
+  document.getElementById('planner-modal-overlay').classList.remove('open');
+  planEditId = null;
+}
+
+// ---- EXPORT / IMPORT ----
+function exportPlan() {
+  if (!planItems.length) { alert('Your plan is empty — nothing to export.'); return; }
+  const blob = new Blob([JSON.stringify(planItems, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'progressscape-plan.json';
+  a.click();
+}
+
+function importPlanClick() {
+  document.getElementById('plan-import-input').click();
+}
+
+function importPlan(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error('Invalid format');
+      if (planItems.length && !confirm(`Replace your current plan (${planItems.length} items) with the imported plan (${imported.length} items)?`)) return;
+      planItems = imported;
+      savePlan();
+      renderPlanner();
+    } catch(err) {
+      alert('Could not import — invalid JSON file.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// Load plan on init (called from init())
 
 </script>
 </body>
