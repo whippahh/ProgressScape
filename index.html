@@ -1295,10 +1295,12 @@
   }
 
   .ironman-toggle-btn.active {
-    background: rgba(200,168,75,0.12);
+    background: linear-gradient(135deg, rgba(200,168,75,0.3), rgba(160,120,30,0.2));
     border-color: var(--gold);
+    border-width: 2px;
     color: var(--gold);
-    box-shadow: 0 0 8px rgba(200,168,75,0.2);
+    box-shadow: 0 0 14px rgba(200,168,75,0.45), inset 0 0 8px rgba(200,168,75,0.1);
+    text-shadow: 0 0 8px rgba(200,168,75,0.6);
   }
 
   .im-badge {
@@ -1450,9 +1452,12 @@
     z-index: 18;
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(0,0,0,0.8);
+    background: linear-gradient(90deg, #0e0b04 0%, #1a1408 40%, #1f1a0c 100%);
+    border-top: 2px solid var(--tier-color, var(--gold-dark));
+    border-bottom: 1px solid rgba(255,255,255,0.08);
   }
   .tier-sticky-overlay .tier-header-inner {
-    padding: 0.7rem 3rem;
+    padding: 0.6rem 3rem;
   }
 
   /* ===== BACK TO TOP ===== */
@@ -2283,15 +2288,15 @@
 <div id="page-planner" class="page">
   <div class="planner-page">
     <div class="planner-toolbar">
-      <span class="planner-toolbar-title">⚔ Custom Path Planner</span>
-      <button class="planner-add-btn add-existing" onclick="openPlannerModal('existing')">＋ Add Existing Task</button>
-      <button class="planner-add-btn add-custom" onclick="openPlannerModal('custom')">＋ Add Custom Task</button>
-      <button class="planner-add-btn add-note" onclick="openPlannerModal('note')">＋ Add Note</button>
+      <span class="planner-toolbar-title">&#9876; Custom Path Planner</span>
+      <button class="planner-add-btn add-existing" onclick="openPlannerModal('existing')">+ Add Existing Task</button>
+      <button class="planner-add-btn add-custom" onclick="openPlannerModal('custom')">+ Add Custom Task</button>
+      <button class="planner-add-btn add-note" onclick="openPlannerModal('note')">+ Add Note</button>
       <div class="planner-io-btns">
-        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="exportPlan()">⬇ Export</button>
-        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="importPlanClick()">⬆ Import</button>
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="exportPlan()">Export</button>
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="importPlanClick()">Import</button>
         <input type="file" id="plan-import-input" accept=".json" style="display:none" onchange="importPlan(event)">
-        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem;color:#e06060" onclick="clearPlan()">🗑 Clear</button>
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem;color:#e06060" onclick="clearPlan()">Clear</button>
       </div>
     </div>
     <div id="planner-progress-wrap" class="planner-progress-wrap" style="display:none">
@@ -2301,7 +2306,7 @@
     </div>
     <div id="planner-list" class="planner-list"></div>
     <div id="planner-empty" class="planner-empty">
-      <span>📜</span>
+      <span>&#128220;</span>
       Your custom path is empty.<br>Add tasks from the main list, create your own, or drop in notes to track your goals.
     </div>
   </div>
@@ -2312,7 +2317,7 @@
   <div class="planner-modal" id="planner-modal">
     <div class="planner-modal-header">
       <span class="planner-modal-title" id="planner-modal-title">Add Task</span>
-      <button class="planner-modal-close" onclick="closePlannerModalBtn()">✕</button>
+      <button class="planner-modal-close" onclick="closePlannerModalBtn()">X</button>
     </div>
     <div class="planner-modal-body" id="planner-modal-body"></div>
     <div class="planner-modal-footer" id="planner-modal-footer"></div>
@@ -3262,7 +3267,8 @@ function scrollToTop() {
 window.addEventListener('scroll', () => {
   const btn = document.getElementById('back-to-top');
   if (btn) btn.classList.toggle('visible', window.scrollY > 400);
-  updateStickyTierHeader();
+  const progPage = document.getElementById('page-progression');
+  if (progPage && progPage.classList.contains('active')) updateStickyTierHeader();
 });
 
 function updateStickyTierHeader() {
@@ -3302,6 +3308,10 @@ function updateStickyTierHeader() {
         overlay.className = 'tier-sticky-overlay tier-header-row';
         overlay.setAttribute('data-tier', activeRow.dataset.tier);
         overlay.style.top = stickyTop + 'px';
+        // Copy tier color so border matches
+        const tierColor = getComputedStyle(activeRow).getPropertyValue('--tier-color').trim()
+                       || getComputedStyle(activeRow.querySelector('td') || activeRow).borderTopColor;
+        overlay.style.setProperty('--tier-color', tierColor || '');
         overlay.style.display = 'block';
         return;
       }
