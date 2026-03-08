@@ -1809,7 +1809,7 @@
 
   /* ===== PLANNER TABLE ===== */
   .planner-table-wrap {
-    overflow-x: auto;
+    overflow-x: visible;
     border-radius: 4px;
   }
 
@@ -2111,6 +2111,81 @@
 
 
 
+  /* ===== PATH PREVIEW MODAL ===== */
+  #path-preview-overlay { z-index: 260; }
+
+  .path-preview-modal {
+    width: 580px;
+    max-width: 96vw;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .path-preview-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 1.25rem 0.75rem;
+  }
+
+  .path-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.84rem;
+  }
+  .path-preview-item:last-child { border-bottom: none; }
+  .path-preview-item.is-skill-task { color: #8abcf8; }
+  .path-preview-item.is-goal { background: rgba(200,168,75,0.08); border-radius: 3px; }
+
+  .path-preview-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--stone-lighter);
+    width: 22px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .path-preview-name {
+    flex: 1;
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .path-preview-item.is-skill-task .path-preview-name { color: #8abcf8; }
+  .path-preview-item.is-goal .path-preview-name { color: var(--gold-light); font-weight: 600; }
+
+  .path-preview-summary {
+    padding: 0.6rem 1.25rem 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--stone-lighter);
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .path-preview-summary strong { color: var(--gold); }
+
+  .path-preview-footer {
+    padding: 0.85rem 1.25rem 1.1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    border-top: 1px solid var(--stone-lighter);
+    flex-wrap: wrap;
+  }
+
+  .btn-replace { border-color: var(--red-light); color: #e08080; background: rgba(139,32,32,0.1); }
+  .btn-replace:hover { background: rgba(139,32,32,0.2); box-shadow: none; transform: none; }
+  .btn-append  { border-color: #4a9e4a; color: #7dd87d; background: rgba(74,158,74,0.1); }
+  .btn-append:hover  { background: rgba(74,158,74,0.2); box-shadow: none; transform: none; }
+
+
 </style>
 </head>
 <body>
@@ -2346,6 +2421,20 @@
       Add tasks from the main list, create your own, or drop in notes to track your goals.
     </div>
 
+  </div>
+</div>
+
+
+<!-- ===== PATH PREVIEW MODAL ===== -->
+<div id="path-preview-overlay" class="planner-modal-overlay" onclick="pathPreviewOverlayClick(event)">
+  <div class="planner-modal path-preview-modal" id="path-preview-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="path-preview-title">Path to Goal</span>
+      <button class="planner-modal-close" onclick="closePathPreview()">&#x2715;</button>
+    </div>
+    <div class="path-preview-summary" id="path-preview-summary"></div>
+    <div class="path-preview-list" id="path-preview-list"></div>
+    <div class="path-preview-footer" id="path-preview-footer"></div>
   </div>
 </div>
 
@@ -3087,46 +3176,31 @@ function buildPathTo(goalOrder) {
   const goalItem = SPINE_DATA.find(d => d.order === goalOrder);
   if (!goalItem) return;
 
-  // Recursively collect all incomplete prerequisites (depth-first, deduped)
+  // ── Step 1: Recursively collect all incomplete spine items ──
   const visited = new Set();
-  const needed = [];   // ordered list of orders to include
+  const needed = []; // spine orders in dependency-first order
 
   function collect(order) {
     if (visited.has(order)) return;
     visited.add(order);
-
     const item = SPINE_DATA.find(d => d.order === order);
     if (!item) return;
-
-    // Recurse into quest prereqs first (dependencies before the task itself)
+    // Recurse quest prereqs depth-first so deps come before the task
     if (item.questPrereqs) {
       item.questPrereqs.split(';').map(s => s.trim()).filter(Boolean).forEach(prereqName => {
         const prereqItem = SPINE_DATA.find(d => d.name.toLowerCase() === prereqName.toLowerCase());
         if (prereqItem) collect(prereqItem.order);
       });
     }
-
-    // Only include if not already completed (skip the goal itself — added separately at end)
-    if (order !== goalOrder && !completedSet.has(order)) {
-      needed.push(order);
-    }
+    if (!completedSet.has(order)) needed.push(order);
   }
 
   collect(goalOrder);
-
-  // Sort by spine order so the path is logically sequenced
+  // Stable sort by spine order (preserves dep ordering within same tier)
   needed.sort((a, b) => a - b);
 
-  // Add the goal task itself at the end if not already done
-  if (!completedSet.has(goalOrder)) needed.push(goalOrder);
-
-  if (!needed.length) {
-    alert('All prerequisites for "' + goalItem.name + '" are already complete!');
-    return;
-  }
-
-  // Build planItems from the ordered list
-  const newItems = needed.map(order => {
+  // ── Step 2: Build spine plan items ──
+  const spineItems = needed.map(order => {
     const sp = SPINE_DATA.find(d => d.order === order);
     return {
       id: planUid(),
@@ -3137,32 +3211,131 @@ function buildPathTo(goalOrder) {
       skillReqs: sp.skillReqs || '',
       location: sp.location || '',
       notes: sp.info || '',
-      done: false
+      done: false,
+      _isGoal: order === goalOrder
     };
   });
 
-  // Ask what to do if plan already has items
+  // ── Step 3: Collect skill training tasks ──
+  // For each unique skill gap across all needed items, create one training task
+  // at the highest level required for that skill.
+  const skillNeeds = {}; // skillLower -> { skill, level, neededFor }
+  needed.forEach(order => {
+    const sp = SPINE_DATA.find(d => d.order === order);
+    if (!sp.skillReqs) return;
+    parseSkillReqs(sp.skillReqs).forEach(req => {
+      if (req.isQP) return;
+      const key = req.skill.toLowerCase();
+      if (['combat', 'total level'].includes(key)) return;
+      const have = parseInt(playerStats[key]) || 1;
+      if (have >= req.level) return; // already meets it
+      if (!skillNeeds[key] || skillNeeds[key].level < req.level) {
+        skillNeeds[key] = { skill: req.skill, level: req.level, neededFor: sp.name };
+      }
+    });
+  });
+
+  const skillItems = Object.values(skillNeeds)
+    .sort((a, b) => a.skill.localeCompare(b.skill))
+    .map(req => ({
+      id: planUid(),
+      itemType: 'custom',
+      name: 'Train ' + req.skill + ' to ' + req.level,
+      type: 'Activity/Goal',
+      skillReqs: '',
+      location: '',
+      notes: 'Required for: ' + req.neededFor,
+      done: false,
+      _isSkillTask: true
+    }));
+
+  // Skill tasks first, then spine tasks in order
+  const fullPath = skillItems.concat(spineItems);
+
+  if (!fullPath.length) {
+    alert('All prerequisites for "' + goalItem.name + '" are already complete — nothing to add!');
+    return;
+  }
+
+  // ── Step 4: Show preview modal ──
+  window._pendingPath = fullPath;
+  showPathPreview(goalItem.name, fullPath);
+}
+
+function showPathPreview(goalName, items) {
+  const overlay = document.getElementById('path-preview-overlay');
+  if (!overlay) return;
+
+  document.getElementById('path-preview-title').textContent = 'Path to: ' + goalName;
+
+  const spineCount  = items.filter(i => !i._isSkillTask).length;
+  const skillCount  = items.filter(i => i._isSkillTask).length;
+  const summaryEl   = document.getElementById('path-preview-summary');
+  summaryEl.innerHTML =
+    '<span><strong>' + items.length + '</strong> steps total</span>' +
+    '<span><strong>' + spineCount + '</strong> quest/task/activity</span>' +
+    (skillCount ? '<span><strong>' + skillCount + '</strong> skill training</span>' : '');
+
+  const listEl = document.getElementById('path-preview-list');
+  listEl.innerHTML = items.map((item, i) => {
+    const cls = item._isSkillTask ? 'is-skill-task' : item._isGoal ? 'is-goal' : '';
+    const badge = item.type
+      ? '<span class="type-badge badge-' + item.type.replace('/','\\/') + '" style="font-size:0.6rem;padding:0.1rem 0.4rem">' + item.type + '</span>'
+      : '';
+    const goalTag = item._isGoal ? ' <span style="font-size:0.65rem;color:var(--gold-dark);font-family:Cinzel,serif">&#9733; GOAL</span>' : '';
+    return '<div class="path-preview-item ' + cls + '">' +
+      '<span class="path-preview-num">' + (i + 1) + '</span>' +
+      '<span class="path-preview-name">' + item.name + goalTag + '</span>' +
+      badge +
+    '</div>';
+  }).join('');
+
+  const footerEl = document.getElementById('path-preview-footer');
   if (planItems.length) {
-    const choice = confirm(
-      'Your Custom Path already has ' + planItems.length + ' item(s).\n\n' +
-      'OK = Replace with new path (' + newItems.length + ' steps)\n' +
-      'Cancel = Append to existing plan'
-    );
-    if (choice) {
-      planItems = newItems;
-    } else {
-      // Append, skipping any already in the plan by spineOrder
-      const existingOrders = new Set(planItems.filter(i => i.spineOrder).map(i => i.spineOrder));
-      planItems = planItems.concat(newItems.filter(i => !existingOrders.has(i.spineOrder)));
-    }
+    footerEl.innerHTML =
+      '<button class="btn btn-ghost" onclick="closePathPreview()">Cancel</button>' +
+      '<button class="btn btn-ghost btn-append" onclick="commitPath('+"'append'"+ ')">+ Append to Path</button>' +
+      '<button class="btn btn-ghost btn-replace" onclick="commitPath('+"'replace'"+')">↺ Replace Path</button>';
   } else {
+    footerEl.innerHTML =
+      '<button class="btn btn-ghost" onclick="closePathPreview()">Cancel</button>' +
+      '<button class="btn" onclick="commitPath('+"'replace'"+')">Add to Custom Path</button>';
+  }
+
+  overlay.classList.add('open');
+}
+
+function pathPreviewOverlayClick(e) {
+  if (e.target === document.getElementById('path-preview-overlay')) closePathPreview();
+}
+
+function closePathPreview() {
+  const overlay = document.getElementById('path-preview-overlay');
+  if (overlay) overlay.classList.remove('open');
+  window._pendingPath = null;
+}
+
+function commitPath(mode) {
+  const newItems = window._pendingPath;
+  if (!newItems) return;
+
+  if (mode === 'replace' || !planItems.length) {
     planItems = newItems;
+  } else {
+    // Append — skip duplicates by spineOrder (for spine items) or name (for skill tasks)
+    const existingOrders = new Set(planItems.filter(i => i.spineOrder).map(i => i.spineOrder));
+    const existingNames  = new Set(planItems.map(i => i.name.toLowerCase()));
+    planItems = planItems.concat(newItems.filter(i =>
+      i.spineOrder ? !existingOrders.has(i.spineOrder) : !existingNames.has(i.name.toLowerCase())
+    ));
   }
 
   savePlan();
+  closePathPreview();
   closeDetailBtn();
   showPage('planner');
   renderPlanner();
+  window._pendingPath = null;
 }
 
 // ============================================================
@@ -3571,7 +3744,7 @@ function buildPlanItemHtml(item, idx) {
   return '<tr class="planner-item item-' + item.itemType + doneClass + '" data-id="' + item.id + '" draggable="true">' +
     '<td class="pt-drag-cell">&#8942;&#8942;</td>' +
     '<td class="pt-check-cell" onclick="togglePlanDone(\'' + item.id + '\')">' + checkBox + '</td>' +
-    '<td class="pt-name-cell"><span class="pi-name">' + (item.name || 'Unnamed Task') + '</span>' + customTag + '</td>' +
+    '<td class="pt-name-cell"' + (item.spineOrder ? ' onclick="openDetail(' + item.spineOrder + ')" style="cursor:pointer" title="View details"' : '') + '><span class="pi-name">' + (item.name || 'Unnamed Task') + '</span>' + customTag + '</td>' +
     '<td>' + typeBadge + '</td>' +
     '<td class="pt-reqs-cell">' + reqs + '</td>' +
     '<td class="pt-loc-cell">' + loc + '</td>' +
