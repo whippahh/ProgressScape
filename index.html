@@ -1732,7 +1732,7 @@
 
   /* ===== CUSTOM PATH PLANNER ===== */
   .planner-page {
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 1.5rem 2rem 4rem;
   }
@@ -1807,112 +1807,127 @@
     opacity: 0.4;
   }
 
-  /* Planner list */
-  .planner-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+  /* ===== PLANNER TABLE ===== */
+  .planner-table-wrap {
+    overflow-x: auto;
+    border-radius: 4px;
   }
 
-  .planner-item {
-    display: grid;
-    grid-template-columns: 32px 32px 1fr auto auto;
-    align-items: center;
-    gap: 0;
-    background: var(--stone-mid);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 5px;
-    transition: border-color 0.15s, background 0.15s;
-    position: relative;
-    overflow: hidden;
+  .planner-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    table-layout: fixed;
   }
-  .planner-item:hover { border-color: rgba(200,168,75,0.2); }
-  .planner-item.done { background: rgba(42,107,42,0.15); border-color: rgba(42,107,42,0.25); }
-  .planner-item.item-note {
-    background: rgba(200,160,48,0.06);
-    border-color: rgba(200,160,48,0.2);
-    border-left: 3px solid #c8a030;
-  }
-  .planner-item.item-custom { border-left: 3px solid #4a7fc8; }
-  .planner-item.item-existing { border-left: 3px solid #4a9e4a; }
 
-  .planner-drag-handle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    min-height: 48px;
-    color: var(--stone-lighter);
-    font-size: 0.9rem;
+  .planner-table thead th {
+    position: sticky;
+    top: 64px;
+    z-index: 5;
+    background: #1a1408;
+    border-bottom: 2px solid var(--gold-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .planner-table .pt-drag  { width: 30px; }
+  .planner-table .pt-check { width: 36px; }
+  .planner-table .pt-type  { width: 100px; }
+  .planner-table .pt-reqs  { width: 150px; }
+  .planner-table .pt-loc   { width: 110px; }
+  .planner-table .pt-info  { width: 185px; }
+  .planner-table .pt-act   { width: 64px; }
+
+  .planner-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.1s;
+  }
+  .planner-table tbody tr:hover { background: rgba(200,168,75,0.06); }
+
+  .planner-table tbody tr.item-existing { border-left: 3px solid #4a9e4a; }
+  .planner-table tbody tr.item-custom   { border-left: 3px solid #4a7fc8; }
+  .planner-table tbody tr.item-note     { background: rgba(200,160,48,0.05); border-left: 3px solid #c8a030; }
+  .planner-table tbody tr.item-note:hover { background: rgba(200,160,48,0.1); }
+  .planner-table tbody tr.done          { background: rgba(42,107,42,0.15); }
+  .planner-table tbody tr.done:hover    { background: rgba(42,107,42,0.22); }
+  .planner-table tbody tr.drag-over     { background: rgba(200,168,75,0.08); outline: 1px solid var(--gold); }
+  .planner-table tbody tr.dragging      { opacity: 0.35; }
+
+  .planner-table td {
+    padding: 0.5rem 0.75rem;
+    vertical-align: middle;
+    color: var(--text-light);
+  }
+
+  .pt-drag-cell {
+    text-align: center;
     cursor: grab;
+    color: var(--stone-lighter);
+    font-size: 0.85rem;
     user-select: none;
-    opacity: 0.5;
+    opacity: 0.4;
+    padding: 0.5rem 0.25rem !important;
     transition: opacity 0.15s;
   }
-  .planner-drag-handle:hover { opacity: 1; }
-  .planner-drag-handle:active { cursor: grabbing; }
+  .planner-table tbody tr:hover .pt-drag-cell { opacity: 0.9; }
+  .pt-drag-cell:active { cursor: grabbing; }
 
-  .planner-check-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    min-height: 48px;
+  .pt-check-cell {
     cursor: pointer;
+    text-align: center;
+    padding: 0.5rem 0 !important;
   }
 
-  .planner-item-body {
-    padding: 0.6rem 0.75rem 0.6rem 0.25rem;
-    min-width: 0;
-  }
-
-  .planner-item-name {
+  .pt-name-cell { min-width: 0; }
+  .pi-name {
     font-family: 'Cinzel', serif;
     font-size: 0.82rem;
     font-weight: 600;
     color: var(--text-light);
+    display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .planner-item.done .planner-item-name {
+  .planner-table tbody tr.done .pi-name {
     text-decoration: line-through;
     color: var(--text-muted);
   }
 
-  .planner-item-meta {
-    font-size: 0.72rem;
+  .pt-reqs-cell, .pt-loc-cell, .pt-info-cell {
+    font-size: 0.77rem;
     color: var(--text-muted);
-    margin-top: 0.15rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.45;
+    vertical-align: top;
+    padding-top: 0.6rem !important;
   }
+  .pt-reqs-cell .req-unmet { color: #e06060; }
 
-  .planner-item-note-text {
+  .pt-note-cell {
     font-family: 'IM Fell English', serif;
     font-style: italic;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     color: #d4b84a;
-    padding: 0.5rem 0.75rem 0.5rem 0.25rem;
-    flex: 1;
     cursor: pointer;
+    vertical-align: middle;
   }
+  .pt-note-cell em { opacity: 0.45; }
 
-  .planner-item-type {
-    padding: 0 0.5rem;
-    flex-shrink: 0;
-  }
-
-  .planner-item-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.1rem;
-    padding: 0 0.4rem;
+  .pt-act-cell {
+    white-space: nowrap;
     opacity: 0;
     transition: opacity 0.15s;
+    padding: 0.5rem 0.35rem !important;
+    vertical-align: middle;
   }
-  .planner-item:hover .planner-item-actions { opacity: 1; }
+  .planner-table tbody tr:hover .pt-act-cell { opacity: 1; }
 
   .planner-action-btn {
     background: none;
@@ -1927,6 +1942,17 @@
   }
   .planner-action-btn:hover { color: var(--text-light); background: rgba(255,255,255,0.07); }
   .planner-action-btn.del:hover { color: #e06060; }
+
+  @media (max-width: 768px) {
+    .planner-page { padding: 1rem 0.5rem 3rem; }
+    .planner-table tbody .pt-reqs-cell,
+    .planner-table tbody .pt-loc-cell,
+    .planner-table tbody .pt-info-cell,
+    .planner-table thead .pt-reqs,
+    .planner-table thead .pt-loc,
+    .planner-table thead .pt-info { display: none; }
+    .planner-table .pt-type { width: 80px; }
+  }
 
   /* Planner progress bar */
   .planner-progress-wrap {
@@ -2082,14 +2108,7 @@
     justify-content: flex-end;
   }
 
-  /* Drag-over highlight */
-  .planner-item.drag-over {
-    border-color: var(--gold);
-    background: rgba(200,168,75,0.08);
-  }
-  .planner-item.dragging {
-    opacity: 0.4;
-  }
+
 
 
 </style>
@@ -2303,7 +2322,23 @@
       <span class="planner-progress-label"><strong id="planner-prog-pct">0%</strong></span>
     </div>
 
-    <div id="planner-list" class="planner-list"></div>
+    <div class="planner-table-wrap" id="planner-table-wrap" style="display:none">
+      <table class="planner-table">
+        <thead>
+          <tr>
+            <th class="pt-drag"></th>
+            <th class="pt-check"></th>
+            <th>Name</th>
+            <th class="pt-type">Type</th>
+            <th class="pt-reqs">Skill Req.</th>
+            <th class="pt-loc">Location</th>
+            <th class="pt-info">Notes / Info</th>
+            <th class="pt-act"></th>
+          </tr>
+        </thead>
+        <tbody id="planner-list"></tbody>
+      </table>
+    </div>
 
     <div id="planner-empty" class="planner-empty">
       <span>&#128220;</span>
@@ -3008,6 +3043,7 @@ function openDetail(order) {
   const done = completedSet.has(item.order);
   document.getElementById('detail-actions').innerHTML = `
     <button class="btn" onclick="toggleDone(${item.order}); closeDetailBtn()">${done ? '✗ Mark Incomplete' : '✓ Mark Complete'}</button>
+    <button class="btn btn-ghost" onclick="buildPathTo(${item.order})" title="Recursively find all incomplete prerequisites and add them to Custom Path" style="border-color:#4a7fc8;color:#8abcf8">🗺 Build Path to This</button>
     ${item.source ? `<a href="${item.source}" target="_blank"><button class="btn btn-ghost">Open Guide ↗</button></a>` : ''}
   `;
   document.getElementById('detail-overlay').classList.add('open');
@@ -3042,6 +3078,91 @@ function closeDetail(e) {
 
 function closeDetailBtn() {
   document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ============================================================
+// BUILD PATH TO GOAL
+// ============================================================
+function buildPathTo(goalOrder) {
+  const goalItem = SPINE_DATA.find(d => d.order === goalOrder);
+  if (!goalItem) return;
+
+  // Recursively collect all incomplete prerequisites (depth-first, deduped)
+  const visited = new Set();
+  const needed = [];   // ordered list of orders to include
+
+  function collect(order) {
+    if (visited.has(order)) return;
+    visited.add(order);
+
+    const item = SPINE_DATA.find(d => d.order === order);
+    if (!item) return;
+
+    // Recurse into quest prereqs first (dependencies before the task itself)
+    if (item.questPrereqs) {
+      item.questPrereqs.split(';').map(s => s.trim()).filter(Boolean).forEach(prereqName => {
+        const prereqItem = SPINE_DATA.find(d => d.name.toLowerCase() === prereqName.toLowerCase());
+        if (prereqItem) collect(prereqItem.order);
+      });
+    }
+
+    // Only include if not already completed (skip the goal itself — added separately at end)
+    if (order !== goalOrder && !completedSet.has(order)) {
+      needed.push(order);
+    }
+  }
+
+  collect(goalOrder);
+
+  // Sort by spine order so the path is logically sequenced
+  needed.sort((a, b) => a - b);
+
+  // Add the goal task itself at the end if not already done
+  if (!completedSet.has(goalOrder)) needed.push(goalOrder);
+
+  if (!needed.length) {
+    alert('All prerequisites for "' + goalItem.name + '" are already complete!');
+    return;
+  }
+
+  // Build planItems from the ordered list
+  const newItems = needed.map(order => {
+    const sp = SPINE_DATA.find(d => d.order === order);
+    return {
+      id: planUid(),
+      itemType: 'existing',
+      spineOrder: order,
+      name: sp.name,
+      type: sp.type,
+      skillReqs: sp.skillReqs || '',
+      location: sp.location || '',
+      notes: sp.info || '',
+      done: false
+    };
+  });
+
+  // Ask what to do if plan already has items
+  if (planItems.length) {
+    const choice = confirm(
+      'Your Custom Path already has ' + planItems.length + ' item(s).\n\n' +
+      'OK = Replace with new path (' + newItems.length + ' steps)\n' +
+      'Cancel = Append to existing plan'
+    );
+    if (choice) {
+      planItems = newItems;
+    } else {
+      // Append, skipping any already in the plan by spineOrder
+      const existingOrders = new Set(planItems.filter(i => i.spineOrder).map(i => i.spineOrder));
+      planItems = planItems.concat(newItems.filter(i => !existingOrders.has(i.spineOrder)));
+    }
+  } else {
+    planItems = newItems;
+  }
+
+  savePlan();
+  closeDetailBtn();
+  showPage('planner');
+  renderPlanner();
 }
 
 // ============================================================
@@ -3370,17 +3491,20 @@ function savePlan() {
 function renderPlanner() {
   var list = document.getElementById('planner-list');
   var empty = document.getElementById('planner-empty');
+  var tableWrap = document.getElementById('planner-table-wrap');
   var progWrap = document.getElementById('planner-progress-wrap');
   if (!list) return;
 
   if (!planItems.length) {
     list.innerHTML = '';
     if (empty) empty.style.display = 'block';
+    if (tableWrap) tableWrap.style.display = 'none';
     if (progWrap) progWrap.style.display = 'none';
     return;
   }
 
   if (empty) empty.style.display = 'none';
+  if (tableWrap) tableWrap.style.display = 'block';
   if (progWrap) progWrap.style.display = 'flex';
 
   var nonNote = planItems.filter(function(i) { return i.itemType !== 'note'; });
@@ -3406,46 +3530,57 @@ function renderPlanner() {
 
 function buildPlanItemHtml(item, idx) {
   var doneClass = item.done ? ' done' : '';
+  var checkBox = '<div class="check-box' + (item.done ? ' checked' : '') + '"></div>';
 
   if (item.itemType === 'note') {
-    var noteText = item.text ? item.text : '<em style="opacity:0.5">Empty note — click to edit</em>';
-    return '<div class="planner-item item-note' + doneClass + '" data-id="' + item.id + '" draggable="true">' +
-      '<div class="planner-drag-handle" title="Drag to reorder">&#8942;&#8942;</div>' +
-      '<div class="planner-check-cell" onclick="togglePlanDone(\'' + item.id + '\')">' +
-        '<div class="check-box' + (item.done ? ' checked' : '') + '"></div>' +
-      '</div>' +
-      '<div class="planner-item-note-text" onclick="openPlannerModal(\'note\', \'' + item.id + '\')">' +
-        '&#128221; ' + noteText +
-      '</div>' +
-      '<div class="planner-item-actions">' +
+    var noteText = item.text
+      ? item.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      : '<em>Empty note — click to edit</em>';
+    return '<tr class="planner-item item-note' + doneClass + '" data-id="' + item.id + '" draggable="true">' +
+      '<td class="pt-drag-cell">&#8942;&#8942;</td>' +
+      '<td class="pt-check-cell" onclick="togglePlanDone(\'' + item.id + '\')">' + checkBox + '</td>' +
+      '<td class="pt-note-cell" colspan="5" onclick="openPlannerModal(\'note\', \'' + item.id + '\')">&#128221; ' + noteText + '</td>' +
+      '<td class="pt-act-cell">' +
         '<button class="planner-action-btn del" onclick="deletePlanItem(\'' + item.id + '\')" title="Delete">&#x2715;</button>' +
-      '</div>' +
-    '</div>';
+      '</td>' +
+    '</tr>';
   }
 
-  var meta = [];
-  if (item.skillReqs) meta.push(item.skillReqs.split(';')[0].trim());
-  if (item.location) meta.push(item.location);
-  var metaHtml = meta.length ? '<div class="planner-item-meta">' + meta.join(' &middot; ') + '</div>' : '';
+  var typeBadge = item.type ? '<span class="type-badge badge-' + item.type.replace('/','\/') + '">' + item.type + '</span>' : '—';
+  var customTag = item.itemType === 'custom' ? ' <span style="font-size:0.6rem;padding:0.1rem 0.3rem;background:rgba(74,127,200,0.15);border:1px solid #4a7fc8;border-radius:3px;color:#8abcf8;font-family:\'Cinzel\',serif;vertical-align:middle">Custom</span>' : '';
 
-  var typeBadge = item.type ? '<span class="type-badge">' + item.type + '</span>' : '';
-  var customBadge = item.itemType === 'custom' ? '<span class="im-badge" style="border-color:#4a7fc8;color:#8abcf8;font-size:0.6rem">Custom</span>' : '';
+  var reqs = item.skillReqs || '—';
+  var loc  = item.location  || '—';
+  var info = item.notes     || '—';
 
-  return '<div class="planner-item item-' + item.itemType + doneClass + '" data-id="' + item.id + '" draggable="true">' +
-    '<div class="planner-drag-handle" title="Drag to reorder">&#8942;&#8942;</div>' +
-    '<div class="planner-check-cell" onclick="togglePlanDone(\'' + item.id + '\')">' +
-      '<div class="check-box' + (item.done ? ' checked' : '') + '"></div>' +
-    '</div>' +
-    '<div class="planner-item-body">' +
-      '<div class="planner-item-name">' + (item.name || 'Unnamed Task') + '</div>' +
-      metaHtml +
-    '</div>' +
-    '<div class="planner-item-type">' + typeBadge + customBadge + '</div>' +
-    '<div class="planner-item-actions">' +
+  // Highlight unmet skill reqs
+  if (item.skillReqs && Object.keys(playerStats).length) {
+    var reqParts = item.skillReqs.split(';').map(function(r) {
+      r = r.trim();
+      var m = r.match(/^([A-Za-z]+)\s+(\d+)$/);
+      if (m) {
+        var sk = m[1], lvl = parseInt(m[2]);
+        var have = parseInt(playerStats[sk]) || 1;
+        if (have < lvl) return '<span class="req-unmet">' + r + '</span>';
+      }
+      return r;
+    });
+    reqs = reqParts.join('; ');
+  }
+
+  return '<tr class="planner-item item-' + item.itemType + doneClass + '" data-id="' + item.id + '" draggable="true">' +
+    '<td class="pt-drag-cell">&#8942;&#8942;</td>' +
+    '<td class="pt-check-cell" onclick="togglePlanDone(\'' + item.id + '\')">' + checkBox + '</td>' +
+    '<td class="pt-name-cell"><span class="pi-name">' + (item.name || 'Unnamed Task') + '</span>' + customTag + '</td>' +
+    '<td>' + typeBadge + '</td>' +
+    '<td class="pt-reqs-cell">' + reqs + '</td>' +
+    '<td class="pt-loc-cell">' + loc + '</td>' +
+    '<td class="pt-info-cell">' + info + '</td>' +
+    '<td class="pt-act-cell">' +
       '<button class="planner-action-btn" onclick="openPlannerModal(\'' + item.itemType + '\', \'' + item.id + '\')" title="Edit">&#9998;</button>' +
       '<button class="planner-action-btn del" onclick="deletePlanItem(\'' + item.id + '\')" title="Delete">&#x2715;</button>' +
-    '</div>' +
-  '</div>';
+    '</td>' +
+  '</tr>';
 }
 
 function togglePlanDone(id) {
@@ -3470,7 +3605,7 @@ function clearPlan() {
 // ---- DRAG AND DROP ----
 
 function initPlanDragDrop() {
-  var items = document.querySelectorAll('#planner-list .planner-item[draggable="true"]');
+  var items = document.querySelectorAll('#planner-list tr.planner-item[draggable="true"]');
   items.forEach(function(el) {
     el.addEventListener('dragstart', function(e) {
       planDragSrc = el;
@@ -3479,12 +3614,12 @@ function initPlanDragDrop() {
     });
     el.addEventListener('dragend', function() {
       el.classList.remove('dragging');
-      document.querySelectorAll('.planner-item').forEach(function(i) { i.classList.remove('drag-over'); });
+      document.querySelectorAll('#planner-list tr.planner-item').forEach(function(i) { i.classList.remove('drag-over'); });
     });
     el.addEventListener('dragover', function(e) {
       e.preventDefault();
       if (el !== planDragSrc) {
-        document.querySelectorAll('.planner-item').forEach(function(i) { i.classList.remove('drag-over'); });
+        document.querySelectorAll('#planner-list tr.planner-item').forEach(function(i) { i.classList.remove('drag-over'); });
         el.classList.add('drag-over');
       }
     });
