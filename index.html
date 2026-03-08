@@ -2916,7 +2916,8 @@ function getCombatLevel() {
 
 function getTotalLevel() {
   if (!playerStats || Object.keys(playerStats).length === 0) return 0;
-  return Object.values(playerStats).reduce((sum, v) => sum + (v || 1), 0);
+  // Sum all 24 skills; any not entered yet default to 1 (same as OSRS hiscores behaviour)
+  return SKILLS.reduce((sum, s) => sum + (playerStats[s.name.toLowerCase()] || 1), 0);
 }
 
 function meetsReqs(item) {
@@ -3236,7 +3237,7 @@ function buildRowHtml(item) {
     <td><span class="type-badge badge-${item.type.replace('/','\\/')}">${item.type}</span>${tierHtml}</td>
     <td class="skill-req">${reqHtml}</td>
     <td class="skill-req">${prereqHtml}</td>
-    <td class="qp-badge">${item.questPoints > 0 ? item.questPoints : ''}</td>
+    <td class="qp-badge">${item.qp > 0 ? item.qp : ''}</td>
     <td class="location-cell">${item.location}</td>
     <td class="info-cell">${item.info.length > 100 ? item.info.substring(0,100)+'…' : item.info}</td>
     <td class="drops-cell">${(item.notableDrops && item.notableDrops.length) ? item.notableDrops.slice(0,3).map(d => `<span style="font-size:0.75rem;color:var(--text-muted)">${d[0]}<span style="color:var(--stone-lighter)"> ${d[1]}</span></span>`).join('<br>') : ''}</td>
@@ -3308,7 +3309,7 @@ function openDetail(order) {
   const rows = [];
   rows.push(['Order', `#${item.order}`]);
   if (item.location) rows.push(['Location', item.location]);
-  if (item.questPoints > 0) rows.push(['Quest Points', `<span class="qp-badge">${item.questPoints} QP</span>`]);
+  if (item.qp > 0) rows.push(['Quest Points', `<span class="qp-badge">${item.qp} QP</span>`]);
   if (item.type === 'Boss') {
     const currentKC = bossKC[item.order] || 0;
     rows.push(['Kill Count', `<div style="display:flex;align-items:center;gap:0.75rem">
