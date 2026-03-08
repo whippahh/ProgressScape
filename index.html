@@ -2482,6 +2482,7 @@
     <button class="chip type-boss active" data-rfilter="Boss" onclick="toggleRandFilter('Boss')">Bosses</button>
     <button class="chip type-activity active" data-rfilter="Activity/Goal" onclick="toggleRandFilter('Activity/Goal')">Activities</button>
     <button class="chip type-unlock active" data-rfilter="Unlock" onclick="toggleRandFilter('Unlock')">Unlocks</button>
+    <button class="chip type-diary active" data-rfilter="Diary" onclick="toggleRandFilter('Diary')">Diaries</button>
     <button class="chip active" data-rfilter="incomplete" onclick="toggleRandFilter('incomplete')">Skip Done</button>
   </div>
 
@@ -2524,8 +2525,8 @@
       <button class="planner-add-btn add-custom" onclick="openPlannerModal('custom')">+ Add Custom Task</button>
       <button class="planner-add-btn add-note" onclick="openPlannerModal('note')">+ Add Note</button>
       <div class="planner-io-btns">
-        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="exportPlan()">Export</button>
-        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="importPlanClick()">Import</button>
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="openShareModal()">📤 Share</button>
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="openImportModal()">📥 Import</button>
         <input type="file" id="plan-import-input" accept=".json" style="display:none" onchange="importPlan(event)">
         <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem;color:#e06060" onclick="clearPlan()">Clear</button>
       </div>
@@ -2564,6 +2565,77 @@
   </div>
 </div>
 
+
+<!-- ===== SHARE PLAN MODAL ===== -->
+<div id="share-plan-overlay" class="planner-modal-overlay" onclick="shareOverlayClick(event)">
+  <div class="planner-modal" style="max-width:520px">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title">📤 Share Your Path</span>
+      <button class="planner-modal-close" onclick="closeShareModal()">✕</button>
+    </div>
+    <div class="planner-modal-body">
+      <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">
+        Send your path to a friend. They paste the code into Import → Paste Code.
+      </p>
+
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+        <button id="share-tab-code" class="btn" style="flex:1;font-size:0.8rem" onclick="setShareTab('code')">Share Code</button>
+        <button id="share-tab-file" class="btn btn-ghost" style="flex:1;font-size:0.8rem" onclick="setShareTab('file')">Download File</button>
+      </div>
+
+      <div id="share-code-panel">
+        <div style="position:relative">
+          <textarea id="share-code-text" readonly
+            style="width:100%;height:120px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:0.6rem;font-family:monospace;font-size:0.72rem;color:var(--text-muted);resize:none;box-sizing:border-box;word-break:break-all"
+          ></textarea>
+        </div>
+        <button id="share-copy-btn" class="btn" style="width:100%;margin-top:0.5rem;font-size:0.85rem" onclick="copyShareCode()">
+          📋 Copy to Clipboard
+        </button>
+        <p style="color:var(--text-muted);font-size:0.75rem;margin:0.6rem 0 0;text-align:center">
+          Paste this anywhere — Discord, Reddit, a notes app — your friend imports it on their end.
+        </p>
+      </div>
+
+      <div id="share-file-panel" style="display:none;text-align:center;padding:0.5rem 0">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">Downloads a <code>.json</code> file you can send directly.</p>
+        <button class="btn" style="font-size:0.9rem;padding:0.5rem 1.5rem" onclick="downloadPlanFile()">⬇ Download .json</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== IMPORT PLAN MODAL ===== -->
+<div id="import-plan-overlay" class="planner-modal-overlay" onclick="importOverlayClick(event)">
+  <div class="planner-modal" style="max-width:520px">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title">📥 Import Path</span>
+      <button class="planner-modal-close" onclick="closeImportModal()">✕</button>
+    </div>
+    <div class="planner-modal-body">
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+        <button id="import-tab-code" class="btn" style="flex:1;font-size:0.8rem" onclick="setImportTab('code')">Paste Code</button>
+        <button id="import-tab-file" class="btn btn-ghost" style="flex:1;font-size:0.8rem" onclick="setImportTab('file')">Upload File</button>
+      </div>
+
+      <div id="import-code-panel">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 0.6rem">Paste a share code from a friend:</p>
+        <textarea id="import-code-input" placeholder="Paste share code here…"
+          style="width:100%;height:110px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:0.6rem;font-family:monospace;font-size:0.72rem;color:var(--text-light);resize:none;box-sizing:border-box;word-break:break-all"
+        ></textarea>
+        <div style="display:flex;gap:0.5rem;margin-top:0.6rem">
+          <button class="btn" style="flex:1;font-size:0.85rem" onclick="importFromCode('replace')">⬅ Replace My Plan</button>
+          <button class="btn btn-ghost" style="flex:1;font-size:0.85rem" onclick="importFromCode('append')">+ Append to My Plan</button>
+        </div>
+      </div>
+
+      <div id="import-file-panel" style="display:none;text-align:center;padding:0.5rem 0">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">Upload a <code>.json</code> exported from ProgressScape.</p>
+        <button class="btn" style="font-size:0.9rem;padding:0.5rem 1.5rem" onclick="document.getElementById('plan-import-input').click()">📂 Choose File</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ===== PATH PREVIEW MODAL ===== -->
 <div id="path-preview-overlay" class="planner-modal-overlay" onclick="pathPreviewOverlayClick(event)">
@@ -2879,13 +2951,11 @@ function meetsReqs(item) {
 }
 
 function isAutoAchievable(item) {
-  if (!item.skillReqs || item.type !== 'Activity/Goal') return false;
-  const baseMatch = item.skillReqs.match(/All skills\s+(\d+)\+/i);
-  if (baseMatch) {
+  if (item.type !== 'Activity/Goal') return false;
+  // Base tasks now use explicit per-skill reqs — detect by name and use meetsReqs
+  if (/^Base \d+$/.test(item.name)) {
     if (Object.keys(playerStats).length === 0) return false;
-    const needed = parseInt(baseMatch[1]);
-    const skillNames = ['attack','strength','defence','hitpoints','ranged','prayer','magic','cooking','woodcutting','fletching','fishing','firemaking','crafting','smithing','mining','herblore','agility','thieving','slayer','farming','runecraft','hunter','construction','sailing'];
-    return skillNames.every(sk => (playerStats[sk] || 1) >= needed);
+    return meetsReqs(item) === true;
   }
   return false;
 }
@@ -4311,8 +4381,91 @@ function savePlanNote() {
 
 // ---- EXPORT / IMPORT ----
 
-function exportPlan() {
-  if (!planItems.length) { alert('Your plan is empty — nothing to export.'); return; }
+// ─── Share / Import ───────────────────────────────────────────────────────────
+
+function planToShareCode(items) {
+  // Strip runtime-only fields — recipient starts with a fresh plan
+  var compact = items.map(function(i) {
+    var out = { t: i.itemType };
+    if (i.spineOrder) out.o = i.spineOrder;
+    if (i.name)       out.n = i.name;
+    if (i.type)       out.y = i.type;
+    if (i.skillReqs)  out.r = i.skillReqs;
+    if (i.location)   out.l = i.location;
+    if (i.notes)      out.x = i.notes;
+    return out;
+  });
+  return btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
+}
+
+function planFromShareCode(code) {
+  var compact = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+  if (!Array.isArray(compact)) throw new Error('bad');
+  return compact.map(function(i) {
+    var item = {
+      id: planUid(),
+      itemType: i.t || 'custom',
+      name: i.n || '',
+      type: i.y || 'Activity/Goal',
+      skillReqs: i.r || '',
+      location: i.l || '',
+      notes: i.x || '',
+      done: false
+    };
+    if (i.o) {
+      item.spineOrder = i.o;
+      // Backfill name/type from SPINE_DATA if missing
+      var sp = SPINE_DATA.find(function(d) { return d.order === i.o; });
+      if (sp) {
+        item.name     = item.name || sp.name;
+        item.type     = item.type || sp.type;
+        item.skillReqs = item.skillReqs || sp.skillReqs || '';
+        item.location = item.location || sp.location || '';
+        item.notes    = item.notes || sp.info || '';
+      }
+    }
+    return item;
+  });
+}
+
+// Share modal
+function openShareModal() {
+  if (!planItems.length) { alert('Your plan is empty — nothing to share.'); return; }
+  document.getElementById('share-code-text').value = planToShareCode(planItems);
+  document.getElementById('share-copy-btn').textContent = '📋 Copy to Clipboard';
+  setShareTab('code');
+  document.getElementById('share-plan-overlay').classList.add('open');
+}
+function closeShareModal() {
+  document.getElementById('share-plan-overlay').classList.remove('open');
+}
+function shareOverlayClick(e) {
+  if (e.target === document.getElementById('share-plan-overlay')) closeShareModal();
+}
+function setShareTab(tab) {
+  document.getElementById('share-code-panel').style.display = tab === 'code' ? '' : 'none';
+  document.getElementById('share-file-panel').style.display = tab === 'file' ? '' : 'none';
+  document.getElementById('share-tab-code').className = tab === 'code' ? 'btn' : 'btn btn-ghost';
+  document.getElementById('share-tab-file').className = tab === 'file' ? 'btn' : 'btn btn-ghost';
+}
+function copyShareCode() {
+  var text = document.getElementById('share-code-text').value;
+  var btn = document.getElementById('share-copy-btn');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = '✓ Copied!';
+      setTimeout(function() { btn.textContent = '📋 Copy to Clipboard'; }, 2000);
+    });
+  } else {
+    // Fallback for older browsers
+    var ta = document.getElementById('share-code-text');
+    ta.select();
+    document.execCommand('copy');
+    btn.textContent = '✓ Copied!';
+    setTimeout(function() { btn.textContent = '📋 Copy to Clipboard'; }, 2000);
+  }
+}
+function downloadPlanFile() {
   var blob = new Blob([JSON.stringify(planItems, null, 2)], { type: 'application/json' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -4320,11 +4473,48 @@ function exportPlan() {
   a.click();
 }
 
-function importPlanClick() {
-  var inp = document.getElementById('plan-import-input');
-  if (inp) inp.click();
+// Import modal
+function openImportModal() {
+  document.getElementById('import-code-input').value = '';
+  setImportTab('code');
+  document.getElementById('import-plan-overlay').classList.add('open');
+}
+function closeImportModal() {
+  document.getElementById('import-plan-overlay').classList.remove('open');
+}
+function importOverlayClick(e) {
+  if (e.target === document.getElementById('import-plan-overlay')) closeImportModal();
+}
+function setImportTab(tab) {
+  document.getElementById('import-code-panel').style.display = tab === 'code' ? '' : 'none';
+  document.getElementById('import-file-panel').style.display = tab === 'file' ? '' : 'none';
+  document.getElementById('import-tab-code').className = tab === 'code' ? 'btn' : 'btn btn-ghost';
+  document.getElementById('import-tab-file').className = tab === 'file' ? 'btn' : 'btn btn-ghost';
+}
+function importFromCode(mode) {
+  var code = document.getElementById('import-code-input').value.trim();
+  if (!code) { alert('Paste a share code first.'); return; }
+  try {
+    var imported = planFromShareCode(code);
+    if (!imported.length) throw new Error('empty');
+    if (mode === 'replace') {
+      if (planItems.length && !confirm('Replace your current plan (' + planItems.length + ' items) with the imported path (' + imported.length + ' items)?')) return;
+      planItems = imported;
+    } else {
+      planItems = planItems.concat(imported);
+    }
+    savePlan();
+    renderPlanner();
+    closeImportModal();
+  } catch(err) {
+    alert('Invalid share code — could not import.');
+  }
 }
 
+// File import (unchanged behaviour, file input still wired here)
+function importPlanClick() {
+  document.getElementById('plan-import-input').click();
+}
 function importPlan(e) {
   var file = e.target.files[0];
   if (!file) return;
@@ -4337,6 +4527,7 @@ function importPlan(e) {
       planItems = imported;
       savePlan();
       renderPlanner();
+      closeImportModal();
     } catch(err) {
       alert('Could not import — invalid file.');
     }
@@ -4344,6 +4535,9 @@ function importPlan(e) {
   reader.readAsText(file);
   e.target.value = '';
 }
+
+// Legacy export shim (keeps any old onclick="exportPlan()" references working)
+function exportPlan() { openShareModal(); }
 
 </script>
 <div id="tier-float"></div>
