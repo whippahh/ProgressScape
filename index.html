@@ -2990,6 +2990,34 @@ function isAchievableNear(item) {
 // ============================================================
 // RSN LOOKUP
 // ============================================================
+
+// ── ProgressScape Plugin ─────────────────────────────────────
+// When the RuneLite plugin is approved and its endpoint is known,
+// replace PROGRESSSCAPE_PLUGIN_URL with the real address, e.g.:
+//   'http://localhost:8080/progressscape'
+// The plugin should return JSON with at least:
+//   { kc: { [bossName]: number }, completions: [bossName, ...] }
+// Leave as null to disable the plugin override entirely.
+const PROGRESSSCAPE_PLUGIN_URL = null; // TODO: set when plugin endpoint is confirmed
+const PROGRESSSCAPE_TIMEOUT_MS = 1000; // fast fail so first-time users aren't blocked
+
+async function fetchPluginData(rsn) {
+  if (!PROGRESSSCAPE_PLUGIN_URL) return null;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), PROGRESSSCAPE_TIMEOUT_MS);
+    const resp = await fetch(
+      `${PROGRESSSCAPE_PLUGIN_URL}?rsn=${encodeURIComponent(rsn)}`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timer);
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch {
+    return null; // timeout, CORS, plugin not running — silently fall back
+  }
+}
+
 async function lookupRSN() {
   const rsn = document.getElementById('rsn-input').value.trim();
   if (!rsn) return;
@@ -2999,6 +3027,7 @@ async function lookupRSN() {
   statusInner.className = 'status-inner';
   statusInner.textContent = '⏳ Looking up ' + rsn + '…';
   try {
+    // ── Step 1: Hiscores (always runs, baseline for all users) ──
     const proxy = 'https://corsproxy.io/?';
     const url = proxy + `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
     const resp = await fetch(url);
@@ -3036,6 +3065,40 @@ async function lookupRSN() {
         if (norm.includes(spineName) || spineName.includes(norm)) { bossKC[order] = kc; kcUpdated++; break; }
       }
     });
+
+    // ── Step 2: ProgressScape plugin override (if available) ───
+    // Runs concurrently with the render prep above; fails silently
+    // if the plugin isn't installed or the user doesn't have it.
+    let pluginSource = false;
+    const pluginData = await fetchPluginData(rsn);
+    if (pluginData) {
+      // Override KC with plugin values (more accurate than hiscores)
+      if (pluginData.kc && typeof pluginData.kc === 'object') {
+        Object.entries(pluginData.kc).forEach(([bossName, kc]) => {
+          const norm = bossName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (spineNameMap[norm] !== undefined) {
+            bossKC[spineNameMap[norm]] = kc;
+          } else {
+            for (const [spineName, order] of Object.entries(spineNameMap)) {
+              if (norm.includes(spineName) || spineName.includes(norm)) {
+                bossKC[order] = kc; break;
+              }
+            }
+          }
+        });
+        kcUpdated = Object.keys(pluginData.kc).length;
+      }
+      // Mark completions tracked by the plugin
+      if (Array.isArray(pluginData.completions)) {
+        pluginData.completions.forEach(bossName => {
+          const norm = bossName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (spineNameMap[norm] !== undefined) completedSet.add(spineNameMap[norm]);
+        });
+      }
+      pluginSource = true;
+    }
+
+    // ── Step 3: Finalise & render ───────────────────────────────
     saveToStorage();
     syncSkillsGridFromStats();
     SPINE_DATA.forEach(item => {
@@ -3053,7 +3116,11 @@ async function lookupRSN() {
     updateProgress();
     updateCombatDisplay();
     statusInner.className = 'status-inner success';
-    statusInner.textContent = `✓ Loaded stats for ${rsn} — ${kcUpdated} boss KC synced`;
+    if (pluginSource) {
+      statusInner.textContent = `✓ Loaded stats for ${rsn} — ${kcUpdated} boss KC synced via ProgressScape plugin`;
+    } else {
+      statusInner.textContent = `✓ Loaded stats for ${rsn} — ${kcUpdated} boss KC synced from Hiscores`;
+    }
   } catch (e) {
     statusInner.className = 'status-inner error';
     statusInner.textContent = '✗ Could not load stats. Player may not exist or Hiscores may be unavailable.';
