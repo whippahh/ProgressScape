@@ -3028,8 +3028,8 @@ async function lookupRSN() {
   statusInner.textContent = '⏳ Looking up ' + rsn + '…';
   try {
     // ── Step 1: Hiscores (always runs, baseline for all users) ──
-    const proxy = 'https://corsproxy.io/?';
-    const url = proxy + `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
+    const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
+    const url = `https://corsproxy.io/?url=${encodeURIComponent(hiscoresUrl)}`;
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('Player not found');
     const data = await resp.json();
