@@ -3029,10 +3029,21 @@ async function lookupRSN() {
   try {
     // ── Step 1: Hiscores (always runs, baseline for all users) ──
     const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
-    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`;
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error('Player not found');
-    const data = await resp.json();
+    const proxies = [
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`,
+      `https://corsproxy.io/?url=${encodeURIComponent(hiscoresUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`
+    ];
+    let data = null;
+    for (const proxyUrl of proxies) {
+      try {
+        const resp = await fetch(proxyUrl);
+        if (!resp.ok) continue;
+        const parsed = await resp.json();
+        if (parsed && (parsed.skills || parsed.activities)) { data = parsed; break; }
+      } catch { /* try next */ }
+    }
+    if (!data) throw new Error('Player not found');
     const skillMap = {
       'Attack':'attack','Defence':'defence','Strength':'strength','Hitpoints':'hitpoints',
       'Ranged':'ranged','Prayer':'prayer','Magic':'magic','Cooking':'cooking',
