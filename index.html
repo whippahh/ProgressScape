@@ -1330,68 +1330,6 @@
   }
 
   /* Floating tier header overlay — single fixed div, only one active at a time */
-
-  #whats-next-banner {
-    display: none;
-    margin: 0.75rem 2rem 0;
-    padding: 0.7rem 1rem 0.7rem 1.1rem;
-    background: linear-gradient(90deg, rgba(42,107,42,0.18) 0%, rgba(42,107,42,0.06) 100%);
-    border: 1px solid rgba(61,158,61,0.3);
-    border-left: 3px solid var(--green-light);
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-  #whats-next-banner .wnb-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--green-light);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  #whats-next-banner .wnb-name {
-    font-family: 'IM Fell English', serif;
-    font-size: 0.95rem;
-    color: var(--text-light);
-    flex: 1;
-    min-width: 0;
-  }
-  #whats-next-banner .wnb-type {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    flex-shrink: 0;
-  }
-  #whats-next-banner .wnb-btn {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--stone);
-    background: var(--green-light);
-    border: none;
-    border-radius: 2px;
-    padding: 4px 10px;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: opacity 0.15s;
-  }
-  #whats-next-banner .wnb-btn:hover { opacity: 0.85; }
-  #whats-next-banner .wnb-dismiss {
-    font-size: 0.75rem;
-    color: var(--stone-lighter);
-    cursor: pointer;
-    flex-shrink: 0;
-    background: none;
-    border: none;
-    padding: 0 2px;
-    line-height: 1;
-  }
-  #whats-next-banner .wnb-dismiss:hover { color: var(--text-muted); }
-
   #tier-float {
     display: none;
     position: fixed;
@@ -1503,12 +1441,10 @@
     min-width: 48px;
     text-align: right;
   }
-
-
   .tier-mark-all {
     font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-muted);
     background: rgba(255,255,255,0.04);
@@ -1525,7 +1461,7 @@
     border-color: var(--gold-dark);
     background: rgba(200,168,75,0.08);
   }
-  .tier-mark-all.all-done {
+  .tier-mark-all.tier-all-done {
     color: var(--green-light);
     border-color: var(--green);
   }
@@ -2485,14 +2421,6 @@
     <button class="chip" data-filter="available" onclick="setFilter('available')">✅ Available Now</button>
   </div>
 
-  <div id="whats-next-banner">
-    <span class="wnb-label">⚔ Up Next</span>
-    <span class="wnb-name" id="wnb-name"></span>
-    <span class="wnb-type" id="wnb-type"></span>
-    <button class="wnb-btn" onclick="wnbMarkDone()">Mark Done</button>
-    <button class="wnb-dismiss" onclick="wnbDismiss()" title="Dismiss">✕</button>
-  </div>
-
   <div class="search-row">
     <input class="search-input" type="text" id="search-input" placeholder="Search… (press / to focus)" oninput="renderTable(); pushFilterState()">
     <span class="results-count" id="results-count"></span>
@@ -2662,12 +2590,10 @@
 
     <div id="planner-empty" class="planner-empty">
       <span>🗺</span>
-      <strong style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold-dark);font-style:normal;letter-spacing:1px;">No Path Charted Yet</strong>
-      <p style="margin:0.75rem 0 1.25rem;font-size:0.92rem;max-width:380px;margin-left:auto;margin-right:auto;">
-        Build your own goal list with tasks, custom entries, and notes.<br>
-        Add items from the Progression list, or create your own below.
-      </p>
-      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+      <strong style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold-dark);font-style:normal;letter-spacing:1px;display:block;margin-bottom:0.5rem;">No Path Charted Yet</strong>
+      Build your own goal list with tasks, custom entries &amp; notes.<br>
+      Add items from the Progression list, or create your own below.
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem;">
         <button class="btn" onclick="showPage('progression')" style="font-size:0.8rem">Browse Progression List</button>
         <button class="btn btn-ghost" onclick="openPlannerModal('custom')" style="font-size:0.8rem">+ Add Custom Entry</button>
       </div>
@@ -2869,12 +2795,12 @@ function init() {
   autoDetectOpenTier();
   renderTable();
   updateProgress();
-  loadFilterFromURL();
   updateCombatDisplay();
   renderFloatingHistory();
   setTimeout(updateHeaderHeight, 50);
   loadPlan();
   renderPlanner();
+  loadFilterFromURL();
 }
 
 function loadFromStorage() {
@@ -3269,7 +3195,7 @@ async function lookupRSN() {
 // ============================================================
 // FILTERS & RENDERING
 // ============================================================
-function setFilter(f) {
+function setFilter(f, silent) {
   if (f === 'all') {
     activeFilters = new Set(['all']);
   } else {
@@ -3285,6 +3211,7 @@ function setFilter(f) {
     el.classList.toggle('active', activeFilters.has(el.dataset.filter));
   });
   renderTable();
+  if (!silent) pushFilterState();
 }
 
 function renderTable() {
@@ -3350,6 +3277,7 @@ function renderTable() {
                 <div class="tier-progress-bar" style="width:${tierPct}%"></div>
               </div>
               <span class="tier-count">${tierDone}/${tierTotal}</span>
+              <button class="tier-mark-all ${allComplete ? 'tier-all-done' : ''}" onclick="markTierDone('${tier.id}', event)">${allComplete ? '✓ All Done' : 'Mark All'}</button>
             </div>
           </div>
         </td>
@@ -3392,6 +3320,7 @@ function renderTable() {
               <div class="tier-progress-bar" style="width:${tierPct}%"></div>
             </div>
             <span class="tier-count">${tierDone}/${tierTotal}</span>
+            <button class="tier-mark-all ${allComplete ? 'tier-all-done' : ''}" onclick="markTierDone('${tier.id}', event)">${allComplete ? '✓ All Done' : 'Mark All'}</button>
           </div>
         </div>
       </td>
@@ -3405,7 +3334,6 @@ function renderTable() {
   tbody.innerHTML = html || `<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">No items found.</td></tr>`;
   updateHeaderHeight();
   updateTierFloat();
-  updateWhatsNextBanner();
 }
 
 function buildRowHtml(item) {
@@ -3507,22 +3435,19 @@ function toggleDone(order) {
   updateProgress();
 }
 
-
 function markTierDone(tierId, e) {
   e.stopPropagation();
   var tier = TIERS.find(function(t) { return t.id === tierId; });
   if (!tier) return;
-  var tierItems = getActiveData().filter(function(item) {
+  var data = getActiveData();
+  var tierItems = data.filter(function(item) {
     var ord = ironmanMode ? (item.imOrder || item.order) : item.order;
     return ord >= tier.minOrder && ord <= tier.maxOrder;
   });
   var allDone = tierItems.every(function(item) { return completedSet.has(item.order); });
   tierItems.forEach(function(item) {
-    if (allDone) {
-      completedSet.delete(item.order);
-    } else {
-      completedSet.add(item.order);
-    }
+    if (allDone) { completedSet.delete(item.order); }
+    else { completedSet.add(item.order); }
   });
   recalcQPFromCompleted();
   saveToStorage();
@@ -4804,6 +4729,58 @@ function importPlan(e) {
 // Legacy export shim (keeps any old onclick="exportPlan()" references working)
 function exportPlan() { openShareModal(); }
 
+// ============================================================
+// URL FILTER STATE
+// ============================================================
+function pushFilterState() {
+  try {
+    var params = new URLSearchParams();
+    var filters = Array.from(activeFilters).filter(function(f) { return f !== 'all'; });
+    if (filters.length) params.set('filter', filters.join(','));
+    var search = document.getElementById('search-input');
+    if (search && search.value) params.set('q', search.value);
+    var str = params.toString();
+    history.replaceState(null, '', window.location.pathname + (str ? '?' + str : ''));
+  } catch(e) {}
+}
+
+function loadFilterFromURL() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var filter = params.get('filter');
+    var q = params.get('q');
+    if (filter) {
+      filter.split(',').forEach(function(f) {
+        f = f.trim();
+        if (f) setFilter(f, true);
+      });
+      renderTable();
+    }
+    if (q) {
+      var s = document.getElementById('search-input');
+      if (s) { s.value = q; renderTable(); }
+    }
+  } catch(e) {}
+}
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', function(e) {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    var page = document.getElementById('page-progression');
+    if (page && page.classList.contains('active')) {
+      e.preventDefault();
+      var s = document.getElementById('search-input');
+      if (s) { s.focus(); s.select(); }
+    }
+  }
+  if (e.key === 'Escape') {
+    var detail = document.getElementById('detail-overlay');
+    if (detail && detail.classList.contains('open')) closeDetailBtn();
+  }
+});
+
 </script>
 <div id="tier-float"></div>
 
@@ -4965,111 +4942,6 @@ function exportPlan() { openShareModal(); }
     </div>
   </div>
 </div>
-
-// ============================================================
-// WHAT'S NEXT BANNER
-// ============================================================
-var wnbDismissedOrder = null;
-
-function updateWhatsNextBanner() {
-  var banner = document.getElementById('whats-next-banner');
-  if (!banner) return;
-  var hasStats = Object.keys(playerStats).length > 0 || playerQP > 0;
-  if (!hasStats) { banner.style.display = 'none'; return; }
-
-  var data = getActiveData();
-  // Find first incomplete item that meets reqs, prioritising lowest order
-  var candidate = null;
-  for (var i = 0; i < data.length; i++) {
-    var item = data[i];
-    if (completedSet.has(item.order)) continue;
-    if (item.order === wnbDismissedOrder) continue;
-    var met = meetsReqs(item);
-    if (met === true) { candidate = item; break; }
-  }
-
-  if (!candidate) { banner.style.display = 'none'; return; }
-
-  document.getElementById('wnb-name').textContent = candidate.name;
-  document.getElementById('wnb-type').textContent = candidate.type;
-  banner.style.display = 'flex';
-  banner._order = candidate.order;
-}
-
-function wnbMarkDone() {
-  var banner = document.getElementById('whats-next-banner');
-  if (!banner || !banner._order) return;
-  var item = SPINE_DATA.find(function(d) { return d.order === banner._order; });
-  if (item) {
-    completedSet.add(banner._order);
-    if (item.qp > 0) {
-      playerQP += item.qp;
-      var qpInput = document.getElementById('qp-input');
-      if (qpInput) qpInput.value = playerQP;
-    }
-    saveToStorage();
-    renderTable();
-    updateProgress();
-  }
-}
-
-function wnbDismiss() {
-  var banner = document.getElementById('whats-next-banner');
-  if (banner) {
-    wnbDismissedOrder = banner._order;
-    banner.style.display = 'none';
-  }
-}
-
-// ============================================================
-// URL FILTER STATE
-// ============================================================
-function pushFilterState() {
-  var params = new URLSearchParams();
-  var filters = Array.from(activeFilters).filter(f => f !== 'all');
-  if (filters.length) params.set('filter', filters.join(','));
-  var search = document.getElementById('search-input');
-  if (search && search.value) params.set('q', search.value);
-  var str = params.toString();
-  var newUrl = window.location.pathname + (str ? '?' + str : '');
-  history.replaceState(null, '', newUrl);
-}
-
-function loadFilterFromURL() {
-  var params = new URLSearchParams(window.location.search);
-  var filter = params.get('filter');
-  var q = params.get('q');
-  if (filter) {
-    filter.split(',').forEach(function(f) {
-      f = f.trim();
-      if (f) setFilter(f, true);
-    });
-  }
-  if (q) {
-    var s = document.getElementById('search-input');
-    if (s) { s.value = q; }
-  }
-}
-
-// ============================================================
-// KEYBOARD SHORTCUTS
-// ============================================================
-document.addEventListener('keydown', function(e) {
-  // Press / to focus search (unless already in an input)
-  if (e.key === '/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
-    var page = document.getElementById('page-progression');
-    if (page && page.classList.contains('active')) {
-      e.preventDefault();
-      var s = document.getElementById('search-input');
-      if (s) { s.focus(); s.select(); }
-    }
-  }
-  // Escape closes detail modal
-  if (e.key === 'Escape') {
-    var detail = document.getElementById('detail-overlay');
-    if (detail && detail.classList.contains('open')) closeDetailBtn();
-  }
-});
 
 <script>
 (function() {
