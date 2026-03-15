@@ -72,6 +72,14 @@
     white-space: nowrap;
   }
 
+  .site-title-img {
+    height: 58px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
   .site-title span {
     color: var(--gold-light);
   }
@@ -2359,7 +2367,7 @@
 
 <header>
   <div class="header-inner">
-    <div class="site-title">Progress<span>Scape</span></div>
+    <img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img">
     <nav>
       <button class="nav-btn active" onclick="showPage('progression')">Progression</button>
       <button class="nav-btn" onclick="showPage('stats')">My Stats</button>
