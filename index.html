@@ -3211,11 +3211,42 @@ function renderTable() {
 
   document.getElementById('results-count').textContent = `${filteredData.length} items`;
 
-  // When filtering/searching, render flat (no accordions)
+  // When filtering/searching, render grouped by tier (all tiers forced open, no chevron/toggle)
   if (isFiltered && (search || !activeFilters.has('all') || !showCompleted)) {
-    const html = filteredData.map(item => buildRowHtml(item)).join('');
+    let html = '';
+    for (const tier of TIERS) {
+      const tierItems = filteredData.filter(item => {
+        const ord = ironmanMode ? (item.imOrder || item.order) : item.order;
+        return ord >= tier.minOrder && ord <= tier.maxOrder;
+      });
+      if (tierItems.length === 0) continue;
+      const tierDone = tierItems.filter(item => completedSet.has(item.order)).length;
+      const tierTotal = tierItems.length;
+      const tierPct = Math.round((tierDone / tierTotal) * 100);
+      const allComplete = tierDone === tierTotal;
+      const isOpen = openTiers.has(tier.id);
+      html += `<tr class="tier-header-row ${allComplete ? 'tier-complete' : ''}" data-tier="${tier.id}" onclick="toggleTier('${tier.id}')">
+        <td colspan="10">
+          <div class="tier-header-inner">
+            <div class="tier-header-left">
+              <span class="tier-chevron ${isOpen ? 'open' : ''}">${isOpen ? '▼' : '▶'}</span>
+              <span class="tier-label">${tier.label}</span>
+              ${allComplete ? '<span class="tier-done-badge">✓ Complete</span>' : ''}
+            </div>
+            <div class="tier-header-right">
+              <div class="tier-progress-wrap">
+                <div class="tier-progress-bar" style="width:${tierPct}%"></div>
+              </div>
+              <span class="tier-count">${tierDone}/${tierTotal}</span>
+            </div>
+          </div>
+        </td>
+      </tr>`;
+      if (isOpen) html += tierItems.map(item => buildRowHtml(item)).join('');
+    }
     tbody.innerHTML = html || `<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:'IM Fell English',serif;font-style:italic">No items match the current filters.</td></tr>`;
-    var f = document.getElementById('tier-float'); if (f) f.style.display = 'none';
+    updateHeaderHeight();
+    updateTierFloat();
     return;
   }
 
@@ -4038,9 +4069,9 @@ function updateTierFloat() {
   var page = document.getElementById('page-progression');
   if (!page || !page.classList.contains('active')) { float.style.display = 'none'; return; }
 
-  var headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 64;
-  var theadH  = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--thead-h')) || 38;
-  var pinTop  = headerH + theadH;
+  // Use live measurement - immune to header height changes and scroll position
+  var thead = document.querySelector('#main-table thead');
+  var pinTop = thead ? Math.round(thead.getBoundingClientRect().bottom) : 102;
 
   var rows = document.querySelectorAll('.tier-header-row');
   var active = null;
