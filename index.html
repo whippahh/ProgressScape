@@ -2736,8 +2736,24 @@ const SKILLS = [
 // ============================================================
 // INIT
 // ============================================================
+function recalcQPFromCompleted() {
+  // Recompute playerQP by summing qp values of all completed items.
+  // Fixes drift when quests were bulk-imported or RSN-synced without
+  // the per-toggle QP increment running.
+  let total = 0;
+  completedSet.forEach(order => {
+    const item = SPINE_DATA.find(d => d.order === order);
+    if (item && item.qp > 0) total += item.qp;
+  });
+  playerQP = total;
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) qpInput.value = playerQP || '';
+  saveToStorage();
+}
+
 function init() {
   loadFromStorage();
+  recalcQPFromCompleted();
   buildSkillsGrid();
   autoDetectOpenTier();
   renderTable();
@@ -4620,5 +4636,220 @@ function exportPlan() { openShareModal(); }
 
 </script>
 <div id="tier-float"></div>
+
+<!-- ===== SPLASH / WELCOME MODAL ===== -->
+<div id="splash-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,8,4,0.92);display:flex;align-items:center;justify-content:center;padding:24px 16px;">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+    #splash-modal * { box-sizing: border-box; margin: 0; padding: 0; }
+    #splash-modal {
+      width: 100%; max-width: 660px;
+      background: #13100a;
+      border: 1px solid #5a4520;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 0 1px #2a1e0a, 0 32px 80px rgba(0,0,0,0.85), inset 0 1px 0 rgba(201,168,76,0.15);
+    }
+    .sp-corner { position:absolute;width:18px;height:18px;border-color:#c9a84c;border-style:solid;z-index:10;pointer-events:none; }
+    .sp-corner-tl { top:6px;left:6px;border-width:2px 0 0 2px; }
+    .sp-corner-tr { top:6px;right:6px;border-width:2px 2px 0 0; }
+    .sp-corner-bl { bottom:6px;left:6px;border-width:0 0 2px 2px; }
+    .sp-corner-br { bottom:6px;right:6px;border-width:0 2px 2px 0; }
+    #splash-modal .sp-header {
+      padding:24px 28px 18px; text-align:center;
+      background:linear-gradient(180deg,#1e1608 0%,#13100a 100%);
+      border-bottom:1px solid #2e2210;
+    }
+    .sp-divrow { display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px; }
+    .sp-divline { flex:1;height:1px;background:linear-gradient(90deg,transparent,#5a4520,transparent);max-width:80px; }
+    .sp-gem { width:7px;height:7px;background:#c9a84c;transform:rotate(45deg); }
+    .sp-title { font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:#e8c96a;letter-spacing:4px;text-transform:uppercase;line-height:1;margin-bottom:6px;text-shadow:0 0 40px rgba(201,168,76,0.4); }
+    .sp-sub { font-family:'Crimson Text',serif;font-style:italic;font-size:14px;color:#7a6840;letter-spacing:1px; }
+    .sp-tabs { display:flex;background:#0d0b07;border-bottom:1px solid #2e2210; }
+    .sp-tab {
+      flex:1;padding:10px 4px;text-align:center;
+      font-family:'Cinzel',serif;font-size:10px;color:#5a4a28;cursor:pointer;
+      letter-spacing:1px;text-transform:uppercase;border:none;background:none;
+      border-bottom:2px solid transparent;transition:all 0.2s;position:relative;
+    }
+    .sp-tab::after { content:'';position:absolute;right:0;top:25%;bottom:25%;width:1px;background:#2e2210; }
+    .sp-tab:last-child::after { display:none; }
+    .sp-tab.sp-active { color:#e8c96a;border-bottom:2px solid #c9a84c;background:linear-gradient(180deg,rgba(201,168,76,0.05) 0%,transparent 100%); }
+    .sp-tab:hover:not(.sp-active) { color:#a08840; }
+    .sp-panel { display:none;padding:22px 28px 18px; }
+    .sp-panel.sp-active { display:block; }
+    .sp-feat-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px; }
+    .sp-feat-card {
+      background:#18140d;border:1px solid #2e2210;border-radius:2px;padding:14px;
+      position:relative;overflow:hidden;transition:border-color 0.2s;
+    }
+    .sp-feat-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--sp-accent,#c9a84c),transparent);opacity:0.6; }
+    .sp-feat-card:nth-child(1){--sp-accent:#c9a84c}
+    .sp-feat-card:nth-child(2){--sp-accent:#7abf8e}
+    .sp-feat-card:nth-child(3){--sp-accent:#6aa8d4}
+    .sp-feat-card:nth-child(4){--sp-accent:#c47a5a}
+    .sp-feat-card:hover { border-color:#5a4520; }
+    .sp-feat-icon { font-size:20px;margin-bottom:8px;display:block; }
+    .sp-feat-title { font-family:'Cinzel',serif;font-size:10px;color:#c9a84c;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px; }
+    .sp-feat-desc { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
+    .sp-step-list { list-style:none;display:flex;flex-direction:column;gap:14px; }
+    .sp-step-item { display:flex;gap:14px;align-items:flex-start; }
+    .sp-step-num {
+      width:28px;height:28px;min-width:28px;
+      background:linear-gradient(135deg,#2e2210,#1a1508);border:1px solid #5a4520;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Cinzel',serif;font-size:11px;color:#c9a84c;font-weight:600;
+    }
+    .sp-step-title { font-family:'Cinzel',serif;font-size:11px;color:#d4b86a;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px; }
+    .sp-step-detail { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
+    .sp-pill { display:inline-block;background:#1e1a10;border:1px solid #3a2e14;border-radius:2px;padding:1px 6px;font-family:'Cinzel',serif;font-size:9px;color:#c9a84c;letter-spacing:0.5px;vertical-align:middle; }
+    .sp-pill-green { border-color:#2a4a32;color:#7abf8e;background:#0f1e14; }
+    .sp-tip-list { display:flex;flex-direction:column;gap:10px; }
+    .sp-tip-item { display:flex;gap:12px;padding:12px 14px;background:#18140d;border:1px solid #2e2210;border-radius:2px; }
+    .sp-tip-dot { width:6px;min-width:6px;height:6px;background:#c9a84c;transform:rotate(45deg);margin-top:5px; }
+    .sp-tip-head { font-family:'Cinzel',serif;font-size:10px;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px; }
+    .sp-tip-text { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
+    .sp-hint { font-family:'Crimson Text',serif;font-style:italic;font-size:13px;color:#3a2e14;text-align:center;margin-top:12px; }
+    .sp-footer { border-top:1px solid #2e2210;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;background:#0d0b07; }
+    .sp-dots { display:flex;gap:8px;align-items:center; }
+    .sp-dot { width:6px;height:6px;background:#2e2210;transform:rotate(45deg);cursor:pointer;transition:all 0.2s; }
+    .sp-dot.sp-active { background:#c9a84c;box-shadow:0 0 6px rgba(201,168,76,0.5); }
+    .sp-skip { font-family:'Crimson Text',serif;font-style:italic;font-size:13px;color:#4a3e22;cursor:pointer;background:none;border:none;padding:0;transition:color 0.15s; }
+    .sp-skip:hover { color:#7a6840; }
+    .sp-next {
+      font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+      color:#13100a;background:linear-gradient(135deg,#d4a843,#c9a84c,#b8922e);
+      border:none;padding:10px 22px;cursor:pointer;border-radius:2px;
+      transition:opacity 0.15s,transform 0.1s;
+      box-shadow:0 2px 12px rgba(201,168,76,0.25),inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .sp-next:hover { opacity:0.9;transform:translateY(-1px); }
+    .sp-next:active { transform:translateY(0); }
+    @media(max-width:480px){
+      .sp-feat-grid{grid-template-columns:1fr;}
+      .sp-title{font-size:20px;letter-spacing:2px;}
+    }
+  </style>
+
+  <div id="splash-modal">
+    <div class="sp-corner sp-corner-tl"></div>
+    <div class="sp-corner sp-corner-tr"></div>
+    <div class="sp-corner sp-corner-bl"></div>
+    <div class="sp-corner sp-corner-br"></div>
+
+    <div class="sp-header">
+      <div class="sp-divrow"><div class="sp-divline"></div><div class="sp-gem"></div><div class="sp-divline"></div></div>
+      <div class="sp-title">ProgressScape</div>
+      <div class="sp-sub">Your OSRS Progression Companion</div>
+      <div class="sp-divrow" style="margin-top:12px;margin-bottom:0;"><div class="sp-divline"></div><div class="sp-gem"></div><div class="sp-divline"></div></div>
+    </div>
+
+    <div class="sp-tabs">
+      <button class="sp-tab sp-active" onclick="spShowTab(0)">Overview</button>
+      <button class="sp-tab" onclick="spShowTab(1)">Getting Started</button>
+      <button class="sp-tab" onclick="spShowTab(2)">Features</button>
+      <button class="sp-tab" onclick="spShowTab(3)">Tips</button>
+    </div>
+
+    <div class="sp-panel sp-active" id="sp-tab-0">
+      <div class="sp-feat-grid">
+        <div class="sp-feat-card"><span class="sp-feat-icon">📋</span><div class="sp-feat-title">Progression List</div><div class="sp-feat-desc">477+ bosses, quests, diaries &amp; activities. Filter by type, lock status, and availability.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">🎲</span><div class="sp-feat-title">Task Oracle</div><div class="sp-feat-desc">Can't decide what to do next? Roll a random task or ask for a smart suggestion.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">🗺</span><div class="sp-feat-title">Custom Path</div><div class="sp-feat-desc">Build your own goal list with dependency trees. Add tasks, custom entries, and notes.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">📤</span><div class="sp-feat-title">Share &amp; Import</div><div class="sp-feat-desc">Share your path with friends via a compact code or .json file. Import theirs instantly.</div></div>
+      </div>
+      <div class="sp-hint">— Click a tab above to learn more —</div>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-1">
+      <ul class="sp-step-list">
+        <li class="sp-step-item"><div class="sp-step-num">I</div><div><div class="sp-step-title">Set your stats</div><div class="sp-step-detail">Head to <span class="sp-pill">My Stats</span> and enter your skill levels, or use RSN Lookup to auto-fill from the hiscores.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">II</div><div><div class="sp-step-title">See what's available</div><div class="sp-step-detail">On <span class="sp-pill">Progression</span>, filter by <span class="sp-pill sp-pill-green">✅ Available Now</span> to see everything unlocked for your account today.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">III</div><div><div class="sp-step-title">Mark things done</div><div class="sp-step-detail">Tick any entry's checkbox to track your progress. Everything saves automatically in your browser.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">IV</div><div><div class="sp-step-title">Build a plan</div><div class="sp-step-detail">Use <span class="sp-pill">Custom Path</span> to map out goals with a dependency tree, then share with friends.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-2">
+      <div class="sp-tip-list">
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🪓 Ironman Mode</div><div class="sp-tip-text">Toggle Ironman mode in the header to switch filters and content to Ironman-relevant entries.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🔍 Stacked Filters</div><div class="sp-tip-text">Filter by Quests, Bosses, Activities, Diaries, Miniquests, and Unlocks — combine them freely to narrow your view.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🎲 Task Oracle</div><div class="sp-tip-text">Use <span class="sp-pill">Suggest Task</span> for an intelligent pick, or <span class="sp-pill">Random</span> to spin the wheel. Hit Mark Done &amp; Roll Again to chain sessions.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🌳 Dependency Tree</div><div class="sp-tip-text">In Custom Path, use <span class="sp-pill">Path to Goal</span> on any entry to generate a full tree of everything needed to unlock it.</div></div></div>
+      </div>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-3">
+      <div class="sp-tip-list">
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Your data is local</div><div class="sp-tip-text">Progress is stored in your browser. Clearing site data resets it — export your Custom Path as a .json backup regularly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">RSN Lookup vs manual</div><div class="sp-tip-text">RSN Lookup fills from the hiscores but won't update live. Re-run it whenever your levels change significantly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Sharing paths</div><div class="sp-tip-text">Use <span class="sp-pill">Share Code</span> for a compact string to paste in Discord. Use <span class="sp-pill">Download .json</span> to send the full file directly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Hide completed</div><div class="sp-tip-text">Toggle <span class="sp-pill">Hide Completed</span> on the progression list to keep your view clean as your log fills up.</div></div></div>
+      </div>
+    </div>
+
+    <div class="sp-footer">
+      <div class="sp-dots" id="sp-dots">
+        <div class="sp-dot sp-active" onclick="spShowTab(0)"></div>
+        <div class="sp-dot" onclick="spShowTab(1)"></div>
+        <div class="sp-dot" onclick="spShowTab(2)"></div>
+        <div class="sp-dot" onclick="spShowTab(3)"></div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center;">
+        <button class="sp-skip" onclick="spDismiss(true)">Don't show again</button>
+        <button class="sp-next" id="sp-next-btn" onclick="spNext()">Begin &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var spCurrent = 0;
+  var spTotal = 4;
+
+  function spInit() {
+    if (!localStorage.getItem('progressscape_welcomed')) {
+      document.getElementById('splash-overlay').style.display = 'flex';
+    }
+  }
+
+  window.spShowTab = function(i) {
+    spCurrent = i;
+    document.querySelectorAll('.sp-panel').forEach(function(p,idx){ p.classList.toggle('sp-active', idx===i); });
+    document.querySelectorAll('.sp-tab').forEach(function(t,idx){ t.classList.toggle('sp-active', idx===i); });
+    document.querySelectorAll('.sp-dot').forEach(function(d,idx){ d.classList.toggle('sp-active', idx===i); });
+    document.getElementById('sp-next-btn').innerHTML = i === spTotal-1 ? 'Enter the World ✓' : 'Next &rarr;';
+  };
+
+  window.spNext = function() {
+    if (spCurrent < spTotal - 1) {
+      spShowTab(spCurrent + 1);
+    } else {
+      spDismiss(false);
+    }
+  };
+
+  window.spDismiss = function(permanent) {
+    if (permanent) localStorage.setItem('progressscape_welcomed', '1');
+    document.getElementById('splash-overlay').style.display = 'none';
+  };
+
+  // Close on overlay click (outside modal)
+  document.getElementById('splash-overlay').addEventListener('click', function(e) {
+    if (e.target === this) spDismiss(false);
+  });
+
+  // Run after page init so SPINE_DATA is available
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', spInit);
+  } else {
+    spInit();
+  }
+})();
+</script>
+<!-- ===== END SPLASH ===== -->
+
 </body>
 </html>
