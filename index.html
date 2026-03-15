@@ -944,10 +944,8 @@
   .skill-icon {
     width: 20px;
     height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
+    object-fit: contain;
+    image-rendering: pixelated;
     flex-shrink: 0;
   }
 
@@ -2760,15 +2758,40 @@ let ironmanMode = false;
 let openTiers = new Set();
 
 const SKILLS = [
-  {name:'Attack',emoji:'⚔️'},{name:'Strength',emoji:'💪'},{name:'Defence',emoji:'🛡️'},
-  {name:'Hitpoints',emoji:'❤️'},{name:'Ranged',emoji:'🏹'},{name:'Prayer',emoji:'✨'},
-  {name:'Magic',emoji:'🔮'},{name:'Cooking',emoji:'🍳'},{name:'Woodcutting',emoji:'🪓'},
-  {name:'Fletching',emoji:'🪶'},{name:'Fishing',emoji:'🎣'},{name:'Firemaking',emoji:'🔥'},
-  {name:'Crafting',emoji:'✂️'},{name:'Smithing',emoji:'🔨'},{name:'Mining',emoji:'⛏️'},
-  {name:'Herblore',emoji:'🌿'},{name:'Agility',emoji:'🏃'},{name:'Thieving',emoji:'🦝'},
-  {name:'Slayer',emoji:'💀'},{name:'Farming',emoji:'🌱'},{name:'Runecraft',emoji:'🔷'},
-  {name:'Hunter',emoji:'🦊'},{name:'Construction',emoji:'🏠'},{name:'Sailing',emoji:'⛵'},
+  {name:'Attack',icon:'https://oldschool.runescape.wiki/images/Attack_icon.png'},
+  {name:'Strength',icon:'https://oldschool.runescape.wiki/images/Strength_icon.png'},
+  {name:'Defence',icon:'https://oldschool.runescape.wiki/images/Defence_icon.png'},
+  {name:'Hitpoints',icon:'https://oldschool.runescape.wiki/images/Hitpoints_icon.png'},
+  {name:'Ranged',icon:'https://oldschool.runescape.wiki/images/Ranged_icon.png'},
+  {name:'Prayer',icon:'https://oldschool.runescape.wiki/images/Prayer_icon.png'},
+  {name:'Magic',icon:'https://oldschool.runescape.wiki/images/Magic_icon.png'},
+  {name:'Cooking',icon:'https://oldschool.runescape.wiki/images/Cooking_icon.png'},
+  {name:'Woodcutting',icon:'https://oldschool.runescape.wiki/images/Woodcutting_icon.png'},
+  {name:'Fletching',icon:'https://oldschool.runescape.wiki/images/Fletching_icon.png'},
+  {name:'Fishing',icon:'https://oldschool.runescape.wiki/images/Fishing_icon.png'},
+  {name:'Firemaking',icon:'https://oldschool.runescape.wiki/images/Firemaking_icon.png'},
+  {name:'Crafting',icon:'https://oldschool.runescape.wiki/images/Crafting_icon.png'},
+  {name:'Smithing',icon:'https://oldschool.runescape.wiki/images/Smithing_icon.png'},
+  {name:'Mining',icon:'https://oldschool.runescape.wiki/images/Mining_icon.png'},
+  {name:'Herblore',icon:'https://oldschool.runescape.wiki/images/Herblore_icon.png'},
+  {name:'Agility',icon:'https://oldschool.runescape.wiki/images/Agility_icon.png'},
+  {name:'Thieving',icon:'https://oldschool.runescape.wiki/images/Thieving_icon.png'},
+  {name:'Slayer',icon:'https://oldschool.runescape.wiki/images/Slayer_icon.png'},
+  {name:'Farming',icon:'https://oldschool.runescape.wiki/images/Farming_icon.png'},
+  {name:'Runecraft',icon:'https://oldschool.runescape.wiki/images/Runecraft_icon.png'},
+  {name:'Hunter',icon:'https://oldschool.runescape.wiki/images/Hunter_icon.png'},
+  {name:'Construction',icon:'https://oldschool.runescape.wiki/images/Construction_icon.png'},
+  {name:'Sailing',icon:'https://oldschool.runescape.wiki/images/Sailing_icon.png'}
 ];
+
+const TYPE_ICONS = {
+  'Quest':         'https://oldschool.runescape.wiki/images/Quest_point_icon.png',
+  'Boss':          'https://oldschool.runescape.wiki/images/Skull_icon.png',
+  'Activity/Goal': 'https://oldschool.runescape.wiki/images/Minigame_map_icon.png',
+  'Unlock':        'https://oldschool.runescape.wiki/images/Member_icon.png',
+  'Miniquest':     'https://oldschool.runescape.wiki/images/Miniquest_icon.png',
+  'Diary':         'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
+};
 
 // ============================================================
 // INIT
@@ -3403,7 +3426,7 @@ function buildRowHtml(item) {
     </td>
     <td>${displayOrder}</td>
     <td class="td-name">${item.source ? `<a href="${item.source}" target="_blank" onclick="event.stopPropagation()">${item.name}</a>` : item.name}${imBadge}${userNotes[item.order] ? '<span class="note-indicator" title="Has notes">📝</span>' : ''}${mobileDetailHtml}</td>
-    <td><span class="type-badge badge-${item.type.replace('/','\\/')}">${item.type}</span>${tierHtml}</td>
+    <td><span class="type-badge badge-${item.type.replace('/','\\/')}">${TYPE_ICONS[item.type] ? `<img src="${TYPE_ICONS[item.type]}" alt="" style="width:12px;height:12px;object-fit:contain;vertical-align:middle;margin-right:3px;opacity:0.85">` : ''} ${item.type}</span>${tierHtml}</td>
     <td class="skill-req">${reqHtml}</td>
     <td class="skill-req">${prereqHtml}</td>
     <td class="qp-badge">${item.qp > 0 ? item.qp : ''}</td>
@@ -3491,7 +3514,7 @@ function openDetail(order) {
   const item = SPINE_DATA.find(d => d.order === order);
   if (!item) return;
   document.getElementById('detail-title').textContent = item.name;
-  const badgeHtml = `<span class="type-badge badge-${item.type}">${item.type}</span>`;
+  const badgeHtml = `<span class="type-badge badge-${item.type}">${TYPE_ICONS[item.type] ? '<img src="' + TYPE_ICONS[item.type] + '" alt="" style="width:12px;height:12px;object-fit:contain;vertical-align:middle;margin-right:3px;opacity:0.85">' : ''} ${item.type}</span>`;
   document.getElementById('detail-subtitle').innerHTML = badgeHtml +
     (item.bossTier ? ` <span class="boss-tier tier-${item.bossTier.toLowerCase().replace(' tier','').trim()}" style="margin-left:0.5rem">${item.bossTier}</span>` : '');
   const hasStats = Object.keys(playerStats).length > 0;
@@ -4040,6 +4063,7 @@ function buildSkillsGrid() {
   const grid = document.getElementById('skills-grid');
   grid.innerHTML = SKILLS.map(s =>
     `<div class="skill-input-row">
+      <img class="skill-icon" src="${s.icon}" alt="${s.name}" title="${s.name}" onerror="this.style.display='none'">
       <span class="skill-name-lbl">${s.name}</span>
       <input class="skill-level-input" type="number" min="1" max="99"
         id="skill-${s.name.toLowerCase()}"
