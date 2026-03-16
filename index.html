@@ -1,0 +1,5015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProgressScape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --gold: #c8a84b;
+    --gold-light: #e8c96a;
+    --gold-dark: #8a6e2a;
+    --stone: #2a2518;
+    --stone-mid: #3d3526;
+    --stone-light: #524839;
+    --stone-lighter: #6b5f48;
+    --parchment: #f0e8d0;
+    --parchment-dark: #d4c89a;
+    --red: #8b2020;
+    --red-light: #c43030;
+    --green: #2a6b2a;
+    --green-light: #3d9e3d;
+    --blue: #1a3a6b;
+    --blue-light: #2a5aa0;
+    --text-light: #f0e8d0;
+    --text-muted: #b8a87a;
+    --shadow: rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; max-width: 100vw; }
+
+  body {
+    background-color: var(--stone);
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(200,168,75,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(200,168,75,0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%232a2518'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%2330291d' opacity='0.5'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%2330291d' opacity='0.5'/%3E%3C/svg%3E");
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(180deg, #1a1408 0%, var(--stone) 100%);
+    border-bottom: 2px solid var(--gold-dark);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 64px;
+  }
+
+  .site-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 20px rgba(200,168,75,0.4);
+    white-space: nowrap;
+  }
+
+  .site-title-img {
+    height: 58px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .site-title span {
+    color: var(--gold-light);
+  }
+
+  nav {
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.45rem 1.1rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover {
+    color: var(--gold-light);
+    border-color: var(--gold-dark);
+    background: rgba(200,168,75,0.08);
+  }
+
+  .nav-btn.active {
+    color: var(--gold);
+    border-color: var(--gold);
+    background: rgba(200,168,75,0.12);
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== LOOKUP BAR ===== */
+  .lookup-bar {
+    background: linear-gradient(180deg, var(--stone-mid) 0%, var(--stone) 100%);
+    border-bottom: 1px solid var(--stone-lighter);
+    padding: 1.25rem 2rem;
+  }
+
+  .lookup-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .lookup-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .lookup-group label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .lookup-group input {
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.85rem;
+    width: 240px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .lookup-group input:focus {
+    border-color: var(--gold-dark);
+  }
+
+  .lookup-group input::placeholder {
+    color: var(--stone-lighter);
+  }
+
+  .btn {
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+    border: 1px solid var(--gold-dark);
+    border-radius: 3px;
+    color: var(--stone);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.55rem 1.4rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+
+  .btn:hover {
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+    box-shadow: 0 3px 12px rgba(200,168,75,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--stone-lighter);
+    color: var(--text-muted);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(200,168,75,0.08);
+    border-color: var(--gold-dark);
+    color: var(--gold-light);
+    box-shadow: none;
+    transform: none;
+  }
+
+  .lookup-sep {
+    color: var(--stone-lighter);
+    font-size: 0.8rem;
+    padding-bottom: 0.6rem;
+    align-self: flex-end;
+  }
+
+  /* ===== FILTERS ===== */
+  .filters-bar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.9rem 2rem;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 0.2rem;
+  }
+
+  .chip {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 2px;
+    color: var(--text-muted);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chip:hover { border-color: var(--gold-dark); color: var(--gold-light); }
+
+  .chip.active {
+    background: rgba(200,168,75,0.15);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .chip.type-quest.active { background: rgba(42,107,42,0.2); border-color: var(--green-light); color: #6fc96f; }
+  .chip.type-boss.active { background: rgba(139,32,32,0.2); border-color: var(--red-light); color: #e06060; }
+  .chip.type-activity.active { background: rgba(26,58,107,0.2); border-color: var(--blue-light); color: #7ab0f0; }
+  .chip.type-unlock.active { background: rgba(120,80,200,0.2); border-color: #8a50c8; color: #b080f0; }
+  .chip.type-miniquest.active { background: rgba(180,120,30,0.2); border-color: #c89030; color: #e8b848; }
+
+  /* ===== SEARCH ===== */
+  .search-row {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem 0.75rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .search-input {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.85rem;
+    width: 260px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--gold-dark); }
+  .search-input::placeholder { color: var(--stone-lighter); }
+
+  .results-count {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-left: auto;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.04em;
+  }
+
+  /* ===== STATUS MESSAGE ===== */
+  .status-msg {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem 0.75rem;
+  }
+
+  .status-inner {
+    background: rgba(200,168,75,0.08);
+    border: 1px solid var(--gold-dark);
+    border-radius: 3px;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-inner.error { background: rgba(139,32,32,0.15); border-color: var(--red-light); color: #e08080; }
+  .status-inner.success { background: rgba(42,107,42,0.15); border-color: var(--green-light); color: #80d080; }
+
+  /* ===== TABLE ===== */
+  .table-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 0 3rem;
+  }
+  .table-scroll {
+    overflow-x: visible;
+    padding: 0 2rem;
+  }
+  thead th {
+    position: sticky;
+    top: 64px;
+    z-index: 110;
+    background: #1a1408;
+    border-bottom: 2px solid var(--gold-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0.7rem 0.85rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+  /* Fixed column widths prevent shifting on accordion expand/collapse */
+  #main-table { table-layout: fixed; width: 100%; }
+  #main-table th:nth-child(1)  { width: 44px; }
+  #main-table th:nth-child(2)  { width: 44px; }
+  #main-table th:nth-child(3)  { min-width: 140px; }
+  #main-table th:nth-child(4)  { width: 110px; }
+  #main-table th:nth-child(5)  { width: 130px; }
+  #main-table th:nth-child(6)  { width: 150px; }
+  #main-table th:nth-child(7)  { width: 38px; }
+  #main-table th:nth-child(8)  { width: 120px; }
+  #main-table th:nth-child(9)  { width: 160px; }
+  #main-table th:nth-child(10) { width: 130px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+
+
+  thead th:first-child { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+
+  tbody tr:hover { background: rgba(200,168,75,0.06); }
+
+  tbody tr.completed {
+    background: rgba(42, 107, 42, 0.18);
+  }
+
+  tbody tr.completed:hover {
+    background: rgba(42, 107, 42, 0.26);
+  }
+
+  tbody tr.completed td {
+    color: rgba(111, 201, 111, 0.85);
+  }
+
+  tbody tr.completed .td-name a,
+  tbody tr.completed .td-name {
+    color: #6fc96f;
+  }
+
+  tbody tr.completed .type-badge {
+    opacity: 0.7;
+  }
+
+  tbody tr.completed .qp-badge {
+    color: rgba(111, 201, 111, 0.8);
+  }
+
+  tbody tr.row-locked {
+    opacity: 0.5;
+  }
+
+  tbody tr.row-achievable {
+    background: rgba(42,107,42,0.08);
+    border-left: 2px solid rgba(42,107,42,0.4);
+  }
+
+  tbody tr.row-achievable:hover {
+    background: rgba(42,107,42,0.15);
+  }
+
+  tbody tr.row-kc-progress {
+    background: rgba(40,140,200,0.08);
+    border-left: 2px solid rgba(40,140,200,0.5);
+  }
+
+  tbody tr.row-kc-progress:hover {
+    background: rgba(40,140,200,0.15);
+  }
+
+  tbody tr.row-kc-complete {
+    background: rgba(42,107,42,0.08);
+    border-left: 2px solid rgba(42,107,42,0.4);
+  }
+
+  tbody tr.row-kc-complete:hover {
+    background: rgba(42,107,42,0.15);
+  }
+
+  .drops-cell {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    max-width: 200px;
+    line-height: 1.6;
+  }
+
+  tbody tr.row-locked .td-name,
+  tbody tr.row-locked .td-name a {
+    color: var(--text-muted);
+  }
+
+  td {
+    padding: 0.55rem 0.85rem;
+    vertical-align: top;
+    color: var(--text-light);
+  }
+
+  td:first-child {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+  }
+
+  .td-name {
+    font-weight: 600;
+    color: var(--parchment);
+  }
+
+  .td-name a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .td-name a:hover { color: var(--gold-light); text-decoration: underline; }
+
+  .type-badge {
+    display: inline-block;
+    border-radius: 3px;
+    font-size: 0.72rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    white-space: nowrap;
+    border-left-width: 3px !important;
+    border-left-style: solid !important;
+  }
+
+  .badge-Quest      { background: rgba(42,107,42,0.3);    color: #7dd87d; border: 1px solid rgba(42,107,42,0.4);    border-left-color: #4a9e4a !important; }
+  .badge-Boss       { background: rgba(139,32,32,0.3);    color: #f07070; border: 1px solid rgba(139,32,32,0.4);   border-left-color: #c03030 !important; }
+  .badge-Activity\/Goal, .badge-Activity { background: rgba(26,58,107,0.3); color: #8abcf8; border: 1px solid rgba(26,58,107,0.4); border-left-color: #3a6ab8 !important; }
+  .badge-Unlock     { background: rgba(120,80,200,0.3);   color: #c090ff; border: 1px solid rgba(120,80,200,0.4);  border-left-color: #8050c0 !important; }
+  .badge-Miniquest  { background: rgba(180,120,30,0.3);   color: #f0c858; border: 1px solid rgba(180,120,30,0.4);  border-left-color: #c88820 !important; }
+  .badge-Diary      { background: rgba(80,150,200,0.3);   color: #90d8ff; border: 1px solid rgba(80,150,200,0.4);  border-left-color: #4090c0 !important; }
+  .chip.type-diary.active { background: rgba(80,150,200,0.2); border-color: #60a8d8; color: #80c8f0; }
+
+  .boss-tier {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .tier-easy { color: #6fc96f; }
+  .tier-medium { color: #e8b848; }
+  .tier-hard { color: #e09030; }
+  .tier-elite { color: #e06060; }
+  .tier-master { color: #c050c0; }
+  .tier-grandmaster { color: #ff4040; text-shadow: 0 0 8px rgba(255,64,64,0.5); }
+
+  .skill-req {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    max-width: 260px;
+  }
+
+  .req-unmet { color: #e06060; }
+
+  .info-cell {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    max-width: 320px;
+    line-height: 1.4;
+  }
+
+  .qp-badge {
+    color: var(--gold-light);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .location-cell {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* completed checkbox */
+  .check-cell {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--stone-lighter);
+    border-radius: 2px;
+    background: var(--stone-mid);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .check-box:hover { border-color: var(--gold-dark); }
+  .check-box.checked { background: var(--green); border-color: var(--green-light); }
+  .check-box.checked::after { content: '✓'; color: #6fc96f; font-size: 11px; line-height: 1; }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.75rem 2rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--stone-mid);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--stone-lighter);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .progress-label strong { color: var(--gold); }
+
+  /* ===== DETAIL PANEL ===== */
+  .detail-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    backdrop-filter: blur(3px);
+  }
+
+  .detail-overlay.open { display: flex; align-items: center; justify-content: center; }
+
+  .detail-panel {
+    background: var(--stone-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(200,168,75,0.1);
+    max-width: 560px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .detail-header {
+    background: linear-gradient(180deg, var(--stone-light) 0%, var(--stone-mid) 100%);
+    border-bottom: 1px solid var(--gold-dark);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+  }
+
+  .detail-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+  }
+
+  .detail-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0.1rem;
+    transition: color 0.15s;
+  }
+
+  .detail-close:hover { color: var(--gold); }
+
+  .detail-body { padding: 1.25rem 1.5rem; }
+
+  .detail-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+    align-items: flex-start;
+  }
+
+  .detail-row-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    width: 110px;
+    flex-shrink: 0;
+    padding-top: 0.05rem;
+  }
+
+  .detail-row-val {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .detail-divider {
+    border: none;
+    border-top: 1px solid var(--stone-lighter);
+    margin: 1rem 0;
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem 1.25rem;
+    border-top: 1px solid var(--stone-lighter);
+  }
+
+  /* ===== RANDOMIZER PAGE ===== */
+  .randomizer-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .randomizer-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .randomizer-header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(200,168,75,0.3);
+    margin-bottom: 0.5rem;
+  }
+
+  .randomizer-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+  }
+
+  .randomizer-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .spin-area {
+    background: var(--stone-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 6px;
+    padding: 2.5rem;
+    text-align: center;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.4), 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .spin-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(200,168,75,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .spin-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .spin-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(200,168,75,0.4);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spinAnim {
+    0% { opacity: 0.3; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .spin-name.spinning {
+    animation: spinAnim 0.08s ease infinite alternate;
+  }
+
+  .spin-type { margin-bottom: 1rem; }
+
+  .spin-meta {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .spin-meta-item {
+    text-align: center;
+  }
+
+  .spin-meta-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .spin-meta-val {
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+
+  .spin-info {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 500px;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+  }
+
+  .spin-idle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--stone-lighter);
+  }
+
+  .spin-btn-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .spin-btn {
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+    border: 1px solid var(--gold-dark);
+    border-radius: 4px;
+    color: var(--stone);
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.85rem 2.5rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+
+  .spin-btn:hover {
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+    box-shadow: 0 6px 20px rgba(200,168,75,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+  }
+
+  .spin-btn:active { transform: translateY(0); }
+
+  .spin-history {
+    margin-top: 2.5rem;
+  }
+
+  .spin-history h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .history-item {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    padding: 0.5rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: background 0.15s;
+  }
+
+  .history-item:hover { background: var(--stone-light); }
+
+  .history-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--stone-lighter);
+    width: 24px;
+  }
+
+  .history-name {
+    color: var(--parchment-dark);
+    font-weight: 600;
+    flex: 1;
+  }
+
+  /* ===== STATS PAGE ===== */
+  .stats-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .stats-page h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .skill-input-row {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+    gap: 0.6rem;
+    transition: border-color 0.15s;
+  }
+
+  .skill-input-row:focus-within { border-color: var(--gold-dark); }
+
+  .skill-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+  }
+
+  .skill-name-lbl {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    width: 90px;
+    flex-shrink: 0;
+  }
+
+  .skill-level-input {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: 40px;
+    text-align: right;
+    outline: none;
+  }
+
+  .skill-level-input::-webkit-inner-spin-button { opacity: 0; }
+
+  .stats-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--stone); }
+  ::-webkit-scrollbar-thumb { background: var(--stone-light); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--stone-lighter); }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 700px) {
+    header { padding: 0 0.75rem; }
+    .header-inner {
+      flex-direction: column;
+      height: auto;
+      padding: 0.5rem 0;
+      gap: 0.35rem;
+      align-items: stretch;
+    }
+    .site-title {
+      font-size: 1rem;
+      text-align: center;
+      padding: 0.15rem 0;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.2rem;
+      flex-wrap: nowrap;
+    }
+    .nav-btn {
+      font-size: 0.68rem;
+      padding: 0.3rem 0.5rem;
+      flex: 1;
+      text-align: center;
+    }
+    .lookup-inner { gap: 0.75rem; }
+    .lookup-group input { width: 100%; }
+    td { padding: 0.4rem 0.5rem; }
+  }
+
+  /* ===== MOBILE CARD VIEW ===== */
+  @media (max-width: 768px) {
+    .table-scroll {
+      overflow-x: unset;
+      overflow-y: unset;
+      max-height: unset;
+      padding: 0 0.75rem;
+    }
+
+    table, thead, tbody, tr, td, th { display: block; }
+
+    thead { display: none; }
+
+    /* Tier header rows must stay as table layout — they use flex inside */
+    .tier-header-row { display: table-row !important; }
+    .tier-header-row td { display: table-cell !important; }
+
+    .table-wrap {
+      padding: 0 0 2rem;
+    }
+
+    tbody tr {
+      background: var(--stone-mid);
+      border: 1px solid rgba(200,168,75,0.12);
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 40px 1fr 90px;
+      grid-template-rows: auto auto;
+      gap: 0;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    tbody tr:hover {
+      border-color: rgba(200,168,75,0.3);
+      background: rgba(61,53,38,0.9);
+    }
+
+    tbody tr.completed {
+      background: rgba(42,107,42,0.15);
+      border-color: rgba(42,107,42,0.3);
+    }
+
+    tbody tr.row-locked {
+      opacity: 0.5;
+    }
+
+    /* Checkbox cell */
+    tbody tr td:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 0.5rem;
+      width: auto;
+    }
+
+    /* Order number cell */
+    tbody tr td:nth-child(2) {
+      grid-column: 2;
+      grid-row: 1;
+      padding: 0.55rem 0.5rem 0.1rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+    }
+
+    /* Name cell */
+    tbody tr td:nth-child(3) {
+      grid-column: 2;
+      grid-row: 2;
+      padding: 0 0.5rem 0.55rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--parchment);
+    }
+
+    /* Type badge cell */
+    tbody tr td:nth-child(4) {
+      grid-column: 3;
+      grid-row: 1 / 3;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0.55rem 0.5rem 0.55rem 0.25rem;
+      gap: 0.3rem;
+      overflow: hidden;
+    }
+
+    tbody tr td:nth-child(4) .type-badge {
+      white-space: nowrap;
+      font-size: 0.6rem;
+      padding: 0.15rem 0.35rem;
+    }
+
+    tbody tr td:nth-child(4) .boss-tier {
+      white-space: nowrap;
+      font-size: 0.58rem;
+      text-align: right;
+      display: block;
+    }
+
+    /* Skill req, quest prereqs, QP, location, notes — hidden on mobile */
+    tbody tr td:nth-child(5),
+    tbody tr td:nth-child(6),
+    tbody tr td:nth-child(7),
+    tbody tr td:nth-child(8),
+    tbody tr td:nth-child(9) {
+      display: none;
+    }
+
+    /* Completed state tweaks */
+    tbody tr.completed td:nth-child(3) { color: #6fc96f; }
+
+    /* Progress bar padding */
+    .progress-bar-wrap {
+      padding: 0.5rem 0.75rem 0;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.75rem;
+    }
+    .progress-bar-wrap .progress-track { min-width: 60px; }
+    .progress-bar-wrap > div:last-child { width: 100%; justify-content: flex-end; margin-left: 0; }
+
+    /* Filter chips */
+    .filter-bar { padding: 0.6rem 0.75rem; gap: 0.4rem; }
+    .search-row { padding: 0.5rem 0.75rem; }
+
+    /* Tier header mobile tweaks */
+    .tier-header-inner {
+      padding: 0.65rem 0.75rem;
+      gap: 0.5rem;
+    }
+    .tier-header-left {
+      gap: 0.5rem;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+    .tier-label {
+      font-size: 0.8rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tier-progress-wrap {
+      width: 60px;
+    }
+    .tier-count {
+      font-size: 0.68rem;
+      min-width: 36px;
+    }
+    .tier-mark-all {
+      font-size: 0.58rem;
+      padding: 2px 6px;
+    }
+
+    /* Card detail line */
+    .card-detail {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+      line-height: 1.35;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+
+  }
+
+
+  /* ===== MOBILE: RANDOMIZER PAGE ===== */
+  @media (max-width: 768px) {
+    .randomizer-page {
+      padding: 1.5rem 0.75rem;
+    }
+
+    .randomizer-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .randomizer-header h1 {
+      font-size: 1.35rem;
+    }
+
+    .randomizer-header p {
+      font-size: 0.85rem;
+    }
+
+    .randomizer-filters {
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+      justify-content: flex-start;
+    }
+
+    .randomizer-filters .chip {
+      font-size: 0.72rem;
+      padding: 0.3rem 0.6rem;
+    }
+
+    .spin-area {
+      padding: 1.5rem 1rem;
+      min-height: 220px;
+    }
+
+    .spin-name {
+      font-size: 1.25rem;
+    }
+
+    .spin-meta {
+      gap: 1rem;
+    }
+
+    .spin-btn-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+    }
+
+    .spin-btn {
+      padding: 0.85rem 1rem;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .btn-ghost {
+      text-align: center;
+    }
+
+    .spin-history {
+      margin-top: 1.5rem;
+    }
+  }
+
+
+  /* ===== USER NOTES ===== */
+  .user-note-ta {
+    width: 100%;
+    min-height: 80px;
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--text-light);
+    font-family: 'IM Fell English', serif;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    padding: 0.5rem 0.6rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+  }
+
+  .user-note-ta:focus {
+    border-color: var(--gold-dark);
+  }
+
+  .user-note-ta::placeholder {
+    color: var(--stone-lighter);
+    font-style: italic;
+  }
+
+  .note-indicator {
+    font-size: 0.7rem;
+    margin-left: 0.4rem;
+    opacity: 0.7;
+    vertical-align: middle;
+    cursor: default;
+  }
+
+
+  /* ===== IRONMAN TOGGLE ===== */
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .ironman-toggle-btn {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .ironman-toggle-btn:hover {
+    border-color: var(--gold-dark);
+    color: var(--gold);
+  }
+
+  .ironman-toggle-btn.active {
+    background: linear-gradient(135deg, rgba(200,168,75,0.3), rgba(160,120,30,0.2));
+    border-color: var(--gold);
+    border-width: 2px;
+    color: var(--gold);
+    box-shadow: 0 0 14px rgba(200,168,75,0.45), inset 0 0 8px rgba(200,168,75,0.1);
+    text-shadow: 0 0 8px rgba(200,168,75,0.6);
+  }
+
+  .im-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    background: rgba(200,168,75,0.15);
+    border: 1px solid var(--gold-dark);
+    border-radius: 3px;
+    color: var(--gold);
+    margin-left: 0.4rem;
+    font-family: 'Cinzel', serif;
+    vertical-align: middle;
+  }
+
+  /* ===== ACCORDION TIERS ===== */
+  .tier-header-row {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .tier-header-row td {
+    padding: 0 !important;
+    border-top: 2px solid var(--tier-color, var(--gold-dark)) !important;
+    border-bottom: 1px solid var(--stone-lighter) !important;
+    background: linear-gradient(90deg, var(--tier-bg-dark, #1a1408) 0%, var(--tier-bg, var(--stone-mid)) 60%, transparent 100%) !important;
+  }
+
+  /* Floating tier header overlay — single fixed div, only one active at a time */
+  #tier-float {
+    display: none;
+    position: fixed;
+    left: 0; right: 0;
+    z-index: 18;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  #tier-float .tier-header-inner {
+    padding: 0.6rem 2rem;
+  }
+
+  .tier-header-row:first-child td {
+    border-top: none !important;
+  }
+
+  .tier-header-row:hover td {
+    filter: brightness(1.12);
+  }
+
+  /* Per-tier colour variables */
+  .tier-header-row[data-tier="early"] { --tier-color: #4a9e4a; --tier-bg-dark: #0e1e0e; --tier-bg: #1a2e1a; }
+  .tier-header-row[data-tier="mid"]   { --tier-color: #4a7fc8; --tier-bg-dark: #0a1428; --tier-bg: #152238; }
+  .tier-header-row[data-tier="late"]  { --tier-color: #c85050; --tier-bg-dark: #1e0a0a; --tier-bg: #2e1414; }
+  .tier-header-row[data-tier="end"]   { --tier-color: var(--gold); --tier-bg-dark: #1a1408; --tier-bg: #2a2010; }
+
+  .tier-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+    gap: 1rem;
+  }
+
+  .tier-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .tier-chevron {
+    font-size: 0.7rem;
+    color: var(--tier-color, var(--gold-dark));
+    width: 14px;
+    flex-shrink: 0;
+  }
+
+  .tier-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--tier-color, var(--gold));
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    text-shadow: 0 0 12px rgba(var(--tier-color-rgb, 200,168,75), 0.3);
+  }
+
+  /* Per-tier label colours */
+  .tier-header-row[data-tier="early"] .tier-label { color: #6fc96f; }
+  .tier-header-row[data-tier="mid"]   .tier-label { color: #7ab0f0; }
+  .tier-header-row[data-tier="late"]  .tier-label { color: #e07070; }
+  .tier-header-row[data-tier="end"]   .tier-label { color: var(--gold-light); }
+
+  .tier-header-row[data-tier="early"] .tier-chevron { color: #6fc96f; }
+  .tier-header-row[data-tier="mid"]   .tier-chevron { color: #7ab0f0; }
+  .tier-header-row[data-tier="late"]  .tier-chevron { color: #e07070; }
+  .tier-header-row[data-tier="end"]   .tier-chevron { color: var(--gold); }
+
+  .tier-done-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--green-light);
+    background: rgba(61,158,61,0.12);
+    border: 1px solid rgba(61,158,61,0.4);
+    border-radius: 3px;
+    padding: 0.1rem 0.45rem;
+    letter-spacing: 0.04em;
+  }
+
+  .tier-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .tier-progress-wrap {
+    width: 120px;
+    height: 6px;
+    background: var(--stone);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .tier-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .tier-count {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 48px;
+    text-align: right;
+  }
+  .tier-mark-all {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 2px;
+    padding: 3px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+  }
+  .tier-mark-all:hover {
+    color: var(--gold);
+    border-color: var(--gold-dark);
+    background: rgba(200,168,75,0.08);
+  }
+  .tier-mark-all.tier-all-done {
+    color: var(--green-light);
+    border-color: var(--green);
+  }
+
+  .tier-complete .tier-label {
+    color: var(--text-muted);
+  }
+
+  .tier-complete .tier-chevron {
+    color: var(--green-light);
+  }
+
+  .tier-complete .tier-progress-bar {
+    background: linear-gradient(90deg, var(--green), var(--green-light));
+  }
+
+
+
+  /* ===== BACK TO TOP ===== */
+  .back-to-top {
+    position: fixed;
+    bottom: 5.5rem;
+    right: 1.25rem;
+    z-index: 200;
+    background: var(--stone-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 50%;
+    color: var(--gold);
+    font-size: 0.9rem;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .back-to-top:hover {
+    background: rgba(200,168,75,0.15);
+  }
+
+  /* ===== FLOATING RANDOM PANEL ===== */
+  .floating-rand-trigger {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 300;
+    background: linear-gradient(135deg, #2a1f0a, var(--stone-mid));
+    border: 1px solid var(--gold-dark);
+    border-radius: 8px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.6);
+    transition: all 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .floating-rand-trigger:hover {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, #3a2a0e, #4a3c28);
+    box-shadow: 0 4px 24px rgba(200,168,75,0.25);
+  }
+
+  .floating-rand-panel {
+    position: fixed;
+    bottom: 4.5rem;
+    right: 1.25rem;
+    z-index: 299;
+    width: 320px;
+    max-width: calc(100vw - 2.5rem);
+    max-height: calc(100vh - 6rem);
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(160deg, #1e1708, var(--stone-mid));
+    border: 1px solid var(--gold-dark);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    transform: translateY(20px) scale(0.97);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    overflow: hidden;
+  }
+
+  .floating-rand-panel.open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .frand-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem 0.6rem;
+    border-bottom: 1px solid var(--stone-lighter);
+  }
+
+  .frand-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+  }
+
+  .frand-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    transition: color 0.15s;
+  }
+
+  .frand-close:hover { color: var(--text-light); }
+
+  .frand-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--stone-lighter);
+  }
+
+  .frand-filters .chip {
+    font-size: 0.68rem;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .frand-result-area {
+    min-height: 90px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--stone-lighter);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .frand-idle {
+    color: var(--text-muted);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .frand-order {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .frand-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+    transition: opacity 0.15s;
+  }
+
+  .frand-name.spinning {
+    opacity: 0.5;
+  }
+
+  .frand-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+
+  .frand-btns {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem 0.3rem;
+  }
+
+  .frand-spin-btn {
+    flex: 1;
+    font-size: 0.78rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .frand-suggest-btn {
+    background: linear-gradient(135deg, rgba(42,107,42,0.3), rgba(61,158,61,0.1));
+    border-color: rgba(61,158,61,0.5);
+    color: var(--green-light);
+  }
+
+  .frand-suggest-btn:hover {
+    border-color: var(--green-light);
+    background: rgba(61,158,61,0.2);
+  }
+
+  .frand-subbtns {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0 0.75rem 0.6rem;
+  }
+
+  .frand-subbtns .btn {
+    flex: 1;
+  }
+
+  .frand-hist-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem 0.3rem;
+    border-top: 1px solid var(--stone-lighter);
+  }
+
+  .frand-hist-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0.5rem 0.5rem;
+  }
+
+  .float-hist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .float-hist-item:hover {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .float-hist-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--stone-lighter);
+    width: 14px;
+    flex-shrink: 0;
+  }
+
+  .float-hist-name {
+    flex: 1;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 500px) {
+    .floating-rand-panel {
+      right: 0.75rem;
+      bottom: 4.2rem;
+      width: calc(100vw - 1.5rem);
+    }
+    .floating-rand-trigger {
+      right: 0.75rem;
+      bottom: 0.75rem;
+    }
+    .back-to-top {
+      right: 0.75rem;
+      bottom: 5rem;
+    }
+  }
+
+
+  /* ===== CUSTOM PATH PLANNER ===== */
+  .planner-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 4rem;
+  }
+
+  .planner-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .planner-toolbar-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin-right: auto;
+  }
+
+  .planner-add-btn {
+    background: linear-gradient(135deg, rgba(200,168,75,0.15), rgba(200,168,75,0.05));
+    border: 1px solid var(--gold-dark);
+    border-radius: 5px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .planner-add-btn:hover {
+    background: rgba(200,168,75,0.2);
+    border-color: var(--gold);
+  }
+  .planner-add-btn.add-existing { border-color: #4a9e4a; color: #7dd87d; background: rgba(74,158,74,0.1); }
+  .planner-add-btn.add-existing:hover { background: rgba(74,158,74,0.2); }
+  .planner-add-btn.add-custom { border-color: #4a7fc8; color: #8abcf8; background: rgba(74,127,200,0.1); }
+  .planner-add-btn.add-custom:hover { background: rgba(74,127,200,0.2); }
+  .planner-add-btn.add-note { border-color: #c8a030; color: #f0c858; background: rgba(200,160,48,0.1); }
+  .planner-add-btn.add-note:hover { background: rgba(200,160,48,0.2); }
+
+  .planner-io-btns {
+    display: flex;
+    gap: 0.4rem;
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 1px solid var(--stone-lighter);
+  }
+
+  .planner-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1rem;
+    border: 1px dashed var(--stone-lighter);
+    border-radius: 6px;
+  }
+  .planner-empty span {
+    display: block;
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.4;
+  }
+
+  /* ===== PLANNER TABLE ===== */
+  .planner-table-wrap {
+    overflow-x: visible;
+    border-radius: 4px;
+  }
+
+  .planner-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    table-layout: fixed;
+  }
+
+  .planner-table thead th {
+    position: sticky;
+    top: 64px;
+    z-index: 5;
+    background: #1a1408;
+    border-bottom: 2px solid var(--gold-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .planner-table .pt-drag  { width: 30px; }
+  .planner-table .pt-check { width: 36px; }
+  .planner-table .pt-type  { width: 100px; }
+  .planner-table .pt-reqs  { width: 150px; }
+  .planner-table .pt-loc   { width: 110px; }
+  .planner-table .pt-info  { width: 185px; }
+  .planner-table .pt-act   { width: 64px; }
+
+  .planner-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.1s;
+  }
+  .planner-table tbody tr:hover { background: rgba(200,168,75,0.06); }
+
+  .planner-table tbody tr.item-existing { border-left: 3px solid #4a9e4a; }
+  .planner-table tbody tr.item-custom   { border-left: 3px solid #4a7fc8; }
+  .planner-table tbody tr.item-note     { background: rgba(200,160,48,0.05); border-left: 3px solid #c8a030; }
+  .planner-table tbody tr.item-note:hover { background: rgba(200,160,48,0.1); }
+  .planner-table tbody tr.done          { background: rgba(42,107,42,0.15); }
+  .planner-table tbody tr.done:hover    { background: rgba(42,107,42,0.22); }
+  .planner-table tbody tr.drag-over     { background: rgba(200,168,75,0.08); outline: 1px solid var(--gold); }
+  .planner-table tbody tr.dragging      { opacity: 0.35; }
+
+  .planner-table td {
+    padding: 0.5rem 0.75rem;
+    vertical-align: middle;
+    color: var(--text-light);
+  }
+
+  .pt-drag-cell {
+    text-align: center;
+    cursor: grab;
+    color: var(--stone-lighter);
+    font-size: 0.85rem;
+    user-select: none;
+    opacity: 0.4;
+    padding: 0.5rem 0.25rem !important;
+    transition: opacity 0.15s;
+  }
+  .planner-table tbody tr:hover .pt-drag-cell { opacity: 0.9; }
+  .pt-drag-cell:active { cursor: grabbing; }
+
+  .pt-check-cell {
+    cursor: pointer;
+    text-align: center;
+    padding: 0.5rem 0 !important;
+  }
+
+  .pt-name-cell { min-width: 0; }
+  .pi-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-light);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .planner-table tbody tr.done .pi-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .pt-reqs-cell, .pt-loc-cell, .pt-info-cell {
+    font-size: 0.77rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+    vertical-align: top;
+    padding-top: 0.6rem !important;
+  }
+  .pt-reqs-cell .req-unmet { color: #e06060; }
+
+  .pt-note-cell {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: #d4b84a;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+  .pt-note-cell em { opacity: 0.45; }
+
+  .pt-act-cell {
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s;
+    padding: 0.5rem 0.35rem !important;
+    vertical-align: middle;
+  }
+  .planner-table tbody tr:hover .pt-act-cell { opacity: 1; }
+
+  .planner-action-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.25rem 0.35rem;
+    border-radius: 3px;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .planner-action-btn:hover { color: var(--text-light); background: rgba(255,255,255,0.07); }
+  .planner-action-btn.del:hover { color: #e06060; }
+
+  @media (max-width: 768px) {
+    .planner-page { padding: 1rem 0.5rem 3rem; }
+    .planner-table tbody .pt-reqs-cell,
+    .planner-table tbody .pt-loc-cell,
+    .planner-table tbody .pt-info-cell,
+    .planner-table thead .pt-reqs,
+    .planner-table thead .pt-loc,
+    .planner-table thead .pt-info { display: none; }
+    .planner-table .pt-type { width: 80px; }
+  }
+
+  /* Planner progress bar */
+  .planner-progress-wrap {
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .planner-progress-track {
+    flex: 1;
+    height: 5px;
+    background: var(--stone-mid);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--stone-lighter);
+  }
+  .planner-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .planner-progress-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .planner-progress-label strong { color: var(--gold); }
+
+  /* === ADD MODAL === */
+  .planner-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 250;
+    backdrop-filter: blur(3px);
+    align-items: center;
+    justify-content: center;
+  }
+  .planner-modal-overlay.open { display: flex; }
+
+  .planner-modal {
+    background: var(--stone-mid);
+    border: 1px solid var(--gold-dark);
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    width: 480px;
+    max-width: 94vw;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .planner-modal-header {
+    background: linear-gradient(180deg, var(--stone-light) 0%, var(--stone-mid) 100%);
+    border-bottom: 1px solid var(--gold-dark);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .planner-modal-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .planner-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+  }
+  .planner-modal-close:hover { color: var(--text-light); }
+
+  .planner-modal-body { padding: 1.25rem; }
+
+  .planner-field {
+    margin-bottom: 1rem;
+  }
+  .planner-field label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .planner-field input,
+  .planner-field textarea,
+  .planner-field select {
+    width: 100%;
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    padding: 0.5rem 0.7rem;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+  }
+  .planner-field input:focus,
+  .planner-field textarea:focus,
+  .planner-field select:focus { border-color: var(--gold-dark); }
+  .planner-field textarea { min-height: 70px; resize: vertical; }
+  .planner-field select option { background: var(--stone-mid); }
+
+  .planner-search-results {
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    margin-top: 0.4rem;
+    background: var(--stone);
+  }
+  .planner-search-result {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.1s;
+  }
+  .planner-search-result:last-child { border-bottom: none; }
+  .planner-search-result:hover { background: rgba(200,168,75,0.08); }
+  .planner-search-result-name {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    flex: 1;
+  }
+  .planner-search-result-order {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--stone-lighter);
+  }
+
+  .planner-modal-footer {
+    padding: 0.75rem 1.25rem 1.25rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+
+
+
+  /* ===== PATH PREVIEW MODAL ===== */
+  #path-preview-overlay { z-index: 260; }
+
+  .path-preview-modal {
+    width: 580px;
+    max-width: 96vw;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .path-preview-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 1.25rem 0.75rem;
+  }
+
+  .path-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.84rem;
+  }
+  .path-preview-item:last-child { border-bottom: none; }
+  .path-preview-item.is-skill-task { color: #8abcf8; }
+  .path-preview-item.is-goal { background: rgba(200,168,75,0.08); border-radius: 3px; }
+
+  .path-preview-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--stone-lighter);
+    width: 22px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .path-preview-name {
+    flex: 1;
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .path-preview-item.is-skill-task .path-preview-name { color: #8abcf8; }
+  .path-preview-item.is-goal .path-preview-name { color: var(--gold-light); font-weight: 600; }
+
+  .path-preview-summary {
+    padding: 0.6rem 1.25rem 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--stone-lighter);
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .path-preview-summary strong { color: var(--gold); }
+
+  .path-preview-footer {
+    padding: 0.85rem 1.25rem 1.1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    border-top: 1px solid var(--stone-lighter);
+    flex-wrap: wrap;
+  }
+
+  .btn-replace { border-color: var(--red-light); color: #e08080; background: rgba(139,32,32,0.1); }
+  .btn-replace:hover { background: rgba(139,32,32,0.2); box-shadow: none; transform: none; }
+  .btn-append  { border-color: #4a9e4a; color: #7dd87d; background: rgba(74,158,74,0.1); }
+  .btn-append:hover  { background: rgba(74,158,74,0.2); box-shadow: none; transform: none; }
+
+  /* ===== TREE VIEW MODAL ===== */
+  #tree-view-overlay { z-index: 270; }
+
+  .tree-view-modal {
+    width: 680px;
+    max-width: 98vw;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tree-view-modal .planner-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tree-view-toolbar {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .tree-view-toolbar .btn-ghost {
+    font-size: 0.72rem;
+    padding: 0.22rem 0.55rem;
+    border-radius: 3px;
+    opacity: 0.8;
+  }
+  .tree-view-toolbar .btn-ghost:hover { opacity: 1; }
+
+  .tree-view-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .tree-view-legend {
+    padding: 0.55rem 1.25rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+  }
+
+  /* === Tree Nodes === */
+  .tree-node-wrap { position: relative; }
+
+  .tree-node {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.83rem;
+    transition: background 0.12s;
+    min-height: 32px;
+  }
+  .tree-node:hover { background: rgba(255,255,255,0.04); }
+
+  /* Root / goal node */
+  .tree-node.tn-root {
+    background: rgba(200,168,75,0.1);
+    border: 1px solid rgba(200,168,75,0.25);
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+  }
+  .tree-node.tn-root .tn-name { color: var(--gold-light); }
+
+  /* Done nodes fade */
+  .tree-node.tn-done { opacity: 0.38; }
+  .tree-node.tn-done:hover { opacity: 0.6; }
+  .tree-node.tn-todo .tn-name { color: var(--text-light); }
+
+  /* Toggle button */
+  .tn-toggle {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 3px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.56rem;
+    width: 17px;
+    height: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    line-height: 1;
+    transition: background 0.12s, color 0.12s;
+  }
+  .tn-toggle:hover { background: rgba(255,255,255,0.1); color: var(--text-light); }
+  .tn-toggle-spacer { width: 17px; flex-shrink: 0; }
+
+  /* Status icon */
+  .tn-status { font-size: 0.68rem; width: 14px; flex-shrink: 0; text-align: center; }
+  .tn-status-done { color: #5aae5a; }
+  .tn-status-todo { color: #ae5a5a; }
+
+  .tn-name {
+    flex: 1;
+    font-family: 'Source Sans 3', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Connector lines */
+  .tree-children {
+    position: relative;
+    padding-left: 30px;
+    margin-left: 16px;
+    border-left: 2px solid rgba(160,140,100,0.18);
+  }
+
+  .tree-children.tree-collapsed { display: none; }
+
+  /* Horizontal connector from vertical rail to each node */
+  .tree-children > .tree-node-wrap::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 16px;
+    width: 26px;
+    height: 2px;
+    background: rgba(160,140,100,0.18);
+  }
+
+
+  @media (max-width: 540px) {
+    .tree-view-modal { max-height: 96vh; }
+    .tree-children { padding-left: 18px; margin-left: 10px; }
+    .tree-children > .tree-node-wrap::before { left: -18px; width: 14px; }
+  }
+
+</style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8YXGC1W0GW');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img">
+    <nav>
+      <button class="nav-btn active" onclick="showPage('progression')">Progression</button>
+      <button class="nav-btn" onclick="showPage('stats')">My Stats</button>
+      <button class="nav-btn" onclick="showPage('planner')">Custom Path</button>
+    </nav>
+    <div class="header-right">
+      <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
+        <img class="im-icon" src="https://oldschool.runescape.wiki/images/Ironman_chat_badge.png" alt="Ironman" style="width:16px;height:16px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin-right:2px;"> Ironman
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== PROGRESSION PAGE ===== -->
+<div id="page-progression" class="page active">
+
+  <div class="lookup-bar">
+    <div class="lookup-inner">
+      <div class="lookup-group">
+        <label>RSN Lookup</label>
+        <input type="text" id="rsn-input" placeholder="Enter username…" onkeydown="if(event.key==='Enter') lookupRSN()">
+      </div>
+      <button class="btn" onclick="lookupRSN()">Lookup</button>
+      <span class="lookup-sep">or</span>
+      <button class="btn btn-ghost" onclick="showPage('stats')">Enter Stats Manually</button>
+    </div>
+  </div>
+
+  <div id="lookup-status" style="display:none">
+    <div class="status-msg">
+      <div id="lookup-status-inner" class="status-inner"></div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><strong id="prog-done">0</strong> / <span id="prog-total">477</span> completed</div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="progress-label"><strong id="prog-pct">0%</strong></div>
+    <div style="margin-left:auto; display:flex; gap:0.5rem; flex-shrink:0;">
+      <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.8rem" onclick="toggleShowCompleted()">
+        <span id="toggle-completed-label">Hide Completed</span>
+      </button>
+      <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.8rem" onclick="clearProgress()">Clear Progress</button>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="chip active" data-filter="all" onclick="setFilter('all')">All</button>
+    <button class="chip type-quest" data-filter="Quest" onclick="setFilter('Quest')">Quests</button>
+    <button class="chip type-boss" data-filter="Boss" onclick="setFilter('Boss')">Bosses</button>
+    <button class="chip type-activity" data-filter="Activity/Goal" onclick="setFilter('Activity/Goal')">Activities</button>
+    <button class="chip type-unlock" data-filter="Unlock" onclick="setFilter('Unlock')">Unlocks</button>
+    <button class="chip type-miniquest" data-filter="Miniquest" onclick="setFilter('Miniquest')">Miniquests</button>
+    <button class="chip type-diary" data-filter="Diary" onclick="setFilter('Diary')">Diaries</button>
+    <button class="chip" data-filter="locked" onclick="setFilter('locked')">🔒 Locked</button>
+    <button class="chip" data-filter="available" onclick="setFilter('available')">✅ Available Now</button>
+  </div>
+
+  <div class="search-row">
+    <input class="search-input" type="text" id="search-input" placeholder="Search… (press / to focus)" oninput="renderTable(); pushFilterState()">
+    <span class="results-count" id="results-count"></span>
+  </div>
+
+  <div class="table-wrap">
+  <div class="table-scroll">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>#</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Skill Req.</th>
+          <th>Quest Prereqs</th>
+          <th>QP</th>
+          <th>Location</th>
+          <th>Notes</th>
+          <th>Notable Drops</th>
+        </tr>
+      </thead>
+      <tbody id="main-tbody"></tbody>
+    </table>
+  </div>
+  </div>
+</div>
+
+<!-- ===== STATS PAGE ===== -->
+<div id="page-stats" class="page">
+  <div class="stats-page">
+    <h2>My Stats</h2>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.5rem;font-family:'IM Fell English',serif;font-style:italic">
+      Enter your skill levels to unlock requirement checking across the progression list. You can also use the RSN Lookup on the Progression page to auto-fill.
+    </p>
+    <div class="skills-grid" id="skills-grid"></div>
+    <div class="stats-actions">
+      <button class="btn" onclick="saveStats()">Save Stats</button>
+      <button class="btn btn-ghost" onclick="clearStats()">Reset</button>
+      <span id="stats-saved-msg" style="color:var(--green-light);font-size:0.85rem;align-self:center;display:none">✓ Saved</span>
+    </div>
+    <div style="display:flex;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap">
+      <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase">Combat Level</span>
+        <span id="combat-level-display" style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">—</span>
+      </div>
+      <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase">Total Level</span>
+        <span id="total-level-display" style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">—</span>
+      </div>
+    </div>
+    <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:1rem 1.25rem;margin-top:1rem;">
+      <p style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem">Quest Points</p>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <input type="number" id="qp-input" min="0" max="300" placeholder="0"
+          style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:3px;color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;padding:0.4rem 0.75rem;width:80px;outline:none;text-align:center">
+        <span style="font-size:0.85rem;color:var(--text-muted)">Current quest points (used to check QP requirements)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+      <div>
+        <div class="detail-title" id="detail-title"></div>
+        <div id="detail-subtitle" style="margin-top:0.3rem"></div>
+      </div>
+      <button class="detail-close" onclick="closeDetailBtn()">✕</button>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+    <div class="detail-actions" id="detail-actions"></div>
+  </div>
+</div>
+
+<!-- ===== FLOATING RANDOM TASK PANEL ===== -->
+<div class="floating-rand-trigger" onclick="toggleRandomPanel()" title="Random Task">
+  🎲 <span>Random</span>
+</div>
+
+<div id="floating-rand-panel" class="floating-rand-panel">
+  <div class="frand-header">
+    <span class="frand-title">⚔ Task Oracle</span>
+    <button class="frand-close" onclick="closeRandomPanel()">✕</button>
+  </div>
+
+  <div class="frand-filters">
+    <button class="chip type-quest active" data-rfilter="Quest" onclick="toggleRandFilter('Quest')">Quests</button>
+    <button class="chip type-boss active" data-rfilter="Boss" onclick="toggleRandFilter('Boss')">Bosses</button>
+    <button class="chip type-activity active" data-rfilter="Activity/Goal" onclick="toggleRandFilter('Activity/Goal')">Activities</button>
+    <button class="chip type-unlock active" data-rfilter="Unlock" onclick="toggleRandFilter('Unlock')">Unlocks</button>
+    <button class="chip type-diary active" data-rfilter="Diary" onclick="toggleRandFilter('Diary')">Diaries</button>
+    <button class="chip active" data-rfilter="incomplete" onclick="toggleRandFilter('incomplete')">Skip Done</button>
+  </div>
+
+  <div class="frand-result-area">
+    <div id="float-spin-idle" class="frand-idle">Press a button to receive your task…</div>
+    <div id="float-spin-result" style="display:none">
+      <div id="float-spin-order" class="frand-order"></div>
+      <div id="float-spin-name" class="frand-name"></div>
+      <div id="float-spin-type" style="margin:0.4rem 0"></div>
+      <div id="float-spin-meta" class="frand-meta"></div>
+    </div>
+  </div>
+
+  <div class="frand-btns">
+    <button class="spin-btn frand-spin-btn" onclick="floatSpin(false)">🎲 Surprise Me</button>
+    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="floatSpin(true)" title="Suggests tasks within ±10 levels of your stats">💡 Suggest Task</button>
+  </div>
+  <div class="frand-subbtns">
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="floatMarkDone()">✓ Mark Done & Roll Again</button>
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearSpinHistory()">🗑 Clear</button>
+  </div>
+  <div id="frand-buildpath-bar" style="display:none;padding:0.4rem 1rem 0.6rem">
+    <button class="btn" style="width:100%;font-size:0.8rem;padding:0.35rem 0;border-color:#4a7fc8;color:#8abcf8;background:rgba(74,127,200,0.08)" onclick="floatBuildPath()">🗺 Build Path to This</button>
+  </div>
+
+  <div id="float-history-wrap" style="display:none">
+    <div class="frand-hist-title">Recent Rolls</div>
+    <div id="float-history-list" class="frand-hist-list"></div>
+  </div>
+</div>
+
+
+<!-- ===== CUSTOM PATH PLANNER PAGE ===== -->
+<div id="page-planner" class="page">
+  <div class="planner-page">
+
+    <div class="planner-toolbar">
+      <span class="planner-toolbar-title">Custom Path Planner</span>
+      <button class="planner-add-btn add-existing" onclick="openPlannerModal('existing')">+ Add Existing Task</button>
+      <button class="planner-add-btn add-custom" onclick="openPlannerModal('custom')">+ Add Custom Task</button>
+      <button class="planner-add-btn add-note" onclick="openPlannerModal('note')">+ Add Note</button>
+      <div class="planner-io-btns">
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="openShareModal()">📤 Share</button>
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="openImportModal()">📥 Import</button>
+        <input type="file" id="plan-import-input" accept=".json" style="display:none" onchange="importPlan(event)">
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem;color:#e06060" onclick="clearPlan()">Clear</button>
+      </div>
+    </div>
+
+    <div id="planner-progress-wrap" class="planner-progress-wrap" style="display:none">
+      <span class="planner-progress-label"><strong id="planner-done-count">0</strong> / <span id="planner-total-count">0</span></span>
+      <div class="planner-progress-track"><div class="planner-progress-fill" id="planner-prog-fill" style="width:0%"></div></div>
+      <span class="planner-progress-label"><strong id="planner-prog-pct">0%</strong></span>
+    </div>
+
+    <div class="planner-table-wrap" id="planner-table-wrap" style="display:none">
+      <table class="planner-table">
+        <thead>
+          <tr>
+            <th class="pt-drag"></th>
+            <th class="pt-check"></th>
+            <th>Name</th>
+            <th class="pt-type">Type</th>
+            <th class="pt-reqs">Skill Req.</th>
+            <th class="pt-loc">Location</th>
+            <th class="pt-info">Notes / Info</th>
+            <th class="pt-act"></th>
+          </tr>
+        </thead>
+        <tbody id="planner-list"></tbody>
+      </table>
+    </div>
+
+    <div id="planner-empty" class="planner-empty">
+      <span>🗺</span>
+      <strong style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold-dark);font-style:normal;letter-spacing:1px;display:block;margin-bottom:0.5rem;">No Path Charted Yet</strong>
+      Build your own goal list with tasks, custom entries &amp; notes.<br>
+      Add items from the Progression list, or create your own below.
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem;">
+        <button class="btn" onclick="showPage('progression')" style="font-size:0.8rem">Browse Progression List</button>
+        <button class="btn btn-ghost" onclick="openPlannerModal('custom')" style="font-size:0.8rem">+ Add Custom Entry</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ===== SHARE PLAN MODAL ===== -->
+<div id="share-plan-overlay" class="planner-modal-overlay" onclick="shareOverlayClick(event)">
+  <div class="planner-modal" style="max-width:520px">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title">📤 Share Your Path</span>
+      <button class="planner-modal-close" onclick="closeShareModal()">✕</button>
+    </div>
+    <div class="planner-modal-body">
+      <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">
+        Send your path to a friend. They paste the code into Import → Paste Code.
+      </p>
+
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+        <button id="share-tab-code" class="btn" style="flex:1;font-size:0.8rem" onclick="setShareTab('code')">Share Code</button>
+        <button id="share-tab-file" class="btn btn-ghost" style="flex:1;font-size:0.8rem" onclick="setShareTab('file')">Download File</button>
+      </div>
+
+      <div id="share-code-panel">
+        <div style="position:relative">
+          <textarea id="share-code-text" readonly
+            style="width:100%;height:120px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:0.6rem;font-family:monospace;font-size:0.72rem;color:var(--text-muted);resize:none;box-sizing:border-box;word-break:break-all"
+          ></textarea>
+        </div>
+        <button id="share-copy-btn" class="btn" style="width:100%;margin-top:0.5rem;font-size:0.85rem" onclick="copyShareCode()">
+          📋 Copy to Clipboard
+        </button>
+        <p style="color:var(--text-muted);font-size:0.75rem;margin:0.6rem 0 0;text-align:center">
+          Paste this anywhere — Discord, Reddit, a notes app — your friend imports it on their end.
+        </p>
+      </div>
+
+      <div id="share-file-panel" style="display:none;text-align:center;padding:0.5rem 0">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">Downloads a <code>.json</code> file you can send directly.</p>
+        <button class="btn" style="font-size:0.9rem;padding:0.5rem 1.5rem" onclick="downloadPlanFile()">⬇ Download .json</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== IMPORT PLAN MODAL ===== -->
+<div id="import-plan-overlay" class="planner-modal-overlay" onclick="importOverlayClick(event)">
+  <div class="planner-modal" style="max-width:520px">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title">📥 Import Path</span>
+      <button class="planner-modal-close" onclick="closeImportModal()">✕</button>
+    </div>
+    <div class="planner-modal-body">
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+        <button id="import-tab-code" class="btn" style="flex:1;font-size:0.8rem" onclick="setImportTab('code')">Paste Code</button>
+        <button id="import-tab-file" class="btn btn-ghost" style="flex:1;font-size:0.8rem" onclick="setImportTab('file')">Upload File</button>
+      </div>
+
+      <div id="import-code-panel">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 0.6rem">Paste a share code from a friend:</p>
+        <textarea id="import-code-input" placeholder="Paste share code here…"
+          style="width:100%;height:110px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:0.6rem;font-family:monospace;font-size:0.72rem;color:var(--text-light);resize:none;box-sizing:border-box;word-break:break-all"
+        ></textarea>
+        <div style="display:flex;gap:0.5rem;margin-top:0.6rem">
+          <button class="btn" style="flex:1;font-size:0.85rem" onclick="importFromCode('replace')">⬅ Replace My Plan</button>
+          <button class="btn btn-ghost" style="flex:1;font-size:0.85rem" onclick="importFromCode('append')">+ Append to My Plan</button>
+        </div>
+      </div>
+
+      <div id="import-file-panel" style="display:none;text-align:center;padding:0.5rem 0">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">Upload a <code>.json</code> exported from ProgressScape.</p>
+        <button class="btn" style="font-size:0.9rem;padding:0.5rem 1.5rem" onclick="document.getElementById('plan-import-input').click()">📂 Choose File</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PATH PREVIEW MODAL ===== -->
+<div id="path-preview-overlay" class="planner-modal-overlay" onclick="pathPreviewOverlayClick(event)">
+  <div class="planner-modal path-preview-modal" id="path-preview-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="path-preview-title">Path to Goal</span>
+      <div style="display:flex;gap:0.4rem;align-items:center">
+        <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.25rem 0.65rem;border-color:rgba(160,140,100,0.35);color:var(--text-muted)" onclick="openTreeViewFromPreview()" title="View dependency tree">&#x1F333; Tree View</button>
+        <button class="planner-modal-close" onclick="closePathPreview()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="path-preview-summary" id="path-preview-summary"></div>
+    <div class="path-preview-list" id="path-preview-list"></div>
+    <div class="path-preview-footer" id="path-preview-footer"></div>
+  </div>
+</div>
+
+<!-- ===== TREE VIEW MODAL ===== -->
+<div id="tree-view-overlay" class="planner-modal-overlay" onclick="treeViewOverlayClick(event)">
+  <div class="planner-modal tree-view-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="tree-view-title">Dependency Tree</span>
+      <div class="tree-view-toolbar">
+        <button class="btn btn-ghost" onclick="treeExpandAll()">Expand All</button>
+        <button class="btn btn-ghost" onclick="treeCollapseAll()">Collapse All</button>
+        <button class="planner-modal-close" onclick="closeTreeView()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="tree-view-body" id="tree-view-body"></div>
+    <div class="tree-view-legend">
+      <span><span style="color:#5aae5a">&#x2713;</span> Completed</span>
+      <span><span style="color:#ae5a5a">&#x2717;</span> Incomplete</span>
+      <span style="opacity:0.55">Completed nodes collapsed by default &mdash; click &#x25B6; to expand</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PLANNER MODAL ===== -->
+<div id="planner-modal-overlay" class="planner-modal-overlay" onclick="plannerOverlayClick(event)">
+  <div class="planner-modal" id="planner-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="planner-modal-title">Add Task</span>
+      <button class="planner-modal-close" onclick="closePlannerModal()">&#x2715;</button>
+    </div>
+    <div class="planner-modal-body" id="planner-modal-body"></div>
+    <div class="planner-modal-footer" id="planner-modal-footer"></div>
+  </div>
+</div>
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">▲</button>
+
+<script src="data.js"></script>
+<script>
+// ============================================================
+// TIER DEFINITIONS
+// ============================================================
+const TIERS = [
+  { id: 'early',  label: 'Early Game Content',  minOrder: 1,   maxOrder: 148 },
+  { id: 'mid',    label: 'Mid Game Content',     minOrder: 149, maxOrder: 278 },
+  { id: 'late',   label: 'Late Game Content',    minOrder: 279, maxOrder: 396 },
+  { id: 'end',    label: 'End Game Content',     minOrder: 397, maxOrder: Infinity },
+];
+
+function getTierForOrder(order) {
+  return TIERS.find(t => order >= t.minOrder && order <= t.maxOrder) || TIERS[TIERS.length - 1];
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let playerStats = {};
+let playerQP = 0;
+let completedSet = new Set();
+let activeFilters = new Set(['all']);
+let showCompleted = true;
+let randFilters = new Set(['Quest','Boss','Activity/Goal','Unlock','Miniquest','Diary','incomplete']);
+let bossKC = {};
+let obtainedDrops = {};
+let spinHistory = [];
+let currentSpinItem = null;
+let userNotes = {};
+let ironmanMode = false;
+// Track which accordion tiers are open (by tier id)
+let openTiers = new Set();
+let planMode = 'custom'; // tracks current planner modal mode
+
+const SKILLS = [
+  {name:'Attack',icon:'https://oldschool.runescape.wiki/images/Attack_icon.png'},
+  {name:'Strength',icon:'https://oldschool.runescape.wiki/images/Strength_icon.png'},
+  {name:'Defence',icon:'https://oldschool.runescape.wiki/images/Defence_icon.png'},
+  {name:'Hitpoints',icon:'https://oldschool.runescape.wiki/images/Hitpoints_icon.png'},
+  {name:'Ranged',icon:'https://oldschool.runescape.wiki/images/Ranged_icon.png'},
+  {name:'Prayer',icon:'https://oldschool.runescape.wiki/images/Prayer_icon.png'},
+  {name:'Magic',icon:'https://oldschool.runescape.wiki/images/Magic_icon.png'},
+  {name:'Cooking',icon:'https://oldschool.runescape.wiki/images/Cooking_icon.png'},
+  {name:'Woodcutting',icon:'https://oldschool.runescape.wiki/images/Woodcutting_icon.png'},
+  {name:'Fletching',icon:'https://oldschool.runescape.wiki/images/Fletching_icon.png'},
+  {name:'Fishing',icon:'https://oldschool.runescape.wiki/images/Fishing_icon.png'},
+  {name:'Firemaking',icon:'https://oldschool.runescape.wiki/images/Firemaking_icon.png'},
+  {name:'Crafting',icon:'https://oldschool.runescape.wiki/images/Crafting_icon.png'},
+  {name:'Smithing',icon:'https://oldschool.runescape.wiki/images/Smithing_icon.png'},
+  {name:'Mining',icon:'https://oldschool.runescape.wiki/images/Mining_icon.png'},
+  {name:'Herblore',icon:'https://oldschool.runescape.wiki/images/Herblore_icon.png'},
+  {name:'Agility',icon:'https://oldschool.runescape.wiki/images/Agility_icon.png'},
+  {name:'Thieving',icon:'https://oldschool.runescape.wiki/images/Thieving_icon.png'},
+  {name:'Slayer',icon:'https://oldschool.runescape.wiki/images/Slayer_icon.png'},
+  {name:'Farming',icon:'https://oldschool.runescape.wiki/images/Farming_icon.png'},
+  {name:'Runecraft',icon:'https://oldschool.runescape.wiki/images/Runecraft_icon.png'},
+  {name:'Hunter',icon:'https://oldschool.runescape.wiki/images/Hunter_icon.png'},
+  {name:'Construction',icon:'https://oldschool.runescape.wiki/images/Construction_icon.png'},
+  {name:'Sailing',icon:'https://oldschool.runescape.wiki/images/Sailing_icon.png'}
+];
+
+const TYPE_ICONS = {
+  'Quest':         'https://oldschool.runescape.wiki/images/Quest_point_icon.png',
+  'Boss':          'https://oldschool.runescape.wiki/images/Skull_icon.png',
+  'Activity/Goal': 'https://oldschool.runescape.wiki/images/Minigame_map_icon.png',
+  'Unlock':        'https://oldschool.runescape.wiki/images/Member_icon.png',
+  'Miniquest':     'https://oldschool.runescape.wiki/images/Miniquest_icon.png',
+  'Diary':         'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
+};
+
+// ============================================================
+// INIT
+// ============================================================
+function recalcQPFromCompleted() {
+  // Recompute playerQP by summing qp values of all completed items.
+  // Fixes drift when quests were bulk-imported or RSN-synced without
+  // the per-toggle QP increment running.
+  let total = 0;
+  completedSet.forEach(order => {
+    const item = SPINE_DATA.find(d => d.order === order);
+    if (item && item.qp > 0) total += item.qp;
+  });
+  playerQP = total;
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) qpInput.value = playerQP || '';
+  saveToStorage();
+}
+
+function init() {
+  loadFromStorage();
+  recalcQPFromCompleted();
+  buildSkillsGrid();
+  autoDetectOpenTier();
+  renderTable();
+  updateProgress();
+  updateCombatDisplay();
+  renderFloatingHistory();
+  setTimeout(updateHeaderHeight, 50);
+  loadPlan();
+  renderPlanner();
+  loadFilterFromURL();
+}
+
+function loadFromStorage() {
+  try {
+    const s = localStorage.getItem('osrs_spine_stats');
+    if (s) playerStats = JSON.parse(s);
+    const q = localStorage.getItem('osrs_spine_qp');
+    if (q) playerQP = parseInt(q) || 0;
+    const c = localStorage.getItem('osrs_spine_completed');
+    if (c) completedSet = new Set(JSON.parse(c));
+    const n = localStorage.getItem('osrs_spine_notes');
+    if (n) userNotes = JSON.parse(n);
+    const k = localStorage.getItem('osrs_spine_kc');
+    if (k) bossKC = JSON.parse(k);
+    const od = localStorage.getItem('osrs_spine_drops');
+    if (od) obtainedDrops = JSON.parse(od);
+    const sh = localStorage.getItem('osrs_spine_spinhistory');
+    if (sh) spinHistory = JSON.parse(sh);
+    const im = localStorage.getItem('osrs_spine_ironman');
+    if (im) ironmanMode = JSON.parse(im);
+    const ot = localStorage.getItem('osrs_spine_opentiers');
+    if (ot) openTiers = new Set(JSON.parse(ot));
+  } catch(e) {}
+}
+
+function saveToStorage() {
+  localStorage.setItem('osrs_spine_stats', JSON.stringify(playerStats));
+  localStorage.setItem('osrs_spine_qp', playerQP);
+  localStorage.setItem('osrs_spine_completed', JSON.stringify([...completedSet]));
+  localStorage.setItem('osrs_spine_notes', JSON.stringify(userNotes));
+  localStorage.setItem('osrs_spine_kc', JSON.stringify(bossKC));
+  localStorage.setItem('osrs_spine_drops', JSON.stringify(obtainedDrops));
+  localStorage.setItem('osrs_spine_spinhistory', JSON.stringify(spinHistory));
+  localStorage.setItem('osrs_spine_ironman', JSON.stringify(ironmanMode));
+  localStorage.setItem('osrs_spine_opentiers', JSON.stringify([...openTiers]));
+}
+
+function saveNote(order, text) {
+  if (text.trim()) {
+    userNotes[order] = text;
+  } else {
+    delete userNotes[order];
+  }
+  localStorage.setItem('osrs_spine_notes', JSON.stringify(userNotes));
+  const row = document.querySelector(`tr[data-order="${order}"]`);
+  if (row) {
+    const ind = row.querySelector('.note-indicator');
+    if (text.trim()) {
+      if (!ind) {
+        const nameCell = row.querySelector('.td-name');
+        if (nameCell) nameCell.insertAdjacentHTML('beforeend', '<span class="note-indicator" title="Has notes">📝</span>');
+      }
+    } else {
+      if (ind) ind.remove();
+    }
+  }
+}
+
+// ============================================================
+// IRONMAN TOGGLE
+// ============================================================
+function toggleIronman() {
+  ironmanMode = !ironmanMode;
+  const btn = document.getElementById('ironman-toggle-btn');
+  if (btn) {
+    btn.classList.toggle('active', ironmanMode);
+    btn.title = ironmanMode ? 'Ironman Mode: ON' : 'Ironman Mode: OFF';
+  }
+  saveToStorage();
+  autoDetectOpenTier();
+  renderTable();
+}
+
+function getActiveData() {
+  if (!ironmanMode) return SPINE_DATA;
+  // Build ordered list using IRONMAN_DATA
+  const nameToSpine = {};
+  SPINE_DATA.forEach(e => { nameToSpine[e.name] = e; });
+  const seen = new Set();
+  const result = [];
+  IRONMAN_DATA.forEach((imEntry, idx) => {
+    const spine = nameToSpine[imEntry.name];
+    if (!spine) return;
+    const key = `${imEntry.name}-${imEntry.type}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    result.push({ ...spine, imOrder: imEntry.imOrder, imType: imEntry.type, order: idx + 1 });
+  });
+  return result;
+}
+
+// ============================================================
+// AUTO-DETECT OPEN TIER
+// ============================================================
+function autoDetectOpenTier() {
+  // If user has manually set openTiers, keep them unless empty
+  if (openTiers.size > 0) return;
+
+  const data = getActiveData();
+  // Find first tier that isn't 100% complete
+  for (const tier of TIERS) {
+    const tierItems = data.filter(item => {
+      const order = ironmanMode ? item.imOrder || item.order : item.order;
+      return order >= tier.minOrder && order <= tier.maxOrder;
+    });
+    if (tierItems.length === 0) continue;
+    const allDone = tierItems.every(item => completedSet.has(SPINE_DATA.find(s=>s.name===item.name)?.order || item.order));
+    if (!allDone) {
+      openTiers.add(tier.id);
+      return;
+    }
+  }
+  // All done — open end game
+  openTiers.add('end');
+}
+
+function toggleTier(tierId) {
+  if (openTiers.has(tierId)) {
+    openTiers.delete(tierId);
+  } else {
+    openTiers.add(tierId);
+  }
+  saveToStorage();
+  renderTable();
+  setTimeout(updateTierFloat, 20);
+}
+
+// ============================================================
+// SKILL REQUIREMENTS PARSING
+// ============================================================
+function parseSkillReqs(reqStr) {
+  if (!reqStr) return [];
+  const results = [];
+  const parts = reqStr.split(';').map(s => s.trim());
+  for (const part of parts) {
+    const m = part.match(/^(.+?)\s+(\d+)(\s*\(.*?\))?$/);
+    if (m) {
+      results.push({
+        skill: m[1].trim(),
+        level: parseInt(m[2]),
+        note: m[3] ? m[3].trim() : '',
+        boostable: part.toLowerCase().includes('boostable') && !part.toLowerCase().includes('unboostable'),
+        unboostable: part.toLowerCase().includes('unboostable'),
+        isQP: m[1].trim().toLowerCase().includes('quest point')
+      });
+    }
+  }
+  return results;
+}
+
+function getCombatLevel() {
+  const s = playerStats;
+  if (!s || Object.keys(s).length === 0) return 3;
+  const defence = s.defence || 1;
+  const hitpoints = s.hitpoints || 10;
+  const prayer = s.prayer || 1;
+  const attack = s.attack || 1;
+  const strength = s.strength || 1;
+  const ranged = s.ranged || 1;
+  const magic = s.magic || 1;
+  const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+  const melee = 0.325 * (attack + strength);
+  const rangedCalc = 0.325 * Math.floor(ranged * 1.5);
+  const magicCalc = 0.325 * Math.floor(magic * 1.5);
+  return Math.floor(base + Math.max(melee, rangedCalc, magicCalc));
+}
+
+function getTotalLevel() {
+  if (!playerStats || Object.keys(playerStats).length === 0) return 0;
+  // Sum all 24 skills; any not entered yet default to 1 (same as OSRS hiscores behaviour)
+  return SKILLS.reduce((sum, s) => sum + (playerStats[s.name.toLowerCase()] || 1), 0);
+}
+
+function meetsReqs(item) {
+  const hasSkillStats = Object.keys(playerStats).length > 0;
+  const hasQP = playerQP > 0;
+  if (!hasSkillStats && !hasQP) return null;
+  const reqs = parseSkillReqs(item.skillReqs);
+  for (const req of reqs) {
+    if (req.isQP) {
+      if (!hasQP) continue;
+      if (playerQP < req.level) return false;
+    } else if (req.skill.toLowerCase() === 'combat') {
+      if (!hasSkillStats) continue;
+      if (getCombatLevel() < req.level) return false;
+    } else if (req.skill.toLowerCase() === 'total level' || req.skill.toLowerCase() === 'total') {
+      if (!hasSkillStats) continue;
+      if (getTotalLevel() < req.level) return false;
+    } else {
+      if (!hasSkillStats) continue;
+      const have = playerStats[req.skill.toLowerCase()] || 1;
+      if (have < req.level) return false;
+    }
+  }
+  if (item.questPrereqs) {
+    const prereqs = item.questPrereqs.split(';').map(s => s.trim()).filter(Boolean);
+    for (const prereq of prereqs) {
+      const found = SPINE_DATA.find(d => d.name.toLowerCase() === prereq.toLowerCase());
+      if (found && !completedSet.has(found.order)) return false;
+    }
+  }
+  return true;
+}
+
+function isAutoAchievable(item) {
+  if (item.type !== 'Activity/Goal') return false;
+  // Base tasks now use explicit per-skill reqs — detect by name and use meetsReqs
+  if (/^Base \d+$/.test(item.name)) {
+    if (Object.keys(playerStats).length === 0) return false;
+    return meetsReqs(item) === true;
+  }
+  return false;
+}
+
+// Check if item is within ±10 of player's skill levels (for Suggest Task)
+function isAchievableNear(item) {
+  const reqs = parseSkillReqs(item.skillReqs);
+  if (!reqs.length) return meetsReqs(item) !== false;
+  const hasStats = Object.keys(playerStats).length > 0;
+  if (!hasStats) return false;
+  let hasAnySkillReq = false;
+  for (const req of reqs) {
+    if (req.isQP || req.skill.toLowerCase() === 'combat' || req.skill.toLowerCase() === 'total') continue;
+    hasAnySkillReq = true;
+    const have = playerStats[req.skill.toLowerCase()] || 1;
+    if (have < req.level) {
+      if (req.level - have > 10) return false; // more than 10 levels away
+    }
+  }
+  // Also must not fail QP or quest prereqs
+  if (item.questPrereqs) {
+    const prereqs = item.questPrereqs.split(';').map(s=>s.trim()).filter(Boolean);
+    for (const prereq of prereqs) {
+      const found = SPINE_DATA.find(d => d.name.toLowerCase() === prereq.toLowerCase());
+      if (found && !completedSet.has(found.order)) return false;
+    }
+  }
+  return true;
+}
+
+// ============================================================
+// RSN LOOKUP
+// ============================================================
+
+// ── ProgressScape Plugin ─────────────────────────────────────
+// When the RuneLite plugin is approved and its endpoint is known,
+// replace PROGRESSSCAPE_PLUGIN_URL with the real address, e.g.:
+//   'http://localhost:8080/progressscape'
+// The plugin should return JSON with at least:
+//   { kc: { [bossName]: number }, completions: [bossName, ...] }
+// Leave as null to disable the plugin override entirely.
+const PROGRESSSCAPE_PLUGIN_URL = null; // TODO: set when plugin endpoint is confirmed
+const PROGRESSSCAPE_TIMEOUT_MS = 1000; // fast fail so first-time users aren't blocked
+
+async function fetchPluginData(rsn) {
+  if (!PROGRESSSCAPE_PLUGIN_URL) return null;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), PROGRESSSCAPE_TIMEOUT_MS);
+    const resp = await fetch(
+      `${PROGRESSSCAPE_PLUGIN_URL}?rsn=${encodeURIComponent(rsn)}`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timer);
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch {
+    return null; // timeout, CORS, plugin not running — silently fall back
+  }
+}
+
+async function lookupRSN() {
+  const rsn = document.getElementById('rsn-input').value.trim();
+  if (!rsn) return;
+  const statusDiv = document.getElementById('lookup-status');
+  const statusInner = document.getElementById('lookup-status-inner');
+  statusDiv.style.display = 'block';
+  statusInner.className = 'status-inner';
+  statusInner.textContent = '⏳ Looking up ' + rsn + '…';
+  try {
+    // ── Step 1: Hiscores (always runs, baseline for all users) ──
+    const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
+    const proxies = [
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`,
+      `https://corsproxy.io/?url=${encodeURIComponent(hiscoresUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`
+    ];
+    let data = null;
+    for (const proxyUrl of proxies) {
+      try {
+        const resp = await fetch(proxyUrl);
+        if (!resp.ok) continue;
+        const parsed = await resp.json();
+        if (parsed && (parsed.skills || parsed.activities)) { data = parsed; break; }
+      } catch { /* try next */ }
+    }
+    if (!data) throw new Error('Player not found');
+    const skillMap = {
+      'Attack':'attack','Defence':'defence','Strength':'strength','Hitpoints':'hitpoints',
+      'Ranged':'ranged','Prayer':'prayer','Magic':'magic','Cooking':'cooking',
+      'Woodcutting':'woodcutting','Fletching':'fletching','Fishing':'fishing',
+      'Firemaking':'firemaking','Crafting':'crafting','Smithing':'smithing',
+      'Mining':'mining','Herblore':'herblore','Agility':'agility','Thieving':'thieving',
+      'Slayer':'slayer','Farming':'farming','Runecraft':'runecraft','Hunter':'hunter',
+      'Construction':'construction','Sailing':'sailing'
+    };
+    const newStats = {};
+    (data.skills || []).forEach(s => {
+      const key = skillMap[s.name];
+      if (key && s.level > 0) newStats[key] = Math.max(1, s.level);
+    });
+    playerStats = newStats;
+    const spineNameMap = {};
+    SPINE_DATA.forEach(item => {
+      if (item.entryType === 'boss' || item.type === 'Boss') {
+        const norm = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        spineNameMap[norm] = item.order;
+      }
+    });
+    let kcUpdated = 0;
+    (data.activities || []).forEach(activity => {
+      const kc = activity.score;
+      if (!kc || kc < 1) return;
+      const norm = activity.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (spineNameMap[norm] !== undefined) { bossKC[spineNameMap[norm]] = kc; kcUpdated++; return; }
+      for (const [spineName, order] of Object.entries(spineNameMap)) {
+        if (norm.includes(spineName) || spineName.includes(norm)) { bossKC[order] = kc; kcUpdated++; break; }
+      }
+    });
+
+    // ── Step 2: ProgressScape plugin override (if available) ───
+    // Runs concurrently with the render prep above; fails silently
+    // if the plugin isn't installed or the user doesn't have it.
+    let pluginSource = false;
+    const pluginData = await fetchPluginData(rsn);
+    if (pluginData) {
+      // Override KC with plugin values (more accurate than hiscores)
+      if (pluginData.kc && typeof pluginData.kc === 'object') {
+        Object.entries(pluginData.kc).forEach(([bossName, kc]) => {
+          const norm = bossName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (spineNameMap[norm] !== undefined) {
+            bossKC[spineNameMap[norm]] = kc;
+          } else {
+            for (const [spineName, order] of Object.entries(spineNameMap)) {
+              if (norm.includes(spineName) || spineName.includes(norm)) {
+                bossKC[order] = kc; break;
+              }
+            }
+          }
+        });
+        kcUpdated = Object.keys(pluginData.kc).length;
+      }
+      // Mark completions tracked by the plugin
+      if (Array.isArray(pluginData.completions)) {
+        pluginData.completions.forEach(bossName => {
+          const norm = bossName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (spineNameMap[norm] !== undefined) completedSet.add(spineNameMap[norm]);
+        });
+      }
+      pluginSource = true;
+    }
+
+    // ── Step 3: Finalise & render ───────────────────────────────
+    saveToStorage();
+    syncSkillsGridFromStats();
+    SPINE_DATA.forEach(item => {
+      if (isAutoAchievable(item) && !completedSet.has(item.order)) completedSet.add(item.order);
+    });
+    SPINE_DATA.forEach(item => {
+      if ((item.entryType === 'boss' || item.type === 'Boss') && bossKC[item.order] > 0) {
+        if (!item.notableDrops || item.notableDrops.length === 0) {
+          if (!completedSet.has(item.order)) completedSet.add(item.order);
+        }
+      }
+    });
+    autoDetectOpenTier();
+    renderTable();
+    updateProgress();
+    updateCombatDisplay();
+    statusInner.className = 'status-inner success';
+    if (pluginSource) {
+      statusInner.textContent = `✓ Loaded stats for ${rsn} — ${kcUpdated} boss KC synced via ProgressScape plugin`;
+    } else {
+      statusInner.textContent = `✓ Loaded stats for ${rsn} — ${kcUpdated} boss KC synced from Hiscores`;
+    }
+  } catch (e) {
+    statusInner.className = 'status-inner error';
+    statusInner.textContent = '✗ Could not load stats. Player may not exist or Hiscores may be unavailable.';
+  }
+}
+
+// ============================================================
+// FILTERS & RENDERING
+// ============================================================
+function setFilter(f, silent) {
+  if (f === 'all') {
+    activeFilters = new Set(['all']);
+  } else {
+    activeFilters.delete('all');
+    if (activeFilters.has(f)) {
+      activeFilters.delete(f);
+      if (activeFilters.size === 0) activeFilters.add('all');
+    } else {
+      activeFilters.add(f);
+    }
+  }
+  document.querySelectorAll('.chip[data-filter]').forEach(el => {
+    el.classList.toggle('active', activeFilters.has(el.dataset.filter));
+  });
+  renderTable();
+  if (!silent) pushFilterState();
+}
+
+function renderTable() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const tbody = document.getElementById('main-tbody');
+  const data = getActiveData();
+
+  const typeFilters = ['Quest','Boss','Activity/Goal','Unlock','Miniquest','Diary'].filter(t => activeFilters.has(t));
+  const hasLocked = activeFilters.has('locked');
+  const hasAvailable = activeFilters.has('available');
+  const isFiltered = !activeFilters.has('all') || search || !showCompleted;
+
+  let filteredData = data.filter(item => {
+    if (activeFilters.has('all')) return true;
+    let pass = false;
+    if (typeFilters.length > 0 && typeFilters.includes(item.type)) pass = true;
+    if (hasLocked || hasAvailable) {
+      const m = meetsReqs(item);
+      if (hasLocked && m === false) pass = true;
+      if (hasAvailable && (m === true || m === null)) pass = true;
+    }
+    return pass;
+  });
+
+  if (search) {
+    filteredData = filteredData.filter(item =>
+      item.name.toLowerCase().includes(search) ||
+      item.location.toLowerCase().includes(search) ||
+      item.type.toLowerCase().includes(search)
+    );
+  }
+
+  if (!showCompleted) {
+    filteredData = filteredData.filter(item => !completedSet.has(item.order));
+  }
+
+  document.getElementById('results-count').textContent = `${filteredData.length} items`;
+
+  let html = '';
+  const noResultsMsg = (isFiltered && (search || !activeFilters.has('all') || !showCompleted))
+    ? `<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:'IM Fell English',serif;font-style:italic">No items match the current filters.</td></tr>`
+    : `<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">No items found.</td></tr>`;
+
+  for (const tier of TIERS) {
+    const tierItems = filteredData.filter(item => {
+      const ord = ironmanMode ? (item.imOrder || item.order) : item.order;
+      return ord >= tier.minOrder && ord <= tier.maxOrder;
+    });
+    if (tierItems.length === 0) continue;
+    const tierDone = tierItems.filter(item => completedSet.has(item.order)).length;
+    const tierTotal = tierItems.length;
+    const tierPct = Math.round((tierDone / tierTotal) * 100);
+    const allComplete = tierDone === tierTotal;
+    const isOpen = openTiers.has(tier.id);
+    html += buildTierHeaderHtml(tier, tierDone, tierTotal, tierPct, allComplete, isOpen);
+    if (isOpen) html += tierItems.map(item => buildRowHtml(item)).join('');
+  }
+
+  tbody.innerHTML = html || noResultsMsg;
+  updateHeaderHeight();
+  updateTierFloat();
+}
+
+function buildTierHeaderHtml(tier, tierDone, tierTotal, tierPct, allComplete, isOpen) {
+  return `<tr class="tier-header-row ${allComplete ? 'tier-complete' : ''}" data-tier="${tier.id}" onclick="toggleTier('${tier.id}')">
+    <td colspan="10">
+      <div class="tier-header-inner">
+        <div class="tier-header-left">
+          <span class="tier-chevron ${isOpen ? 'open' : ''}">${isOpen ? '▼' : '▶'}</span>
+          <span class="tier-label">${tier.label}</span>
+          ${allComplete ? '<span class="tier-done-badge">✓ Complete</span>' : ''}
+        </div>
+        <div class="tier-header-right">
+          <div class="tier-progress-wrap">
+            <div class="tier-progress-bar" style="width:${tierPct}%"></div>
+          </div>
+          <span class="tier-count">${tierDone}/${tierTotal}</span>
+          <button class="tier-mark-all ${allComplete ? 'tier-all-done' : ''}" onclick="markTierDone('${tier.id}', event)">${allComplete ? '✓ All Done' : 'Mark All'}</button>
+        </div>
+      </div>
+    </td>
+  </tr>`;
+}
+
+function buildRowHtml(item) {
+  const done = completedSet.has(item.order);
+  const met = meetsReqs(item);
+  const hasStats = Object.keys(playerStats).length > 0 || playerQP > 0;
+  const autoAchieve = hasStats && !done && isAutoAchievable(item) && met !== false;
+
+  let reqHtml = '';
+  if (item.skillReqs) {
+    const reqs = parseSkillReqs(item.skillReqs);
+    reqHtml = reqs.map(r => {
+      const have = r.isQP ? playerQP : r.skill.toLowerCase() === 'combat' ? getCombatLevel() : (playerStats[r.skill.toLowerCase()] || 1);
+      const fail = hasStats && have < r.level;
+      return `<span class="${fail ? 'req-unmet' : ''}">${r.isQP ? 'QP' : r.skill} ${r.level}${r.boostable ? ' (b)' : r.unboostable ? ' (u)' : ''}</span>`;
+    }).join('<br>');
+  }
+
+  const prereqHtml = item.questPrereqs
+    ? item.questPrereqs.split(';').map(p => p.trim()).filter(Boolean)
+        .map(p => {
+          const found = SPINE_DATA.find(d => d.name.toLowerCase() === p.toLowerCase());
+          const prereqDone = found && completedSet.has(found.order);
+          return `<span class="${found && !prereqDone ? 'req-unmet' : ''}" style="font-size:0.78rem">${p}</span>`;
+        }).join('<br>')
+    : '';
+
+  let tierHtml = '';
+  if (item.bossTier) {
+    const tierClass = item.bossTier.toLowerCase().replace(' tier','').trim();
+    tierHtml = `<span class="boss-tier tier-${tierClass}">${item.bossTier}</span>`;
+  }
+
+  // Ironman type badge
+  let imBadge = '';
+  if (ironmanMode && item.imType && item.imType !== 'direct') {
+    const imLabels = { partial: '⚡ Partial', unlock: '🔓 Unlock', unlock_teleport: '🔓 Teleport' };
+    imBadge = `<span class="im-badge">${imLabels[item.imType] || item.imType}</span>`;
+  }
+
+  const hasKC = bossKC[item.order] > 0;
+  let allDropsDone = false;
+  let hasDrops = item.notableDrops && item.notableDrops.length > 0;
+  if (hasKC && hasDrops) {
+    allDropsDone = item.notableDrops.every(([dropName]) => !!obtainedDrops[`${item.order}-${dropName}`]);
+  }
+  const rowClass = done ? 'completed'
+    : (hasKC && hasDrops && allDropsDone) ? 'row-kc-complete'
+    : (hasKC && hasDrops && !allDropsDone) ? 'row-kc-progress'
+    : (hasKC && !hasDrops) ? 'row-kc-complete'
+    : autoAchieve ? 'row-achievable'
+    : (met === false && hasStats ? 'row-locked' : '');
+
+  const mobileDetail = [];
+  if (item.skillReqs) mobileDetail.push(item.skillReqs.split(';').map(s=>s.trim()).join(' · '));
+  if (item.questPrereqs) mobileDetail.push('🔑 ' + item.questPrereqs.split(';').map(s=>s.trim()).join(', '));
+  if (item.location) mobileDetail.push('📍 ' + item.location);
+  const mobileDetailHtml = mobileDetail.length ? `<div class="card-detail">${mobileDetail.join(' &nbsp;|&nbsp; ')}</div>` : '';
+
+  const displayOrder = ironmanMode ? (item.imOrder || item.order) : item.order;
+
+  return `<tr class="${rowClass}" data-order="${item.order}" onclick="openDetail(${item.order})">
+    <td>
+      <div class="check-cell" onclick="event.stopPropagation(); toggleDone(${item.order})">
+        <div class="check-box ${done ? 'checked' : ''}"></div>
+      </div>
+    </td>
+    <td>${displayOrder}</td>
+    <td class="td-name">${item.source ? `<a href="${item.source}" target="_blank" onclick="event.stopPropagation()">${item.name}</a>` : item.name}${imBadge}${userNotes[item.order] ? '<span class="note-indicator" title="Has notes">📝</span>' : ''}${mobileDetailHtml}</td>
+    <td><span class="type-badge badge-${item.type.replace('/','\\/')}">${TYPE_ICONS[item.type] ? `<img src="${TYPE_ICONS[item.type]}" alt="" style="width:12px;height:12px;object-fit:contain;vertical-align:middle;margin-right:3px;opacity:0.85">` : ''} ${item.type}</span>${tierHtml}</td>
+    <td class="skill-req">${reqHtml}</td>
+    <td class="skill-req">${prereqHtml}</td>
+    <td class="qp-badge">${item.qp > 0 ? item.qp : ''}</td>
+    <td class="location-cell">${item.location}</td>
+    <td class="info-cell">${item.info.length > 100 ? item.info.substring(0,100)+'…' : item.info}</td>
+    <td class="drops-cell">${(item.notableDrops && item.notableDrops.length) ? item.notableDrops.slice(0,3).map(d => `<span style="font-size:0.75rem;color:var(--text-muted)">${d[0]}<span style="color:var(--stone-lighter)"> ${d[1]}</span></span>`).join('<br>') : ''}</td>
+  </tr>`;
+}
+
+function toggleDone(order) {
+  const item = SPINE_DATA.find(d => d.order === order);
+  if (completedSet.has(order)) {
+    completedSet.delete(order);
+    if (item && item.qp > 0) {
+      playerQP = Math.max(0, playerQP - item.qp);
+      const qpInput = document.getElementById('qp-input');
+      if (qpInput) qpInput.value = playerQP;
+    }
+  } else {
+    completedSet.add(order);
+    if (item && item.qp > 0) {
+      playerQP += item.qp;
+      const qpInput = document.getElementById('qp-input');
+      if (qpInput) qpInput.value = playerQP;
+    }
+  }
+  saveToStorage();
+  renderTable();
+  updateProgress();
+}
+
+function markTierDone(tierId, e) {
+  e.stopPropagation();
+  var tier = TIERS.find(function(t) { return t.id === tierId; });
+  if (!tier) return;
+  var data = getActiveData();
+  var tierItems = data.filter(function(item) {
+    var ord = ironmanMode ? (item.imOrder || item.order) : item.order;
+    return ord >= tier.minOrder && ord <= tier.maxOrder;
+  });
+  var allDone = tierItems.every(function(item) { return completedSet.has(item.order); });
+  tierItems.forEach(function(item) {
+    if (allDone) { completedSet.delete(item.order); }
+    else { completedSet.add(item.order); }
+  });
+  recalcQPFromCompleted();
+  saveToStorage();
+  renderTable();
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = completedSet.size;
+  const total = SPINE_DATA.length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('prog-done').textContent = done;
+  document.getElementById('prog-total').textContent = total;
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+}
+
+function toggleShowCompleted() {
+  showCompleted = !showCompleted;
+  document.getElementById('toggle-completed-label').textContent = showCompleted ? 'Hide Completed' : 'Show Completed';
+  renderTable();
+}
+
+function clearProgress() {
+  if (!confirm('Clear all progress? This cannot be undone.')) return;
+  completedSet.clear();
+  playerQP = 0;
+  openTiers.clear();
+  autoDetectOpenTier();
+  saveToStorage();
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) qpInput.value = 0;
+  renderTable();
+  updateProgress();
+}
+
+// ============================================================
+// DETAIL MODAL
+// ============================================================
+function openDetail(order) {
+  const item = SPINE_DATA.find(d => d.order === order);
+  if (!item) return;
+  document.getElementById('detail-title').textContent = item.name;
+  const badgeHtml = `<span class="type-badge badge-${item.type}">${TYPE_ICONS[item.type] ? '<img src="' + TYPE_ICONS[item.type] + '" alt="" style="width:12px;height:12px;object-fit:contain;vertical-align:middle;margin-right:3px;opacity:0.85">' : ''} ${item.type}</span>`;
+  document.getElementById('detail-subtitle').innerHTML = badgeHtml +
+    (item.bossTier ? ` <span class="boss-tier tier-${item.bossTier.toLowerCase().replace(' tier','').trim()}" style="margin-left:0.5rem">${item.bossTier}</span>` : '');
+  const hasStats = Object.keys(playerStats).length > 0;
+  const rows = [];
+  rows.push(['Order', `#${item.order}`]);
+  if (item.location) rows.push(['Location', item.location]);
+  if (item.qp > 0) rows.push(['Quest Points', `<span class="qp-badge">${item.qp} QP</span>`]);
+  if (item.type === 'Boss') {
+    const currentKC = bossKC[item.order] || 0;
+    rows.push(['Kill Count', `<div style="display:flex;align-items:center;gap:0.75rem">
+      <input type="number" min="0" id="kc-input-${item.order}" value="${currentKC}"
+        style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:3px;color:var(--gold);font-family:'Cinzel',serif;font-size:1rem;font-weight:700;padding:0.3rem 0.6rem;width:90px;outline:none;text-align:center"
+        onchange="updateKC(${item.order}, this.value)" oninput="updateKC(${item.order}, this.value)">
+      <span style="font-size:0.8rem;color:var(--text-muted)">kills logged</span>
+    </div>`]);
+  }
+  if (item.skillReqs) {
+    const reqs = parseSkillReqs(item.skillReqs);
+    const html = reqs.map(r => {
+      const have = r.isQP ? playerQP : r.skill.toLowerCase() === 'combat' ? getCombatLevel() : r.skill.toLowerCase() === 'total level' ? getTotalLevel() : (playerStats[r.skill.toLowerCase()] || 1);
+      const fail = hasStats && have < r.level;
+      return `<div style="margin-bottom:0.2rem"><span class="${fail ? 'req-unmet' : ''}">
+        ${r.isQP ? 'Quest Points' : r.skill} ${r.level}${r.unboostable ? ' (unboostable)' : r.boostable ? ' (boostable)' : ''}
+        ${hasStats ? `<span style="color:var(--text-muted);font-size:0.78rem;margin-left:0.3rem">[you: ${have}]</span>` : ''}
+      </span></div>`;
+    }).join('');
+    rows.push(['Skill Reqs', html]);
+  }
+  if (item.questPrereqs) {
+    const prereqs = item.questPrereqs.split(';').map(s => s.trim()).filter(Boolean);
+    const html = prereqs.map(p => {
+      const found = SPINE_DATA.find(d => d.name.toLowerCase() === p.toLowerCase());
+      const done = found && completedSet.has(found.order);
+      return `<div style="margin-bottom:0.2rem">${done ? '<span style="color:var(--green-light)">✓</span>' : '<span style="color:var(--text-muted)">○</span>'} ${p}</div>`;
+    }).join('');
+    rows.push(['Quest Prereqs', html]);
+  }
+  if (item.info) rows.push(['Notes', `<span style="font-family:'IM Fell English',serif;font-style:italic">${item.info}</span>`]);
+  if (item.notableDrops && item.notableDrops.length > 0) {
+    const dropsHtml = item.notableDrops.map(([dropName, dropRate]) => {
+      const dropKey = `${item.order}-${dropName}`;
+      const mainEntry = SPINE_DATA.find(d => d.order !== item.order && d.name.toLowerCase() === dropName.toLowerCase());
+      const dropDone = !!obtainedDrops[dropKey];
+      return `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.35rem;padding:0.3rem 0.5rem;background:rgba(0,0,0,0.2);border-radius:3px">
+        <div class="check-box ${dropDone ? 'checked' : ''}" style="width:14px;height:14px;flex-shrink:0"
+          onclick="toggleDropDone('${dropKey}', ${item.order}, ${mainEntry ? mainEntry.order : 'null'})" title="Mark obtained"></div>
+        <span style="flex:1;font-size:0.83rem;color:${dropDone ? '#6fc96f' : 'var(--text-light)'}${mainEntry ? ';cursor:pointer' : ''}"
+          ${mainEntry ? `onclick="closeDetailBtn(); setTimeout(()=>openDetail(${mainEntry.order}),50)"` : ''}>
+          ${dropName}${mainEntry ? ' <span style="color:var(--gold-dark);font-size:0.7rem">→</span>' : ''}
+        </span>
+        <span style="font-size:0.73rem;color:var(--stone-lighter);white-space:nowrap">${dropRate}</span>
+      </div>`;
+    }).join('');
+    rows.push(['Notable Drops', dropsHtml]);
+  }
+  rows.push(['My Notes', `<textarea id="user-note-ta" class="user-note-ta" placeholder="Add your own notes…" onblur="saveNote(${item.order}, this.value)" onclick="event.stopPropagation()">${userNotes[item.order] || ''}</textarea>`]);
+  if (item.source) rows.push(['Guide', `<a href="${item.source}" target="_blank" style="color:var(--gold-light)">${item.source.replace(/https?:\/\//,'').substring(0,50)}…</a>`]);
+  document.getElementById('detail-body').innerHTML = rows.map(([l,v]) =>
+    `<div class="detail-row"><div class="detail-row-label">${l}</div><div class="detail-row-val">${v}</div></div>`
+  ).join('');
+  const done = completedSet.has(item.order);
+  document.getElementById('detail-actions').innerHTML = `
+    <button class="btn" onclick="toggleDone(${item.order}); closeDetailBtn()">${done ? '✗ Mark Incomplete' : '✓ Mark Complete'}</button>
+    <button class="btn btn-ghost" onclick="buildPathTo(${item.order})" title="Recursively find all incomplete prerequisites and add them to Custom Path" style="border-color:#4a7fc8;color:#8abcf8">🗺 Build Path to This</button>
+    ${item.source ? `<a href="${item.source}" target="_blank"><button class="btn btn-ghost">Open Guide ↗</button></a>` : ''}
+  `;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function updateKC(order, value) {
+  bossKC[order] = Math.max(0, parseInt(value) || 0);
+  saveToStorage();
+}
+
+function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
+  if (obtainedDrops[dropKey]) {
+    delete obtainedDrops[dropKey];
+  } else {
+    obtainedDrops[dropKey] = true;
+  }
+  const item = SPINE_DATA.find(d => d.order === sourceOrder);
+  if (item && item.notableDrops && item.notableDrops.length > 0) {
+    const allDone = item.notableDrops.every(([dropName]) => !!obtainedDrops[`${sourceOrder}-${dropName}`]);
+    if (allDone) completedSet.add(sourceOrder);
+    else completedSet.delete(sourceOrder);
+  }
+  saveToStorage();
+  renderTable();
+  updateProgress();
+  openDetail(sourceOrder);
+}
+
+function closeDetail(e) {
+  if (e.target === document.getElementById('detail-overlay')) closeDetailBtn();
+}
+
+function closeDetailBtn() {
+  document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ============================================================
+// BUILD PATH TO GOAL
+// ============================================================
+function buildPathTo(goalOrder) {
+  const goalItem = SPINE_DATA.find(d => d.order === goalOrder);
+  if (!goalItem) return;
+
+  // ── Step 1: Recursively collect all incomplete spine items ──
+  const visited = new Set();
+  const needed = []; // spine orders in dependency-first order
+
+  function collect(order) {
+    if (visited.has(order)) return;
+    visited.add(order);
+    const item = SPINE_DATA.find(d => d.order === order);
+    if (!item) return;
+    // Recurse quest prereqs depth-first so deps come before the task
+    if (item.questPrereqs) {
+      item.questPrereqs.split(';').map(s => s.trim()).filter(Boolean).forEach(prereqName => {
+        const prereqItem = SPINE_DATA.find(d => d.name.toLowerCase() === prereqName.toLowerCase());
+        if (prereqItem) collect(prereqItem.order);
+      });
+    }
+    if (!completedSet.has(order)) needed.push(order);
+  }
+
+  collect(goalOrder);
+  // Stable sort by spine order (preserves dep ordering within same tier)
+  needed.sort((a, b) => a - b);
+
+  // ── Step 2: Build spine plan items ──
+  const spineItems = needed.map(order => {
+    const sp = SPINE_DATA.find(d => d.order === order);
+    return {
+      id: planUid(),
+      itemType: 'existing',
+      spineOrder: order,
+      name: sp.name,
+      type: sp.type,
+      skillReqs: sp.skillReqs || '',
+      location: sp.location || '',
+      notes: sp.info || '',
+      done: false,
+      _isGoal: order === goalOrder
+    };
+  });
+
+  // ── Step 3: Collect skill training tasks ──
+  // For each unique skill gap across all needed items, create one training task
+  // at the highest level required for that skill.
+  const skillNeeds = {}; // skillLower -> { skill, level, neededFor }
+  needed.forEach(order => {
+    const sp = SPINE_DATA.find(d => d.order === order);
+    if (!sp.skillReqs) return;
+    parseSkillReqs(sp.skillReqs).forEach(req => {
+      if (req.isQP) return;
+      const key = req.skill.toLowerCase();
+      if (['combat', 'total level'].includes(key)) return;
+      const have = parseInt(playerStats[key]) || 1;
+      if (have >= req.level) return; // already meets it
+      if (!skillNeeds[key] || skillNeeds[key].level < req.level) {
+        skillNeeds[key] = { skill: req.skill, level: req.level, neededFor: sp.name };
+      }
+    });
+  });
+
+  const skillItems = Object.values(skillNeeds)
+    .sort((a, b) => a.skill.localeCompare(b.skill))
+    .map(req => ({
+      id: planUid(),
+      itemType: 'custom',
+      name: 'Train ' + req.skill + ' to ' + req.level,
+      type: 'Activity/Goal',
+      skillReqs: '',
+      location: '',
+      notes: 'Required for: ' + req.neededFor,
+      done: false,
+      _isSkillTask: true
+    }));
+
+  // Skill tasks first, then spine tasks in order
+  const fullPath = skillItems.concat(spineItems);
+
+  if (!fullPath.length) {
+    alert('All prerequisites for "' + goalItem.name + '" are already complete — nothing to add!');
+    return;
+  }
+
+  // ── Step 4: Show preview modal ──
+  window._pendingPath = fullPath;
+  showPathPreview(goalItem.name, fullPath);
+}
+
+function showPathPreview(goalName, items) {
+  const overlay = document.getElementById('path-preview-overlay');
+  if (!overlay) return;
+
+  // Store goal name so tree view can use it
+  window._pendingGoalName = goalName;
+
+  document.getElementById('path-preview-title').textContent = 'Path to: ' + goalName;
+
+  const spineCount  = items.filter(i => !i._isSkillTask).length;
+  const skillCount  = items.filter(i => i._isSkillTask).length;
+  const summaryEl   = document.getElementById('path-preview-summary');
+  summaryEl.innerHTML =
+    '<span><strong>' + items.length + '</strong> steps total</span>' +
+    '<span><strong>' + spineCount + '</strong> quest/task/activity</span>' +
+    (skillCount ? '<span><strong>' + skillCount + '</strong> skill training</span>' : '');
+
+  const listEl = document.getElementById('path-preview-list');
+  listEl.innerHTML = items.map((item, i) => {
+    const cls = item._isSkillTask ? 'is-skill-task' : item._isGoal ? 'is-goal' : '';
+    const badge = item.type
+      ? '<span class="type-badge badge-' + item.type.replace('/','\/') + '" style="font-size:0.6rem;padding:0.1rem 0.4rem">' + item.type + '</span>'
+      : '';
+    const goalTag = item._isGoal ? ' <span style="font-size:0.65rem;color:var(--gold-dark);font-family:Cinzel,serif">&#9733; GOAL</span>' : '';
+    return '<div class="path-preview-item ' + cls + '">' +
+      '<span class="path-preview-num">' + (i + 1) + '</span>' +
+      '<span class="path-preview-name">' + item.name + goalTag + '</span>' +
+      badge +
+    '</div>';
+  }).join('');
+
+  const footerEl = document.getElementById('path-preview-footer');
+  if (planItems.length) {
+    footerEl.innerHTML =
+      '<button class="btn btn-ghost" onclick="closePathPreview()">Cancel</button>' +
+      '<button class="btn btn-ghost btn-append" onclick="commitPath('+"'append'"+ ')">+ Append to Path</button>' +
+      '<button class="btn btn-ghost btn-replace" onclick="commitPath('+"'replace'"+')">&#x21BA; Replace Path</button>';
+  } else {
+    footerEl.innerHTML =
+      '<button class="btn btn-ghost" onclick="closePathPreview()">Cancel</button>' +
+      '<button class="btn" onclick="commitPath('+"'replace'"+')">Add to Custom Path</button>';
+  }
+
+  overlay.classList.add('open');
+}
+
+function pathPreviewOverlayClick(e) {
+  if (e.target === document.getElementById('path-preview-overlay')) closePathPreview();
+}
+
+function closePathPreview() {
+  const overlay = document.getElementById('path-preview-overlay');
+  if (overlay) overlay.classList.remove('open');
+  window._pendingPath = null;
+  window._pendingGoalName = null;
+}
+
+function commitPath(mode) {
+  const newItems = window._pendingPath;
+  if (!newItems) return;
+
+  if (mode === 'replace' || !planItems.length) {
+    planItems = newItems;
+  } else {
+    // Append — skip duplicates by spineOrder (for spine items) or name (for skill tasks)
+    const existingOrders = new Set(planItems.filter(i => i.spineOrder).map(i => i.spineOrder));
+    const existingNames  = new Set(planItems.map(i => i.name.toLowerCase()));
+    planItems = planItems.concat(newItems.filter(i =>
+      i.spineOrder ? !existingOrders.has(i.spineOrder) : !existingNames.has(i.name.toLowerCase())
+    ));
+  }
+
+  savePlan();
+  closePathPreview();
+  closeDetailBtn();
+  showPage('planner');
+  renderPlanner();
+  window._pendingPath = null;
+}
+
+// ─── TREE VIEW ────────────────────────────────────────────────────────────────
+
+function openTreeViewFromPreview() {
+  var goalName = window._pendingGoalName;
+  if (!goalName) return;
+  showTreeView(goalName);
+}
+
+function showTreeView(goalName) {
+  var root = buildQuestTree(goalName, new Set());
+  if (!root) return;
+  document.getElementById('tree-view-title').textContent = goalName;
+  document.getElementById('tree-view-body').innerHTML = renderTreeNode(root, true, 0);
+  document.getElementById('tree-view-overlay').classList.add('open');
+}
+
+// Build recursive tree. visitedPath prevents circular refs within a branch
+// but allows the same quest to appear across different branches (correct).
+function buildQuestTree(name, visitedPath) {
+  var key = name.toLowerCase();
+  if (visitedPath.has(key)) return null;
+  var item = SPINE_DATA.find(function(d) { return d.name.toLowerCase() === key; });
+  if (!item) return { name: name, type: null, order: -1, completed: false, children: [] };
+  var completed = completedSet.has(item.order);
+  var prereqNames = item.questPrereqs
+    ? item.questPrereqs.split(';').map(function(s) { return s.trim(); }).filter(Boolean)
+    : [];
+  var newVisited = new Set(visitedPath);
+  newVisited.add(key);
+  var children = prereqNames
+    .map(function(p) { return buildQuestTree(p, newVisited); })
+    .filter(Boolean);
+  // Sort: incomplete first, completed last
+  children.sort(function(a, b) {
+    if (a.completed === b.completed) return 0;
+    return a.completed ? 1 : -1;
+  });
+  return { name: item.name, type: item.type, order: item.order, completed: completed, children: children };
+}
+
+function renderTreeNode(node, isRoot, depth) {
+  var uid = 'tn_' + (node.order >= 0 ? node.order : 'x' + Math.floor(Math.random() * 999999));
+  var hasChildren = node.children && node.children.length > 0;
+  // Completed nodes with children collapse by default. Root always open.
+  var startCollapsed = !isRoot && node.completed && hasChildren;
+
+  var nodeClass = 'tree-node';
+  if (isRoot) nodeClass += ' tn-root';
+  nodeClass += node.completed ? ' tn-done' : ' tn-todo';
+
+  var typeBadge = node.type
+    ? '<span class="type-badge" style="font-size:0.59rem;padding:0.08rem 0.32rem;flex-shrink:0">' + node.type + '</span>'
+    : '';
+
+  var statusIcon = node.completed
+    ? '<span class="tn-status tn-status-done">&#x2713;</span>'
+    : '<span class="tn-status tn-status-todo">&#x2717;</span>';
+
+  var toggleBtn = hasChildren
+    ? '<button class="tn-toggle" onclick="treeToggle(\'' + uid + '\')" title="' + (startCollapsed ? 'Expand' : 'Collapse') + '">' + (startCollapsed ? '&#x25B6;' : '&#x25BC;') + '</button>'
+    : '<span class="tn-toggle-spacer"></span>';
+
+  var html = '<div class="tree-node-wrap" id="' + uid + '">';
+  html += '<div class="' + nodeClass + '">';
+  html += toggleBtn;
+  html += statusIcon;
+  html += '<span class="tn-name">' + node.name + '</span>';
+  html += typeBadge;
+  html += '</div>';
+
+  if (hasChildren) {
+    html += '<div class="tree-children' + (startCollapsed ? ' tree-collapsed' : '') + '" id="' + uid + '_ch">';
+    for (var i = 0; i < node.children.length; i++) {
+      html += renderTreeNode(node.children[i], false, depth + 1);
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function treeToggle(uid) {
+  var ch = document.getElementById(uid + '_ch');
+  var btn = document.querySelector('#' + uid + ' > .tree-node > .tn-toggle');
+  if (!ch || !btn) return;
+  var collapsed = ch.classList.toggle('tree-collapsed');
+  btn.innerHTML = collapsed ? '&#x25B6;' : '&#x25BC;';
+  btn.title = collapsed ? 'Expand' : 'Collapse';
+}
+
+function treeExpandAll() {
+  document.querySelectorAll('#tree-view-body .tree-children').forEach(function(el) {
+    el.classList.remove('tree-collapsed');
+  });
+  document.querySelectorAll('#tree-view-body .tn-toggle').forEach(function(btn) {
+    btn.innerHTML = '&#x25BC;';
+    btn.title = 'Collapse';
+  });
+}
+
+function treeCollapseAll() {
+  // Collapse everything except root's direct children (keep top level visible)
+  document.querySelectorAll('#tree-view-body .tree-children .tree-children').forEach(function(el) {
+    el.classList.add('tree-collapsed');
+    var uid = el.id.replace('_ch', '');
+    var btn = document.querySelector('#' + uid + ' > .tree-node > .tn-toggle');
+    if (btn) { btn.innerHTML = '&#x25B6;'; btn.title = 'Expand'; }
+  });
+}
+
+function closeTreeView() {
+  var overlay = document.getElementById('tree-view-overlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function treeViewOverlayClick(e) {
+  if (e.target === document.getElementById('tree-view-overlay')) closeTreeView();
+}
+
+// ============================================================
+// FLOATING RANDOM TASK PANEL
+// ============================================================
+function toggleRandomPanel() {
+  const panel = document.getElementById('floating-rand-panel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) renderFloatingHistory();
+}
+
+function closeRandomPanel() {
+  document.getElementById('floating-rand-panel').classList.remove('open');
+}
+
+function getSpinPool(suggestionMode = false) {
+  return SPINE_DATA.filter(item => {
+    if (!randFilters.has(item.type) && !(item.type === 'Activity/Goal' && randFilters.has('Activity/Goal'))) return false;
+    if (randFilters.has('incomplete') && completedSet.has(item.order)) return false;
+    if (suggestionMode) {
+      if (completedSet.has(item.order)) return false;
+      return isAchievableNear(item);
+    }
+    if (randFilters.has('available')) {
+      const met = meetsReqs(item);
+      if (met === false) return false;
+    }
+    return true;
+  });
+}
+
+function floatSpin(suggestionMode = false) {
+  const pool = getSpinPool(suggestionMode);
+  const resultEl = document.getElementById('float-spin-result');
+  const idleEl = document.getElementById('float-spin-idle');
+
+  if (!pool.length) {
+    resultEl.style.display = 'none';
+    idleEl.style.display = 'block';
+    idleEl.textContent = suggestionMode
+      ? 'No tasks found within your skill range. Add stats on My Stats page!'
+      : 'No items match your filters!';
+    return;
+  }
+
+  // Shuffle animation
+  idleEl.style.display = 'none';
+  resultEl.style.display = 'block';
+  const nameEl = document.getElementById('float-spin-name');
+  nameEl.classList.add('spinning');
+
+  let ticks = 0;
+  const interval = setInterval(() => {
+    const rand = pool[Math.floor(Math.random() * pool.length)];
+    nameEl.textContent = rand.name;
+    ticks++;
+    if (ticks > 15) {
+      clearInterval(interval);
+      nameEl.classList.remove('spinning');
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+      currentSpinItem = chosen;
+      showFloatResult(chosen);
+      addToSpinHistory(chosen);
+    }
+  }, 55);
+}
+
+function showFloatResult(item) {
+  document.getElementById('float-spin-name').textContent = item.name;
+  document.getElementById('float-spin-order').textContent = `#${item.order}`;
+  document.getElementById('float-spin-type').innerHTML =
+    `<span class="type-badge badge-${item.type.replace('/','\\/')}">${item.type}</span>` +
+    (item.bossTier ? ` <span class="boss-tier tier-${item.bossTier.toLowerCase().replace(' tier','').trim()}">${item.bossTier}</span>` : '');
+
+  const metaEl = document.getElementById('float-spin-meta');
+  const parts = [];
+  if (item.location) parts.push(`📍 ${item.location}`);
+  if (item.skillReqs) parts.push(`⚔ ${item.skillReqs.split(';')[0].trim()}${item.skillReqs.includes(';') ? '…' : ''}`);
+  metaEl.textContent = parts.join('  ·  ');
+
+  document.getElementById('float-spin-result').style.display = 'block';
+  document.getElementById('float-spin-idle').style.display = 'none';
+
+  // Show Build Path bar only for quest-type items (or any item with a spine order)
+  const bpBar = document.getElementById('frand-buildpath-bar');
+  if (bpBar) bpBar.style.display = 'block';
+}
+
+function floatBuildPath() {
+  if (!currentSpinItem) return;
+  closeRandomPanel();
+  buildPathTo(currentSpinItem.order);
+}
+
+function floatMarkDone() {
+  if (currentSpinItem) {
+    completedSet.add(currentSpinItem.order);
+    saveToStorage();
+    updateProgress();
+    renderTable();
+  }
+  floatSpin(false);
+}
+
+function addToSpinHistory(item) {
+  spinHistory = spinHistory.filter(h => h.order !== item.order);
+  spinHistory.unshift({ order: item.order, name: item.name, type: item.type });
+  if (spinHistory.length > 10) spinHistory.pop();
+  saveToStorage();
+  renderFloatingHistory();
+}
+
+function renderFloatingHistory() {
+  const list = document.getElementById('float-history-list');
+  const wrap = document.getElementById('float-history-wrap');
+  if (!list) return;
+  if (!spinHistory.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = spinHistory.map((h, i) =>
+    `<div class="float-hist-item" onclick="openDetail(${h.order}); closeRandomPanel()">
+      <span class="float-hist-num">${i + 1}</span>
+      <span class="float-hist-name">${h.name}</span>
+      <span class="type-badge badge-${h.type.replace('/','\\/')}" style="font-size:0.65rem;padding:0.1rem 0.4rem">${h.type}</span>
+    </div>`
+  ).join('');
+}
+
+function clearSpinHistory() {
+  spinHistory = [];
+  currentSpinItem = null;
+  saveToStorage();
+  document.getElementById('float-spin-result').style.display = 'none';
+  document.getElementById('float-spin-idle').style.display = 'block';
+  document.getElementById('float-spin-idle').textContent = 'Press a button to receive your task…';
+  const bpBar = document.getElementById('frand-buildpath-bar');
+  if (bpBar) bpBar.style.display = 'none';
+  renderFloatingHistory();
+}
+
+function toggleRandFilter(f) {
+  if (randFilters.has(f)) {
+    randFilters.delete(f);
+  } else {
+    randFilters.add(f);
+  }
+  // Update chips inside floating panel
+  document.querySelectorAll(`[data-rfilter="${f}"]`).forEach(el => {
+    el.classList.toggle('active', randFilters.has(f));
+  });
+}
+
+// ============================================================
+// STATS PAGE
+// ============================================================
+function buildSkillsGrid() {
+  const grid = document.getElementById('skills-grid');
+  grid.innerHTML = SKILLS.map(s =>
+    `<div class="skill-input-row">
+      <img class="skill-icon" src="${s.icon}" alt="${s.name}" title="${s.name}" onerror="this.style.display='none'">
+      <span class="skill-name-lbl">${s.name}</span>
+      <input class="skill-level-input" type="number" min="1" max="99"
+        id="skill-${s.name.toLowerCase()}"
+        value="${playerStats[s.name.toLowerCase()] || ''}"
+        placeholder="1">
+    </div>`
+  ).join('');
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) qpInput.value = playerQP || '';
+}
+
+function syncSkillsGridFromStats() {
+  SKILLS.forEach(s => {
+    const el = document.getElementById(`skill-${s.name.toLowerCase()}`);
+    if (el) el.value = playerStats[s.name.toLowerCase()] || '';
+  });
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) qpInput.value = playerQP || '';
+}
+
+function saveStats() {
+  SKILLS.forEach(s => {
+    const el = document.getElementById(`skill-${s.name.toLowerCase()}`);
+    if (el && el.value) playerStats[s.name.toLowerCase()] = Math.min(99, Math.max(1, parseInt(el.value) || 1));
+  });
+  const qpInput = document.getElementById('qp-input');
+  if (qpInput) playerQP = parseInt(qpInput.value) || 0;
+  SPINE_DATA.forEach(item => {
+    if (isAutoAchievable(item) && !completedSet.has(item.order)) completedSet.add(item.order);
+  });
+  saveToStorage();
+  renderTable();
+  updateProgress();
+  updateCombatDisplay();
+  const msg = document.getElementById('stats-saved-msg');
+  msg.style.display = 'inline';
+  setTimeout(() => msg.style.display = 'none', 2000);
+}
+
+function updateCombatDisplay() {
+  const combatEl = document.getElementById('combat-level-display');
+  const totalEl = document.getElementById('total-level-display');
+  if (combatEl) combatEl.textContent = Object.keys(playerStats).length > 0 ? getCombatLevel() : '—';
+  if (totalEl) totalEl.textContent = Object.keys(playerStats).length > 0 ? getTotalLevel() : '—';
+}
+
+function clearStats() {
+  if (!confirm('Reset all stats?')) return;
+  playerStats = {};
+  playerQP = 0;
+  saveToStorage();
+  buildSkillsGrid();
+  renderTable();
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`page-${name}`).classList.add('active');
+  const btn = document.querySelector(`.nav-btn[onclick="showPage('${name}')"]`);
+  if (btn) btn.classList.add('active');
+  if (name === 'stats') { buildSkillsGrid(); updateCombatDisplay(); }
+  if (name === 'planner') renderPlanner();
+
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ============================================================
+// SCROLL TO TOP
+// ============================================================
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('scroll', onPageScroll);
+function onPageScroll() {
+  var btn = document.getElementById('back-to-top');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 400);
+  updateTierFloat();
+}
+
+function updateTierFloat() {
+  var float = document.getElementById('tier-float');
+  if (!float) return;
+  var page = document.getElementById('page-progression');
+  if (!page || !page.classList.contains('active')) { float.style.display = 'none'; return; }
+
+  // Use live measurement - immune to header height changes and scroll position
+  var thead = document.querySelector('#main-table thead');
+  var pinTop = thead ? Math.round(thead.getBoundingClientRect().bottom) : 102;
+
+  var rows = document.querySelectorAll('.tier-header-row');
+  var active = null;
+  rows.forEach(function(row) {
+    if (row.getBoundingClientRect().top < pinTop) active = row;
+  });
+
+  if (!active) { float.style.display = 'none'; return; }
+
+  // Hide if section is collapsed (next sibling is another tier header)
+  var nextSib = active.nextElementSibling;
+  if (!nextSib || nextSib.classList.contains('tier-header-row')) { float.style.display = 'none'; return; }
+
+  // Hide if next tier header has already reached the pin (sections bumping)
+  var sibling = nextSib;
+  while (sibling) {
+    if (sibling.classList.contains('tier-header-row')) {
+      if (sibling.getBoundingClientRect().top <= pinTop + 2) { float.style.display = 'none'; return; }
+      break;
+    }
+    sibling = sibling.nextElementSibling;
+  }
+
+  var inner = active.querySelector('.tier-header-inner');
+  if (!inner) { float.style.display = 'none'; return; }
+
+  float.innerHTML = inner.outerHTML;
+  float.setAttribute('data-tier', active.getAttribute('data-tier') || '');
+
+  var cs = getComputedStyle(active);
+  var bgDark  = cs.getPropertyValue('--tier-bg-dark').trim() || '#1a1408';
+  var bg      = cs.getPropertyValue('--tier-bg').trim() || '#1a1408';
+  var color   = cs.getPropertyValue('--tier-color').trim() || '#c8a84b';
+  float.style.cssText = 'display:block;position:fixed;left:0;right:0;z-index:18;cursor:pointer;' +
+    'top:' + pinTop + 'px;' +
+    'background:linear-gradient(90deg,' + bgDark + ' 0%,' + bg + ' 60%,' + bgDark + ' 100%);' +
+    'border-top:2px solid ' + color + ';' +
+    'border-bottom:1px solid rgba(255,255,255,0.08);' +
+    'box-shadow:0 3px 12px rgba(0,0,0,0.8);';
+
+  float.onclick = function() { toggleTier(active.getAttribute('data-tier')); };
+}
+
+
+
+// ============================================================
+// START
+// ============================================================
+function updateHeaderHeight() {
+  const h = document.querySelector('header');
+  if (h) document.documentElement.style.setProperty('--header-h', h.offsetHeight + 'px');
+  const th = document.querySelector('#main-table thead');
+  if (th) document.documentElement.style.setProperty('--thead-h', th.offsetHeight + 'px');
+}
+window.addEventListener('resize', updateHeaderHeight);
+// Also re-measure after first render when thead is populated
+window.addEventListener('load', updateHeaderHeight);
+updateHeaderHeight();
+
+// ============================================================
+// CUSTOM PATH PLANNER
+// ============================================================
+
+var planItems = [];
+var planDragSrc = null;
+var planEditId = null;
+
+init();
+
+function planUid() {
+  return 'p' + Date.now() + Math.random().toString(36).slice(2, 6);
+}
+
+function loadPlan() {
+  try {
+    var raw = localStorage.getItem('osrs_custom_plan');
+    planItems = raw ? JSON.parse(raw) : [];
+  } catch (e) { planItems = []; }
+}
+
+function savePlan() {
+  localStorage.setItem('osrs_custom_plan', JSON.stringify(planItems));
+}
+
+// ---- RENDER ----
+
+function renderPlanner() {
+  var list = document.getElementById('planner-list');
+  var empty = document.getElementById('planner-empty');
+  var tableWrap = document.getElementById('planner-table-wrap');
+  var progWrap = document.getElementById('planner-progress-wrap');
+  if (!list) return;
+
+  if (!planItems.length) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    if (tableWrap) tableWrap.style.display = 'none';
+    if (progWrap) progWrap.style.display = 'none';
+    return;
+  }
+
+  if (empty) empty.style.display = 'none';
+  if (tableWrap) tableWrap.style.display = 'block';
+  if (progWrap) progWrap.style.display = 'flex';
+
+  var nonNote = planItems.filter(function(i) { return i.itemType !== 'note'; });
+  var doneCount = nonNote.filter(function(i) { return i.done; }).length;
+  var total = nonNote.length;
+  var pct = total ? Math.round(doneCount / total * 100) : 0;
+
+  var dc = document.getElementById('planner-done-count');
+  var tc = document.getElementById('planner-total-count');
+  var pf = document.getElementById('planner-prog-fill');
+  var pp = document.getElementById('planner-prog-pct');
+  if (dc) dc.textContent = doneCount;
+  if (tc) tc.textContent = total;
+  if (pf) pf.style.width = pct + '%';
+  if (pp) pp.textContent = pct + '%';
+
+  list.innerHTML = planItems.map(function(item, idx) {
+    return buildPlanItemHtml(item, idx);
+  }).join('');
+
+  initPlanDragDrop();
+}
+
+function buildPlanItemHtml(item, idx) {
+  var doneClass = item.done ? ' done' : '';
+  var checkBox = '<div class="check-box' + (item.done ? ' checked' : '') + '"></div>';
+
+  if (item.itemType === 'note') {
+    var noteText = item.text
+      ? item.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      : '<em>Empty note — click to edit</em>';
+    return '<tr class="planner-item item-note' + doneClass + '" data-id="' + item.id + '" draggable="true">' +
+      '<td class="pt-drag-cell">&#8942;&#8942;</td>' +
+      '<td class="pt-check-cell" onclick="togglePlanDone(\'' + item.id + '\')">' + checkBox + '</td>' +
+      '<td class="pt-note-cell" colspan="5" onclick="openPlannerModal(\'note\', \'' + item.id + '\')">&#128221; ' + noteText + '</td>' +
+      '<td class="pt-act-cell">' +
+        '<button class="planner-action-btn del" onclick="deletePlanItem(\'' + item.id + '\')" title="Delete">&#x2715;</button>' +
+      '</td>' +
+    '</tr>';
+  }
+
+  var typeBadge = item.type ? '<span class="type-badge badge-' + item.type.replace('/','\/') + '">' + item.type + '</span>' : '—';
+  var customTag = item.itemType === 'custom' ? ' <span style="font-size:0.6rem;padding:0.1rem 0.3rem;background:rgba(74,127,200,0.15);border:1px solid #4a7fc8;border-radius:3px;color:#8abcf8;font-family:\'Cinzel\',serif;vertical-align:middle">Custom</span>' : '';
+
+  var reqs = item.skillReqs || '—';
+  var loc  = item.location  || '—';
+  var info = item.notes     || '—';
+
+  // Highlight unmet skill reqs
+  if (item.skillReqs && Object.keys(playerStats).length) {
+    var reqParts = item.skillReqs.split(';').map(function(r) {
+      r = r.trim();
+      var m = r.match(/^([A-Za-z]+)\s+(\d+)$/);
+      if (m) {
+        var sk = m[1], lvl = parseInt(m[2]);
+        var have = parseInt(playerStats[sk]) || 1;
+        if (have < lvl) return '<span class="req-unmet">' + r + '</span>';
+      }
+      return r;
+    });
+    reqs = reqParts.join('; ');
+  }
+
+  return '<tr class="planner-item item-' + item.itemType + doneClass + '" data-id="' + item.id + '" draggable="true">' +
+    '<td class="pt-drag-cell">&#8942;&#8942;</td>' +
+    '<td class="pt-check-cell" onclick="togglePlanDone(\'' + item.id + '\')">' + checkBox + '</td>' +
+    '<td class="pt-name-cell"' + (item.spineOrder ? ' onclick="openDetail(' + item.spineOrder + ')" style="cursor:pointer" title="View details"' : '') + '><span class="pi-name">' + (item.name || 'Unnamed Task') + '</span>' + customTag + '</td>' +
+    '<td>' + typeBadge + '</td>' +
+    '<td class="pt-reqs-cell">' + reqs + '</td>' +
+    '<td class="pt-loc-cell">' + loc + '</td>' +
+    '<td class="pt-info-cell">' + info + '</td>' +
+    '<td class="pt-act-cell">' +
+      '<button class="planner-action-btn" onclick="openPlannerModal(\'' + item.itemType + '\', \'' + item.id + '\')" title="Edit">&#9998;</button>' +
+      '<button class="planner-action-btn del" onclick="deletePlanItem(\'' + item.id + '\')" title="Delete">&#x2715;</button>' +
+    '</td>' +
+  '</tr>';
+}
+
+function togglePlanDone(id) {
+  var item = planItems.filter(function(i) { return i.id === id; })[0];
+  if (item) { item.done = !item.done; savePlan(); renderPlanner(); }
+}
+
+function deletePlanItem(id) {
+  planItems = planItems.filter(function(i) { return i.id !== id; });
+  savePlan();
+  renderPlanner();
+}
+
+function clearPlan() {
+  if (!planItems.length) return;
+  if (!confirm('Clear your entire custom plan? This cannot be undone.')) return;
+  planItems = [];
+  savePlan();
+  renderPlanner();
+}
+
+// ---- DRAG AND DROP ----
+
+function initPlanDragDrop() {
+  var items = document.querySelectorAll('#planner-list tr.planner-item[draggable="true"]');
+  items.forEach(function(el) {
+    el.addEventListener('dragstart', function(e) {
+      planDragSrc = el;
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('dragend', function() {
+      el.classList.remove('dragging');
+      document.querySelectorAll('#planner-list tr.planner-item').forEach(function(i) { i.classList.remove('drag-over'); });
+    });
+    el.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      if (el !== planDragSrc) {
+        document.querySelectorAll('#planner-list tr.planner-item').forEach(function(i) { i.classList.remove('drag-over'); });
+        el.classList.add('drag-over');
+      }
+    });
+    el.addEventListener('drop', function(e) {
+      e.preventDefault();
+      if (planDragSrc && planDragSrc !== el) {
+        var srcId = planDragSrc.dataset.id;
+        var dstId = el.dataset.id;
+        var srcIdx = planItems.findIndex(function(i) { return i.id === srcId; });
+        var dstIdx = planItems.findIndex(function(i) { return i.id === dstId; });
+        if (srcIdx !== -1 && dstIdx !== -1) {
+          var moved = planItems.splice(srcIdx, 1)[0];
+          planItems.splice(dstIdx, 0, moved);
+          savePlan();
+          renderPlanner();
+        }
+      }
+    });
+  });
+}
+
+// ---- MODAL ----
+
+function openPlannerModal(mode, editId) {
+  planEditId = editId || null;
+  planMode = mode;
+
+  var overlay  = document.getElementById('planner-modal-overlay');
+  var titleEl  = document.getElementById('planner-modal-title');
+  var body     = document.getElementById('planner-modal-body');
+  var footer   = document.getElementById('planner-modal-footer');
+  if (!overlay || !body) return;
+
+  var editing = planEditId
+    ? planItems.filter(function(i) { return i.id === planEditId; })[0]
+    : null;
+
+  // Footer is static — save button always calls planSave()
+  if (mode === 'existing') {
+    titleEl.textContent = 'Add Existing Task';
+    footer.innerHTML = '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>';
+    body.innerHTML =
+      '<div class="planner-field">' +
+        '<label>Search Tasks</label>' +
+        '<input type="text" id="plan-search-input" placeholder="Type task name..." autocomplete="off" oninput="planSearchResults(this.value)">' +
+        '<div class="planner-search-results" id="plan-search-results">' +
+          '<div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.82rem;font-style:italic">Start typing to search...</div>' +
+        '</div>' +
+      '</div>';
+    setTimeout(function() {
+      var inp = document.getElementById('plan-search-input');
+      if (inp) inp.focus();
+    }, 50);
+  }
+
+  else if (mode === 'custom') {
+    titleEl.textContent = editing ? 'Edit Custom Task' : 'Add Custom Task';
+    footer.innerHTML =
+      '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>' +
+      '<button class="btn" onclick="planSave()">Save Task</button>';
+    var typeOpts = ['', 'Quest', 'Boss', 'Activity/Goal', 'Unlock', 'Miniquest', 'Diary'].map(function(t) {
+      var sel = (editing && editing.type === t) ? ' selected' : '';
+      return '<option value="' + t + '"' + sel + '>' + (t || '— None —') + '</option>';
+    }).join('');
+    body.innerHTML =
+      '<div class="planner-field"><label>Task Name *</label>' +
+        '<input type="text" id="pf-name" placeholder="e.g. Get 70 Attack" value="' + (editing ? esc(editing.name) : '') + '">' +
+      '</div>' +
+      '<div class="planner-field"><label>Type</label>' +
+        '<select id="pf-type">' + typeOpts + '</select>' +
+      '</div>' +
+      '<div class="planner-field"><label>Skill Requirements</label>' +
+        '<input type="text" id="pf-reqs" placeholder="e.g. Attack 70; Defence 60" value="' + (editing ? esc(editing.skillReqs) : '') + '">' +
+      '</div>' +
+      '<div class="planner-field"><label>Location</label>' +
+        '<input type="text" id="pf-loc" placeholder="e.g. Lumbridge" value="' + (editing ? esc(editing.location) : '') + '">' +
+      '</div>' +
+      '<div class="planner-field"><label>Notes</label>' +
+        '<textarea id="pf-notes" placeholder="Any notes...">' + (editing ? esc(editing.notes) : '') + '</textarea>' +
+      '</div>';
+    setTimeout(function() { var n = document.getElementById('pf-name'); if (n) n.focus(); }, 50);
+  }
+
+  else if (mode === 'note') {
+    titleEl.textContent = editing ? 'Edit Note' : 'Add Note';
+    footer.innerHTML =
+      '<button class="btn btn-ghost" onclick="closePlannerModal()">Cancel</button>' +
+      '<button class="btn" onclick="planSave()">Save Note</button>';
+    body.innerHTML =
+      '<div class="planner-field"><label>Note Text</label>' +
+        '<textarea id="pf-note-text" placeholder="Write your progress note here..." style="min-height:100px">' + (editing ? esc(editing.text) : '') + '</textarea>' +
+      '</div>';
+    setTimeout(function() { var n = document.getElementById('pf-note-text'); if (n) n.focus(); }, 50);
+  }
+
+  overlay.classList.add('open');
+}
+
+// Safe HTML escape for values injected into attributes
+function esc(v) {
+  return (v || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Single save dispatcher — called from static onclick in footer HTML
+function planSave() {
+  if (planMode === 'custom') savePlanCustom();
+  else if (planMode === 'note') savePlanNote();
+}
+
+
+function plannerOverlayClick(e) {
+  if (e.target === document.getElementById('planner-modal-overlay')) closePlannerModal();
+}
+
+function closePlannerModal() {
+  var overlay = document.getElementById('planner-modal-overlay');
+  if (overlay) overlay.classList.remove('open');
+  planEditId = null;
+}
+
+function planSearchResults(query) {
+  var container = document.getElementById('plan-search-results');
+  if (!container) return;
+  if (!query || !query.trim()) {
+    container.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.82rem;font-style:italic">Start typing to search...</div>';
+    return;
+  }
+  var q = query.toLowerCase();
+  var results = SPINE_DATA.filter(function(item) {
+    return item.name.toLowerCase().indexOf(q) !== -1 || item.type.toLowerCase().indexOf(q) !== -1;
+  }).slice(0, 30);
+
+  if (!results.length) {
+    container.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.82rem">No matches found.</div>';
+    return;
+  }
+
+  container.innerHTML = results.map(function(item) {
+    return '<div class="planner-search-result" data-order="' + item.order + '">' +
+      '<span class="planner-search-result-name">' + item.name + '</span>' +
+      '<span class="type-badge" style="font-size:0.65rem;padding:0.1rem 0.4rem">' + item.type + '</span>' +
+      '<span class="planner-search-result-order">#' + item.order + '</span>' +
+    '</div>';
+  }).join('');
+  // Wire clicks via event delegation - no inline onclick needed
+  var rows = container.querySelectorAll('.planner-search-result');
+  rows.forEach(function(row) {
+    row.addEventListener('click', function() {
+      addExistingToPlan(parseInt(row.dataset.order, 10));
+    });
+  });
+}
+
+function addExistingToPlan(order) {
+  var spine = SPINE_DATA.filter(function(d) { return d.order === order; })[0];
+  if (!spine) return;
+  planItems.push({
+    id: planUid(),
+    itemType: 'existing',
+    spineOrder: order,
+    name: spine.name,
+    type: spine.type,
+    skillReqs: spine.skillReqs || '',
+    location: spine.location || '',
+    notes: spine.info || '',
+    done: false
+  });
+  savePlan();
+  renderPlanner();
+  // Keep modal open — clear search for next add
+  var inp = document.getElementById('plan-search-input');
+  if (inp) { inp.value = ''; planSearchResults(''); inp.focus(); }
+}
+
+function savePlanCustom() {
+  var nameEl = document.getElementById('pf-name');
+  if (!nameEl || !nameEl.value.trim()) { if (nameEl) nameEl.focus(); return; }
+  var item = {
+    id: planEditId || planUid(),
+    itemType: 'custom',
+    name: nameEl.value.trim(),
+    type: (document.getElementById('pf-type') || {}).value || '',
+    skillReqs: (document.getElementById('pf-reqs') || {}).value || '',
+    location: (document.getElementById('pf-loc') || {}).value || '',
+    notes: (document.getElementById('pf-notes') || {}).value || '',
+    done: planEditId ? ((planItems.filter(function(i) { return i.id === planEditId; })[0] || {}).done || false) : false
+  };
+  if (planEditId) {
+    var idx = planItems.findIndex(function(i) { return i.id === planEditId; });
+    if (idx !== -1) planItems[idx] = item; else planItems.push(item);
+  } else {
+    planItems.push(item);
+  }
+  savePlan();
+  renderPlanner();
+  closePlannerModal();
+}
+
+function savePlanNote() {
+  var textEl = document.getElementById('pf-note-text');
+  var item = {
+    id: planEditId || planUid(),
+    itemType: 'note',
+    text: textEl ? textEl.value.trim() : '',
+    done: planEditId ? ((planItems.filter(function(i) { return i.id === planEditId; })[0] || {}).done || false) : false
+  };
+  if (planEditId) {
+    var idx = planItems.findIndex(function(i) { return i.id === planEditId; });
+    if (idx !== -1) planItems[idx] = item; else planItems.push(item);
+  } else {
+    planItems.push(item);
+  }
+  savePlan();
+  renderPlanner();
+  closePlannerModal();
+}
+
+// ---- EXPORT / IMPORT ----
+
+// ─── Share / Import ───────────────────────────────────────────────────────────
+
+function planToShareCode(items) {
+  // Strip runtime-only fields — recipient starts with a fresh plan
+  var compact = items.map(function(i) {
+    var out = { t: i.itemType };
+    if (i.spineOrder) out.o = i.spineOrder;
+    if (i.name)       out.n = i.name;
+    if (i.type)       out.y = i.type;
+    if (i.skillReqs)  out.r = i.skillReqs;
+    if (i.location)   out.l = i.location;
+    if (i.notes)      out.x = i.notes;
+    return out;
+  });
+  return btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
+}
+
+function planFromShareCode(code) {
+  var compact = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+  if (!Array.isArray(compact)) throw new Error('bad');
+  return compact.map(function(i) {
+    var item = {
+      id: planUid(),
+      itemType: i.t || 'custom',
+      name: i.n || '',
+      type: i.y || 'Activity/Goal',
+      skillReqs: i.r || '',
+      location: i.l || '',
+      notes: i.x || '',
+      done: false
+    };
+    if (i.o) {
+      item.spineOrder = i.o;
+      // Backfill name/type from SPINE_DATA if missing
+      var sp = SPINE_DATA.find(function(d) { return d.order === i.o; });
+      if (sp) {
+        item.name     = item.name || sp.name;
+        item.type     = item.type || sp.type;
+        item.skillReqs = item.skillReqs || sp.skillReqs || '';
+        item.location = item.location || sp.location || '';
+        item.notes    = item.notes || sp.info || '';
+      }
+    }
+    return item;
+  });
+}
+
+// Share modal
+function openShareModal() {
+  if (!planItems.length) { alert('Your plan is empty — nothing to share.'); return; }
+  document.getElementById('share-code-text').value = planToShareCode(planItems);
+  document.getElementById('share-copy-btn').textContent = '📋 Copy to Clipboard';
+  setShareTab('code');
+  document.getElementById('share-plan-overlay').classList.add('open');
+}
+function closeShareModal() {
+  document.getElementById('share-plan-overlay').classList.remove('open');
+}
+function shareOverlayClick(e) {
+  if (e.target === document.getElementById('share-plan-overlay')) closeShareModal();
+}
+function setShareTab(tab) {
+  document.getElementById('share-code-panel').style.display = tab === 'code' ? '' : 'none';
+  document.getElementById('share-file-panel').style.display = tab === 'file' ? '' : 'none';
+  document.getElementById('share-tab-code').className = tab === 'code' ? 'btn' : 'btn btn-ghost';
+  document.getElementById('share-tab-file').className = tab === 'file' ? 'btn' : 'btn btn-ghost';
+}
+function copyShareCode() {
+  var text = document.getElementById('share-code-text').value;
+  var btn = document.getElementById('share-copy-btn');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = '✓ Copied!';
+      setTimeout(function() { btn.textContent = '📋 Copy to Clipboard'; }, 2000);
+    });
+  } else {
+    // Fallback for older browsers
+    var ta = document.getElementById('share-code-text');
+    ta.select();
+    document.execCommand('copy');
+    btn.textContent = '✓ Copied!';
+    setTimeout(function() { btn.textContent = '📋 Copy to Clipboard'; }, 2000);
+  }
+}
+function downloadPlanFile() {
+  var blob = new Blob([JSON.stringify(planItems, null, 2)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'progressscape-plan.json';
+  a.click();
+}
+
+// Import modal
+function openImportModal() {
+  document.getElementById('import-code-input').value = '';
+  setImportTab('code');
+  document.getElementById('import-plan-overlay').classList.add('open');
+}
+function closeImportModal() {
+  document.getElementById('import-plan-overlay').classList.remove('open');
+}
+function importOverlayClick(e) {
+  if (e.target === document.getElementById('import-plan-overlay')) closeImportModal();
+}
+function setImportTab(tab) {
+  document.getElementById('import-code-panel').style.display = tab === 'code' ? '' : 'none';
+  document.getElementById('import-file-panel').style.display = tab === 'file' ? '' : 'none';
+  document.getElementById('import-tab-code').className = tab === 'code' ? 'btn' : 'btn btn-ghost';
+  document.getElementById('import-tab-file').className = tab === 'file' ? 'btn' : 'btn btn-ghost';
+}
+function importFromCode(mode) {
+  var code = document.getElementById('import-code-input').value.trim();
+  if (!code) { alert('Paste a share code first.'); return; }
+  try {
+    var imported = planFromShareCode(code);
+    if (!imported.length) throw new Error('empty');
+    if (mode === 'replace') {
+      if (planItems.length && !confirm('Replace your current plan (' + planItems.length + ' items) with the imported path (' + imported.length + ' items)?')) return;
+      planItems = imported;
+    } else {
+      planItems = planItems.concat(imported);
+    }
+    savePlan();
+    renderPlanner();
+    closeImportModal();
+  } catch(err) {
+    alert('Invalid share code — could not import.');
+  }
+}
+
+// File import (unchanged behaviour, file input still wired here)
+function importPlanClick() {
+  document.getElementById('plan-import-input').click();
+}
+function importPlan(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error('bad format');
+      if (planItems.length && !confirm('Replace your current plan (' + planItems.length + ' items) with imported (' + imported.length + ' items)?')) return;
+      planItems = imported;
+      savePlan();
+      renderPlanner();
+      closeImportModal();
+    } catch(err) {
+      alert('Could not import — invalid file.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// Legacy export shim (keeps any old onclick="exportPlan()" references working)
+function exportPlan() { openShareModal(); }
+
+// ============================================================
+// URL FILTER STATE
+// ============================================================
+function pushFilterState() {
+  try {
+    var params = new URLSearchParams();
+    var filters = Array.from(activeFilters).filter(function(f) { return f !== 'all'; });
+    if (filters.length) params.set('filter', filters.join(','));
+    var search = document.getElementById('search-input');
+    if (search && search.value) params.set('q', search.value);
+    var str = params.toString();
+    history.replaceState(null, '', window.location.pathname + (str ? '?' + str : ''));
+  } catch(e) {}
+}
+
+function loadFilterFromURL() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var filter = params.get('filter');
+    var q = params.get('q');
+    if (filter) {
+      filter.split(',').forEach(function(f) {
+        f = f.trim();
+        if (f) setFilter(f, true);
+      });
+      renderTable();
+    }
+    if (q) {
+      var s = document.getElementById('search-input');
+      if (s) { s.value = q; renderTable(); }
+    }
+  } catch(e) {}
+}
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', function(e) {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    var page = document.getElementById('page-progression');
+    if (page && page.classList.contains('active')) {
+      e.preventDefault();
+      var s = document.getElementById('search-input');
+      if (s) { s.focus(); s.select(); }
+    }
+  }
+  if (e.key === 'Escape') {
+    var detail = document.getElementById('detail-overlay');
+    if (detail && detail.classList.contains('open')) closeDetailBtn();
+  }
+});
+
+</script>
+<div id="tier-float"></div>
+
+<!-- ===== SPLASH / WELCOME MODAL ===== -->
+<div id="splash-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,8,4,0.92);align-items:center;justify-content:center;padding:24px 16px;">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+    #splash-modal * { box-sizing: border-box; margin: 0; padding: 0; }
+    #splash-modal {
+      width: 100%; max-width: 660px;
+      background: #13100a;
+      border: 1px solid #5a4520;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 0 1px #2a1e0a, 0 32px 80px rgba(0,0,0,0.85), inset 0 1px 0 rgba(201,168,76,0.15);
+      padding-bottom: 0;
+    }
+    #splash-modal .sp-header {
+      padding:24px 28px 18px; text-align:center;
+      background:linear-gradient(180deg,#1e1608 0%,#13100a 100%);
+      border-bottom:1px solid #2e2210;
+    }
+    .sp-divrow { display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px; }
+    .sp-divline { flex:1;height:1px;background:linear-gradient(90deg,transparent,#5a4520,transparent);max-width:80px; }
+    .sp-gem { width:7px;height:7px;background:#c9a84c;transform:rotate(45deg); }
+    .sp-title { font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:#e8c96a;letter-spacing:4px;text-transform:uppercase;line-height:1;margin-bottom:6px;text-shadow:0 0 40px rgba(201,168,76,0.4); }
+    .sp-sub { font-family:'Crimson Text',serif;font-style:italic;font-size:14px;color:#7a6840;letter-spacing:1px; }
+    .sp-tabs { display:flex;background:#0d0b07;border-bottom:1px solid #2e2210; }
+    .sp-tab {
+      flex:1;padding:10px 4px;text-align:center;
+      font-family:'Cinzel',serif;font-size:10px;color:#5a4a28;cursor:pointer;
+      letter-spacing:1px;text-transform:uppercase;border:none;background:none;
+      border-bottom:2px solid transparent;transition:all 0.2s;position:relative;
+    }
+    .sp-tab::after { content:'';position:absolute;right:0;top:25%;bottom:25%;width:1px;background:#2e2210; }
+    .sp-tab:last-child::after { display:none; }
+    .sp-tab.sp-active { color:#e8c96a;border-bottom:2px solid #c9a84c;background:linear-gradient(180deg,rgba(201,168,76,0.05) 0%,transparent 100%); }
+    .sp-tab:hover:not(.sp-active) { color:#a08840; }
+    .sp-panel { display:none;padding:22px 28px 18px; }
+    .sp-panel.sp-active { display:block; }
+    .sp-feat-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px; }
+    .sp-feat-card {
+      background:#18140d;border:1px solid #2e2210;border-radius:2px;padding:14px;
+      position:relative;overflow:hidden;transition:border-color 0.2s;
+    }
+    .sp-feat-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--sp-accent,#c9a84c),transparent);opacity:0.6; }
+    .sp-feat-card:nth-child(1){--sp-accent:#c9a84c}
+    .sp-feat-card:nth-child(2){--sp-accent:#7abf8e}
+    .sp-feat-card:nth-child(3){--sp-accent:#6aa8d4}
+    .sp-feat-card:nth-child(4){--sp-accent:#c47a5a}
+    .sp-feat-card:hover { border-color:#5a4520; }
+    .sp-feat-icon { font-size:20px;margin-bottom:8px;display:block; }
+    .sp-feat-title { font-family:'Cinzel',serif;font-size:10px;color:#c9a84c;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px; }
+    .sp-feat-desc { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
+    .sp-step-list { list-style:none;display:flex;flex-direction:column;gap:14px; }
+    .sp-step-item { display:flex;gap:14px;align-items:flex-start; }
+    .sp-step-num {
+      width:28px;height:28px;min-width:28px;
+      background:linear-gradient(135deg,#2e2210,#1a1508);border:1px solid #5a4520;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Cinzel',serif;font-size:11px;color:#c9a84c;font-weight:600;
+    }
+    .sp-step-title { font-family:'Cinzel',serif;font-size:11px;color:#d4b86a;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px; }
+    .sp-step-detail { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
+    .sp-pill { display:inline-block;background:#1e1a10;border:1px solid #3a2e14;border-radius:2px;padding:1px 6px;font-family:'Cinzel',serif;font-size:9px;color:#c9a84c;letter-spacing:0.5px;vertical-align:middle; }
+    .sp-pill-green { border-color:#2a4a32;color:#7abf8e;background:#0f1e14; }
+    .sp-tip-list { display:flex;flex-direction:column;gap:10px; }
+    .sp-tip-item { display:flex;gap:12px;padding:12px 14px;background:#18140d;border:1px solid #2e2210;border-radius:2px; }
+    .sp-tip-dot { width:6px;min-width:6px;height:6px;background:#c9a84c;transform:rotate(45deg);margin-top:5px; }
+    .sp-tip-head { font-family:'Cinzel',serif;font-size:10px;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px; }
+    .sp-tip-text { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
+    .sp-hint { font-family:'Crimson Text',serif;font-style:italic;font-size:13px;color:#3a2e14;text-align:center;margin-top:12px; }
+    .sp-footer { border-top:1px solid #2e2210;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;background:#0d0b07; }
+    .sp-dots { display:flex;gap:8px;align-items:center; }
+    .sp-dot { width:6px;height:6px;background:#2e2210;transform:rotate(45deg);cursor:pointer;transition:all 0.2s; }
+    .sp-dot.sp-active { background:#c9a84c;box-shadow:0 0 6px rgba(201,168,76,0.5); }
+    .sp-skip { font-family:'Crimson Text',serif;font-style:italic;font-size:15px;color:#4a3e22;cursor:pointer;background:none;border:none;padding:4px 0;transition:color 0.15s; }
+    .sp-skip:hover { color:#7a6840; }
+    .sp-next {
+      font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;
+      color:#13100a;background:linear-gradient(135deg,#d4a843,#c9a84c,#b8922e);
+      border:none;padding:13px 28px;cursor:pointer;border-radius:2px;
+      transition:opacity 0.15s,transform 0.1s;
+      box-shadow:0 2px 12px rgba(201,168,76,0.25),inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .sp-next:hover { opacity:0.9;transform:translateY(-1px); }
+    .sp-next:active { transform:translateY(0); }
+    @media(max-width:480px){
+      .sp-feat-grid{grid-template-columns:1fr;}
+      .sp-title{font-size:20px;letter-spacing:2px;}
+    }
+  </style>
+
+  <div id="splash-modal">
+
+    <div class="sp-header">
+      <div class="sp-divrow"><div class="sp-divline"></div><div class="sp-gem"></div><div class="sp-divline"></div></div>
+      <img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" style="height:52px;width:auto;display:block;margin:0 auto 6px;object-fit:contain;">
+      <div class="sp-sub">Your OSRS Progression Companion</div>
+      <div class="sp-divrow" style="margin-top:12px;margin-bottom:0;"><div class="sp-divline"></div><div class="sp-gem"></div><div class="sp-divline"></div></div>
+    </div>
+
+    <div class="sp-tabs">
+      <button class="sp-tab sp-active" onclick="spShowTab(0)">Overview</button>
+      <button class="sp-tab" onclick="spShowTab(1)">Getting Started</button>
+      <button class="sp-tab" onclick="spShowTab(2)">Features</button>
+      <button class="sp-tab" onclick="spShowTab(3)">Tips</button>
+    </div>
+
+    <div class="sp-panel sp-active" id="sp-tab-0">
+      <div class="sp-feat-grid">
+        <div class="sp-feat-card"><span class="sp-feat-icon">📋</span><div class="sp-feat-title">Progression List</div><div class="sp-feat-desc">477+ bosses, quests, diaries &amp; activities. Filter by type, lock status, and availability.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">🎲</span><div class="sp-feat-title">Task Oracle</div><div class="sp-feat-desc">Can't decide what to do next? Roll a random task or ask for a smart suggestion.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">🗺</span><div class="sp-feat-title">Custom Path</div><div class="sp-feat-desc">Build your own goal list with dependency trees. Add tasks, custom entries, and notes.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">📤</span><div class="sp-feat-title">Share &amp; Import</div><div class="sp-feat-desc">Share your path with friends via a compact code or .json file. Import theirs instantly.</div></div>
+      </div>
+      <div class="sp-hint">— Use the tabs above to explore Getting Started, Features &amp; Tips —</div>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-1">
+      <ul class="sp-step-list">
+        <li class="sp-step-item"><div class="sp-step-num">I</div><div><div class="sp-step-title">Set your stats</div><div class="sp-step-detail">Head to <span class="sp-pill">My Stats</span> and enter your skill levels, or use RSN Lookup to auto-fill from the hiscores.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">II</div><div><div class="sp-step-title">See what's available</div><div class="sp-step-detail">On <span class="sp-pill">Progression</span>, filter by <span class="sp-pill sp-pill-green">✅ Available Now</span> to see everything unlocked for your account today.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">III</div><div><div class="sp-step-title">Mark things done</div><div class="sp-step-detail">Tick any entry's checkbox to track your progress. Everything saves automatically in your browser.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">IV</div><div><div class="sp-step-title">Build a plan</div><div class="sp-step-detail">Use <span class="sp-pill">Custom Path</span> to map out goals with a dependency tree, then share with friends.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-2">
+      <div class="sp-tip-list">
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🪓 Ironman Mode</div><div class="sp-tip-text">Toggle Ironman mode in the header to switch filters and content to Ironman-relevant entries.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🔍 Stacked Filters</div><div class="sp-tip-text">Filter by Quests, Bosses, Activities, Diaries, Miniquests, and Unlocks — combine them freely to narrow your view.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🎲 Task Oracle</div><div class="sp-tip-text">Use <span class="sp-pill">Suggest Task</span> for an intelligent pick, or <span class="sp-pill">Random</span> to spin the wheel. Hit Mark Done &amp; Roll Again to chain sessions.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🌳 Dependency Tree</div><div class="sp-tip-text">In Custom Path, use <span class="sp-pill">Path to Goal</span> on any entry to generate a full tree of everything needed to unlock it.</div></div></div>
+      </div>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-3">
+      <div class="sp-tip-list">
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Your data is local</div><div class="sp-tip-text">Progress is stored in your browser. Clearing site data resets it — export your Custom Path as a .json backup regularly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">RSN Lookup vs manual</div><div class="sp-tip-text">RSN Lookup fills from the hiscores but won't update live. Re-run it whenever your levels change significantly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Sharing paths</div><div class="sp-tip-text">Use <span class="sp-pill">Share Code</span> for a compact string to paste in Discord. Use <span class="sp-pill">Download .json</span> to send the full file directly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Hide completed</div><div class="sp-tip-text">Toggle <span class="sp-pill">Hide Completed</span> on the progression list to keep your view clean as your log fills up.</div></div></div>
+      </div>
+    </div>
+
+    <div class="sp-footer">
+      <div class="sp-dots" id="sp-dots">
+        <div class="sp-dot sp-active" onclick="spShowTab(0)"></div>
+        <div class="sp-dot" onclick="spShowTab(1)"></div>
+        <div class="sp-dot" onclick="spShowTab(2)"></div>
+        <div class="sp-dot" onclick="spShowTab(3)"></div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center;">
+        <button class="sp-skip" onclick="spDismiss(true)">Don't show again</button>
+        <button class="sp-next" id="sp-next-btn" onclick="spNext()">Begin &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var spCurrent = 0;
+  var spTotal = 4;
+
+  function spInit() {
+    if (!localStorage.getItem('progressscape_welcomed')) {
+      document.getElementById('splash-overlay').style.display = 'flex';
+    }
+  }
+
+  window.spShowTab = function(i) {
+    spCurrent = i;
+    document.querySelectorAll('.sp-panel').forEach(function(p,idx){ p.classList.toggle('sp-active', idx===i); });
+    document.querySelectorAll('.sp-tab').forEach(function(t,idx){ t.classList.toggle('sp-active', idx===i); });
+    document.querySelectorAll('.sp-dot').forEach(function(d,idx){ d.classList.toggle('sp-active', idx===i); });
+    document.getElementById('sp-next-btn').innerHTML = i === spTotal-1 ? 'Enter the World ✓' : 'Next &rarr;';
+  };
+
+  window.spNext = function() {
+    if (spCurrent < spTotal - 1) {
+      spShowTab(spCurrent + 1);
+    } else {
+      spDismiss(false);
+    }
+  };
+
+  window.spDismiss = function(permanent) {
+    if (permanent) localStorage.setItem('progressscape_welcomed', '1');
+    document.getElementById('splash-overlay').style.display = 'none';
+  };
+
+  // Close on overlay click (outside modal)
+  document.getElementById('splash-overlay').addEventListener('click', function(e) {
+    if (e.target === this) spDismiss(false);
+  });
+
+  // Run after page init so SPINE_DATA is available
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', spInit);
+  } else {
+    spInit();
+  }
+})();
+</script>
+<!-- ===== END SPLASH ===== -->
+
+</body>
+</html>
