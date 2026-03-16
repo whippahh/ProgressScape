@@ -1100,6 +1100,9 @@
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--parchment);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     /* Type badge cell */
@@ -2999,13 +3002,17 @@ function parseSkillReqs(reqStr) {
   for (const part of parts) {
     const m = part.match(/^(.+?)\s+(\d+)(\s*\(.*?\))?$/);
     if (m) {
+      // Normalise "Combat level" -> "combat", "Total level" -> "total level"
+      let skillName = m[1].trim();
+      if (/^combat\s+level$/i.test(skillName)) skillName = 'combat';
+      else if (/^total\s+level$/i.test(skillName)) skillName = 'total level';
       results.push({
-        skill: m[1].trim(),
+        skill: skillName,
         level: parseInt(m[2]),
         note: m[3] ? m[3].trim() : '',
         boostable: part.toLowerCase().includes('boostable') && !part.toLowerCase().includes('unboostable'),
         unboostable: part.toLowerCase().includes('unboostable'),
-        isQP: m[1].trim().toLowerCase().includes('quest point')
+        isQP: skillName.toLowerCase().includes('quest point')
       });
     }
   }
