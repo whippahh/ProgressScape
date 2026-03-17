@@ -347,17 +347,17 @@
     white-space: nowrap;
   }
   /* Fixed column widths prevent shifting on accordion expand/collapse */
-  #main-table { table-layout: fixed; width: 100%; }
-  #main-table th:nth-child(1)  { width: 44px; }
-  #main-table th:nth-child(2)  { width: 44px; }
-  #main-table th:nth-child(3)  { min-width: 140px; }
-  #main-table th:nth-child(4)  { width: 110px; }
-  #main-table th:nth-child(5)  { width: 130px; }
-  #main-table th:nth-child(6)  { width: 150px; }
-  #main-table th:nth-child(7)  { width: 38px; }
-  #main-table th:nth-child(8)  { width: 120px; }
-  #main-table th:nth-child(9)  { width: 160px; }
-  #main-table th:nth-child(10) { width: 130px; }
+  #main-table { table-layout: auto; width: 100%; }
+  #main-table th:nth-child(1)  { width: 36px;  min-width: 36px; }
+  #main-table th:nth-child(2)  { width: 44px;  min-width: 44px; }
+  #main-table th:nth-child(3)  { min-width: 150px; }
+  #main-table th:nth-child(4)  { width: 120px; min-width: 100px; }
+  #main-table th:nth-child(5)  { width: 160px; min-width: 120px; }
+  #main-table th:nth-child(6)  { width: 170px; min-width: 130px; }
+  #main-table th:nth-child(7)  { width: 36px;  min-width: 36px; }
+  #main-table th:nth-child(8)  { width: 130px; min-width: 100px; }
+  #main-table th:nth-child(9)  { width: 200px; min-width: 160px; }
+  #main-table th:nth-child(10) { width: 160px; min-width: 130px; }
 
   table {
     width: 100%;
@@ -438,6 +438,8 @@
     color: var(--text-muted);
     max-width: 200px;
     line-height: 1.6;
+    overflow: hidden;
+    word-break: break-word;
   }
 
   tbody tr.row-locked .td-name,
@@ -509,6 +511,8 @@
     font-size: 0.8rem;
     color: var(--text-muted);
     max-width: 260px;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .req-unmet { color: #e06060; }
@@ -517,9 +521,14 @@
     font-size: 0.8rem;
     color: var(--text-muted);
     font-style: italic;
-    max-width: 320px;
     line-height: 1.4;
+    overflow: hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
+
+  /* Mobile detail sub-line — hidden on desktop, shown in mobile media query */
+  .card-detail { display: none; }
 
   .qp-badge {
     color: var(--gold-light);
@@ -531,7 +540,7 @@
   .location-cell {
     font-size: 0.8rem;
     color: var(--text-muted);
-    white-space: nowrap;
+    word-break: break-word;
   }
 
   /* completed checkbox */
