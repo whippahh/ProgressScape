@@ -331,9 +331,6 @@
     padding: 0 2rem;
   }
   thead th {
-    position: sticky;
-    top: 64px;
-    z-index: 110;
     background: #1a1408;
     border-bottom: 2px solid var(--gold-dark);
     box-shadow: 0 2px 8px rgba(0,0,0,0.6);
@@ -936,7 +933,8 @@
 
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 720px;
     gap: 0.5rem;
     margin-bottom: 2rem;
   }
@@ -2500,9 +2498,18 @@
 <div id="page-stats" class="page">
   <div class="stats-page">
     <h2>My Stats</h2>
-    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.5rem;font-family:'IM Fell English',serif;font-style:italic">
-      Enter your skill levels to unlock requirement checking across the progression list. You can also use the RSN Lookup on the Progression page to auto-fill.
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.25rem;font-family:'IM Fell English',serif;font-style:italic">
+      Enter your skill levels manually, or look up your RSN to auto-fill from the hiscores.
     </p>
+    <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;">
+      <input type="text" id="rsn-input-stats" placeholder="Enter username…"
+        style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:3px;color:var(--text-light);font-family:'Source Sans 3',sans-serif;font-size:0.95rem;padding:0.5rem 0.85rem;width:240px;outline:none;"
+        onkeydown="if(event.key==='Enter') lookupRSNFromStats()">
+      <button class="btn" onclick="lookupRSNFromStats()">Lookup</button>
+      <div id="lookup-status-stats" style="display:none;margin-left:0.5rem;">
+        <span id="lookup-status-stats-inner" class="status-inner"></span>
+      </div>
+    </div>
     <div class="skills-grid" id="skills-grid"></div>
     <div class="stats-actions">
       <button class="btn" onclick="saveStats()">Save Stats</button>
@@ -2791,7 +2798,7 @@ function getTierForOrder(order) {
 // ============================================================
 // STATE
 // ============================================================
-let playerStats = {};
+let playerStats = Object.fromEntries(['attack','hitpoints','mining','strength','agility','smithing','defence','herblore','fishing','ranged','thieving','cooking','prayer','crafting','firemaking','magic','fletching','woodcutting','runecraft','slayer','farming','construction','hunter','sailing'].map(s => [s, 1]));
 let playerQP = 0;
 let completedSet = new Set();
 let activeFilters = new Set(['all']);
@@ -2808,30 +2815,30 @@ let openTiers = new Set();
 let planMode = 'custom'; // tracks current planner modal mode
 
 const SKILLS = [
-  {name:'Attack',icon:'https://oldschool.runescape.wiki/images/Attack_icon.png'},
-  {name:'Strength',icon:'https://oldschool.runescape.wiki/images/Strength_icon.png'},
-  {name:'Defence',icon:'https://oldschool.runescape.wiki/images/Defence_icon.png'},
-  {name:'Hitpoints',icon:'https://oldschool.runescape.wiki/images/Hitpoints_icon.png'},
-  {name:'Ranged',icon:'https://oldschool.runescape.wiki/images/Ranged_icon.png'},
-  {name:'Prayer',icon:'https://oldschool.runescape.wiki/images/Prayer_icon.png'},
-  {name:'Magic',icon:'https://oldschool.runescape.wiki/images/Magic_icon.png'},
-  {name:'Cooking',icon:'https://oldschool.runescape.wiki/images/Cooking_icon.png'},
-  {name:'Woodcutting',icon:'https://oldschool.runescape.wiki/images/Woodcutting_icon.png'},
-  {name:'Fletching',icon:'https://oldschool.runescape.wiki/images/Fletching_icon.png'},
-  {name:'Fishing',icon:'https://oldschool.runescape.wiki/images/Fishing_icon.png'},
-  {name:'Firemaking',icon:'https://oldschool.runescape.wiki/images/Firemaking_icon.png'},
-  {name:'Crafting',icon:'https://oldschool.runescape.wiki/images/Crafting_icon.png'},
-  {name:'Smithing',icon:'https://oldschool.runescape.wiki/images/Smithing_icon.png'},
-  {name:'Mining',icon:'https://oldschool.runescape.wiki/images/Mining_icon.png'},
-  {name:'Herblore',icon:'https://oldschool.runescape.wiki/images/Herblore_icon.png'},
-  {name:'Agility',icon:'https://oldschool.runescape.wiki/images/Agility_icon.png'},
-  {name:'Thieving',icon:'https://oldschool.runescape.wiki/images/Thieving_icon.png'},
-  {name:'Slayer',icon:'https://oldschool.runescape.wiki/images/Slayer_icon.png'},
-  {name:'Farming',icon:'https://oldschool.runescape.wiki/images/Farming_icon.png'},
-  {name:'Runecraft',icon:'https://oldschool.runescape.wiki/images/Runecraft_icon.png'},
-  {name:'Hunter',icon:'https://oldschool.runescape.wiki/images/Hunter_icon.png'},
-  {name:'Construction',icon:'https://oldschool.runescape.wiki/images/Construction_icon.png'},
-  {name:'Sailing',icon:'https://oldschool.runescape.wiki/images/Sailing_icon.png'}
+  {name:'Attack',       icon:'https://oldschool.runescape.wiki/images/Attack_icon.png'},
+  {name:'Hitpoints',    icon:'https://oldschool.runescape.wiki/images/Hitpoints_icon.png'},
+  {name:'Mining',       icon:'https://oldschool.runescape.wiki/images/Mining_icon.png'},
+  {name:'Strength',     icon:'https://oldschool.runescape.wiki/images/Strength_icon.png'},
+  {name:'Agility',      icon:'https://oldschool.runescape.wiki/images/Agility_icon.png'},
+  {name:'Smithing',     icon:'https://oldschool.runescape.wiki/images/Smithing_icon.png'},
+  {name:'Defence',      icon:'https://oldschool.runescape.wiki/images/Defence_icon.png'},
+  {name:'Herblore',     icon:'https://oldschool.runescape.wiki/images/Herblore_icon.png'},
+  {name:'Fishing',      icon:'https://oldschool.runescape.wiki/images/Fishing_icon.png'},
+  {name:'Ranged',       icon:'https://oldschool.runescape.wiki/images/Ranged_icon.png'},
+  {name:'Thieving',     icon:'https://oldschool.runescape.wiki/images/Thieving_icon.png'},
+  {name:'Cooking',      icon:'https://oldschool.runescape.wiki/images/Cooking_icon.png'},
+  {name:'Prayer',       icon:'https://oldschool.runescape.wiki/images/Prayer_icon.png'},
+  {name:'Crafting',     icon:'https://oldschool.runescape.wiki/images/Crafting_icon.png'},
+  {name:'Firemaking',   icon:'https://oldschool.runescape.wiki/images/Firemaking_icon.png'},
+  {name:'Magic',        icon:'https://oldschool.runescape.wiki/images/Magic_icon.png'},
+  {name:'Fletching',    icon:'https://oldschool.runescape.wiki/images/Fletching_icon.png'},
+  {name:'Woodcutting',  icon:'https://oldschool.runescape.wiki/images/Woodcutting_icon.png'},
+  {name:'Runecraft',    icon:'https://oldschool.runescape.wiki/images/Runecraft_icon.png'},
+  {name:'Slayer',       icon:'https://oldschool.runescape.wiki/images/Slayer_icon.png'},
+  {name:'Farming',      icon:'https://oldschool.runescape.wiki/images/Farming_icon.png'},
+  {name:'Construction', icon:'https://oldschool.runescape.wiki/images/Construction_icon.png'},
+  {name:'Hunter',       icon:'https://oldschool.runescape.wiki/images/Hunter_icon.png'},
+  {name:'Sailing',      icon:'https://oldschool.runescape.wiki/images/Sailing_icon.png'},
 ];
 
 const TYPE_ICONS = {
@@ -3149,11 +3156,18 @@ async function fetchPluginData(rsn) {
   }
 }
 
-async function lookupRSN() {
-  const rsn = document.getElementById('rsn-input').value.trim();
+async function lookupRSNFromStats() {
+  await lookupRSN('rsn-input-stats', 'lookup-status-stats', 'lookup-status-stats-inner');
+}
+
+async function lookupRSN(inputId, statusDivId, statusInnerId) {
+  inputId = inputId || 'rsn-input';
+  statusDivId = statusDivId || 'lookup-status';
+  statusInnerId = statusInnerId || 'lookup-status-inner';
+  const rsn = document.getElementById(inputId).value.trim();
   if (!rsn) return;
-  const statusDiv = document.getElementById('lookup-status');
-  const statusInner = document.getElementById('lookup-status-inner');
+  const statusDiv = document.getElementById(statusDivId);
+  const statusInner = document.getElementById(statusInnerId);
   statusDiv.style.display = 'block';
   statusInner.className = 'status-inner';
   statusInner.textContent = '⏳ Looking up ' + rsn + '…';
@@ -4126,7 +4140,7 @@ function updateCombatDisplay() {
 
 function clearStats() {
   if (!confirm('Reset all stats?')) return;
-  playerStats = {};
+  playerStats = Object.fromEntries(SKILLS.map(s => [s.name.toLowerCase(), 1]));
   playerQP = 0;
   saveToStorage();
   buildSkillsGrid();
