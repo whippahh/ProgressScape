@@ -5064,9 +5064,12 @@ function isObtained(name) {
 }
 
 function updateClogSummary() {
-  var items = getClogItems();
-  var total = items.length;
-  var got = items.filter(function(i) { return isObtained(i.name); }).length;
+  // Count unique item names only — pets appear in two sources but are one item
+  var allItems = window.CLOG_DATA || [];
+  var uniqueNames = {};
+  allItems.forEach(function(i) { uniqueNames[i.name.toLowerCase()] = true; });
+  var total = Object.keys(uniqueNames).length;
+  var got = Object.keys(uniqueNames).filter(function(n) { return isObtained(n); }).length;
   var el = document.getElementById('clog-summary');
   if (el) el.textContent = got + ' / ' + total + ' obtained';
 }
