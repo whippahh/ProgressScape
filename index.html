@@ -5064,14 +5064,15 @@ function isObtained(name) {
 }
 
 function updateClogSummary() {
-  // Count unique item names only — pets appear in two sources but are one item
+  // Total is 1698 unique clog slots (some share names e.g. Medallion fragment x8)
+  var CLOG_TOTAL = 1698;
   var allItems = window.CLOG_DATA || [];
+  // Dedupe by name for obtained count, but cap at total
   var uniqueNames = {};
   allItems.forEach(function(i) { uniqueNames[i.name.toLowerCase()] = true; });
-  var total = Object.keys(uniqueNames).length;
   var got = Object.keys(uniqueNames).filter(function(n) { return isObtained(n); }).length;
   var el = document.getElementById('clog-summary');
-  if (el) el.textContent = got + ' / ' + total + ' obtained';
+  if (el) el.textContent = got + ' / ' + CLOG_TOTAL + ' obtained';
 }
 
 function renderClogSidebar() {
