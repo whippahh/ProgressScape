@@ -697,6 +697,36 @@
     gap: 0.75rem;
     padding: 1rem 1.5rem 1.25rem;
     border-top: 1px solid var(--stone-lighter);
+    flex-wrap: wrap;
+  }
+
+  .detail-actions .btn {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 768px) {
+    .detail-panel {
+      width: 95%;
+      max-height: 85vh;
+    }
+    .detail-header {
+      padding: 1rem 1.1rem;
+    }
+    .detail-body {
+      padding: 1rem 1.1rem;
+    }
+    .detail-actions {
+      padding: 0.75rem 1.1rem 1rem;
+    }
+    .detail-row-label {
+      width: 90px;
+      font-size: 0.65rem;
+    }
   }
 
   /* ===== RANDOMIZER PAGE ===== */
@@ -984,6 +1014,10 @@
 
   .skill-level-input::-webkit-inner-spin-button { opacity: 0; }
 
+  .skill-mob-top { display: contents; }
+  .skill-level-wrap { display: contents; }
+  .skill-level-max { display: none; }
+
   .stats-actions {
     display: flex;
     gap: 0.75rem;
@@ -1026,15 +1060,89 @@
     .lookup-inner { gap: 0.75rem; }
     .lookup-group input { width: 100%; }
     td { padding: 0.4rem 0.5rem; }
+
+    /* Stats page — card layout on mobile */
+    .skills-grid {
+      grid-template-columns: repeat(3, 1fr);
+      max-width: 100%;
+      gap: 0.4rem;
+    }
+    .skill-input-row {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0.45rem 0.5rem 0.4rem;
+      gap: 0.2rem;
+      border-radius: 5px;
+    }
+    .skill-name-lbl {
+      font-size: 0.58rem;
+      letter-spacing: 0.05em;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .skill-mob-top {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      width: 100%;
+    }
+    .skill-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+    .skill-level-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+      flex: 1;
+    }
+    .skill-level-input {
+      font-size: 0.95rem;
+      font-weight: 700;
+      width: 2.2ch;
+      min-width: 0;
+      text-align: left;
+      color: var(--gold-light);
+      padding: 0;
+      font-family: 'Cinzel', serif;
+    }
+    .skill-level-max {
+      display: inline;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-family: 'Cinzel', serif;
+    }
+    .stats-page {
+      padding: 1rem 0.75rem 3rem;
+    }
+    .stats-actions {
+      flex-wrap: wrap;
+    }
+    .stats-actions .btn {
+      flex: 1;
+      text-align: center;
+    }
   }
 
   /* ===== MOBILE CARD VIEW ===== */
   @media (max-width: 768px) {
     .table-scroll {
-      overflow-x: unset;
+      overflow-x: hidden;
       overflow-y: unset;
       max-height: unset;
-      padding: 0 0.75rem;
+      padding: 0 0.5rem;
+      max-width: 100vw;
+    }
+
+    #main-table {
+      min-width: 0;
+      width: 100%;
+      table-layout: auto;
     }
 
     table, thead, tbody, tr, td, th { display: block; }
@@ -1056,98 +1164,69 @@
       margin-bottom: 0.5rem;
       padding: 0;
       display: grid;
-      grid-template-columns: 40px 1fr 90px;
+      grid-template-columns: 36px minmax(0,1fr) 90px;
       grid-template-rows: auto auto;
       gap: 0;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
+      overflow: hidden;
+      width: 100%;
     }
 
-    tbody tr:hover {
-      border-color: rgba(200,168,75,0.3);
-      background: rgba(61,53,38,0.9);
-    }
+    tbody tr:hover { border-color: rgba(200,168,75,0.3); background: rgba(61,53,38,0.9); }
+    tbody tr.completed { background: rgba(42,107,42,0.15); border-color: rgba(42,107,42,0.3); }
+    tbody tr.row-locked { opacity: 0.5; }
 
-    tbody tr.completed {
-      background: rgba(42,107,42,0.15);
-      border-color: rgba(42,107,42,0.3);
-    }
-
-    tbody tr.row-locked {
-      opacity: 0.5;
-    }
-
-    /* Checkbox cell */
+    /* Checkbox — col 1, spans both rows */
     tbody tr td:nth-child(1) {
-      grid-column: 1;
-      grid-row: 1 / 3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.6rem 0.5rem;
-      width: auto;
+      grid-column: 1; grid-row: 1 / 3;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0.6rem 0.4rem; width: auto;
     }
 
-    /* Order number cell */
+    /* Order number — col 2 row 1 */
     tbody tr td:nth-child(2) {
-      grid-column: 2;
-      grid-row: 1;
-      padding: 0.55rem 0.5rem 0.1rem;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      font-family: 'Cinzel', serif;
-      font-weight: 600;
+      grid-column: 2; grid-row: 1;
+      padding: 0.5rem 0.5rem 0.1rem;
+      font-size: 0.68rem; color: var(--text-muted);
+      font-family: 'Cinzel', serif; font-weight: 600; min-width: 0;
     }
 
-    /* Name cell */
+    /* Name + card-detail — col 2 row 2 */
     tbody tr td:nth-child(3) {
-      grid-column: 2;
-      grid-row: 2;
-      padding: 0 0.5rem 0.55rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--parchment);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      grid-column: 2; grid-row: 2;
+      padding: 0 0.5rem 0.5rem;
+      font-size: 0.9rem; font-weight: 600; color: var(--parchment);
+      overflow: hidden; min-width: 0;
+      white-space: nowrap; text-overflow: ellipsis;
     }
 
-    /* Type badge cell */
+    /* Type badge — col 3, spans both rows */
     tbody tr td:nth-child(4) {
-      grid-column: 3;
-      grid-row: 1 / 3;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 0.55rem 0.5rem 0.55rem 0.25rem;
-      gap: 0.3rem;
-      overflow: hidden;
+      grid-column: 3; grid-row: 1 / 3;
+      display: flex; flex-direction: column;
+      align-items: flex-end; justify-content: flex-start;
+      padding: 0.5rem 0.5rem 0.5rem 0.2rem;
+      gap: 0.25rem; overflow: hidden; min-width: 0;
     }
-
     tbody tr td:nth-child(4) .type-badge {
-      white-space: nowrap;
-      font-size: 0.6rem;
-      padding: 0.15rem 0.35rem;
+      font-size: 0.58rem; padding: 0.15rem 0.35rem;
+      white-space: nowrap; max-width: 88px;
+      overflow: hidden; text-overflow: ellipsis;
     }
-
     tbody tr td:nth-child(4) .boss-tier {
-      white-space: nowrap;
-      font-size: 0.58rem;
-      text-align: right;
-      display: block;
+      font-size: 0.55rem; white-space: nowrap;
+      text-align: right; display: block;
     }
 
-    /* Skill req, quest prereqs, QP, location, notes — hidden on mobile */
+    /* Hide everything else */
     tbody tr td:nth-child(5),
     tbody tr td:nth-child(6),
     tbody tr td:nth-child(7),
     tbody tr td:nth-child(8),
-    tbody tr td:nth-child(9) {
-      display: none;
-    }
+    tbody tr td:nth-child(9),
+    tbody tr td:nth-child(10) { display: none; }
 
-    /* Completed state tweaks */
     tbody tr.completed td:nth-child(3) { color: #6fc96f; }
 
     /* Progress bar padding */
@@ -1159,48 +1238,80 @@
     .progress-bar-wrap .progress-track { min-width: 60px; }
     .progress-bar-wrap > div:last-child { width: 100%; justify-content: flex-end; margin-left: 0; }
 
-    /* Filter chips */
-    .filter-bar { padding: 0.6rem 0.75rem; gap: 0.4rem; }
+    /* Filter chips — horizontal scroll, no wrap */
+    .filters-bar {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0.5rem 0.75rem;
+      gap: 0.35rem;
+    }
+    .filters-bar::-webkit-scrollbar { display: none; }
+    .filter-label { display: none; }
+    .chip { flex-shrink: 0; font-size: 0.75rem; padding: 0.25rem 0.65rem; }
+
+    /* Search row */
     .search-row { padding: 0.5rem 0.75rem; }
 
-    /* Tier header mobile tweaks */
+    /* Tier header — shrink progress bar, hide mark-all button */
     .tier-header-inner {
       padding: 0.65rem 0.75rem;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
     .tier-header-left {
-      gap: 0.5rem;
+      gap: 0.4rem;
       min-width: 0;
       flex: 1;
       overflow: hidden;
     }
     .tier-label {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     .tier-progress-wrap {
-      width: 60px;
+      width: 50px;
     }
     .tier-count {
-      font-size: 0.68rem;
-      min-width: 36px;
+      font-size: 0.65rem;
+      min-width: 32px;
     }
-    .tier-mark-all {
-      font-size: 0.58rem;
-      padding: 2px 6px;
-    }
+    .tier-mark-all { display: none; }
 
-    /* Card detail line */
+    /* Hide lookup-sep and Enter Stats Manually on mobile */
+    .lookup-sep { display: none; }
+    .lookup-sep + .btn { display: none; }
+
+    /* Task tiles — prevent overflow */
+    .table-scroll { padding: 0 0.5rem; }
+    tbody tr { min-width: 0; overflow: hidden; }
+
+    /* Card detail line — clamp to 1 line, no overflow */
     .card-detail {
       display: block;
       font-size: 0.7rem;
       color: var(--text-muted);
       margin-top: 0.2rem;
       line-height: 1.35;
-      white-space: normal;
-      word-break: break-word;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* Clamp drops cell on mobile too */
+    .drops-cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* Filter scroll indicator — fade on right edge */
+    .filters-bar {
+      -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+      mask-image: linear-gradient(to right, black 85%, transparent 100%);
     }
 
 
@@ -2411,6 +2522,7 @@
       <button class="nav-btn active" onclick="showPage('progression')">Progression</button>
       <button class="nav-btn" onclick="showPage('stats')">My Stats</button>
       <button class="nav-btn" onclick="showPage('planner')">Custom Path</button>
+      <button class="nav-btn" onclick="showPage('clog')">Collection Log</button>
     </nav>
     <div class="header-right">
       <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
@@ -2534,6 +2646,44 @@
         <span style="font-size:0.85rem;color:var(--text-muted)">Current quest points (used to check QP requirements)</span>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ===== COLLECTION LOG PAGE ===== -->
+<div id="page-clog" class="page">
+  <div class="clog-page">
+
+    <!-- Category tabs -->
+    <div class="clog-cat-tabs" id="clog-cat-tabs">
+      <div class="clog-cat-tab active" data-cat="All" onclick="setClogCat('All',this)">All</div>
+      <div class="clog-cat-tab" data-cat="Bosses" onclick="setClogCat('Bosses',this)">Bosses</div>
+      <div class="clog-cat-tab" data-cat="Raids" onclick="setClogCat('Raids',this)">Raids</div>
+      <div class="clog-cat-tab" data-cat="Clues" onclick="setClogCat('Clues',this)">Clues</div>
+      <div class="clog-cat-tab" data-cat="Minigames" onclick="setClogCat('Minigames',this)">Minigames</div>
+      <div class="clog-cat-tab" data-cat="Other" onclick="setClogCat('Other',this)">Other</div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="clog-toolbar">
+      <input class="clog-search" id="clog-search" type="text" placeholder="Search items..." oninput="renderClogMain()" />
+      <button class="clog-filter-chip f-obtained" id="clog-f-obtained" onclick="toggleClogFilter('obtained')">Obtained</button>
+      <button class="clog-filter-chip f-missing" id="clog-f-missing" onclick="toggleClogFilter('missing')">Missing</button>
+      <span class="clog-summary-txt" id="clog-summary">— / — obtained</span>
+    </div>
+
+    <!-- Mobile source toggle -->
+    <button class="clog-mob-source-toggle" id="clog-mob-toggle" onclick="toggleClogSidebar()">▼ Browse sources</button>
+
+    <div class="clog-body">
+      <!-- Sidebar -->
+      <div class="clog-sidebar" id="clog-sidebar"></div>
+
+      <!-- Main content -->
+      <div class="clog-main" id="clog-main">
+        <div class="clog-empty">Select a source from the left to view its items.</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -2780,6 +2930,7 @@
 <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">▲</button>
 
 <script src="data.js"></script>
+<script src="clog_data.js"></script>
 <script>
 // ============================================================
 // TIER DEFINITIONS
@@ -3439,10 +3590,12 @@ function buildRowHtml(item) {
     : (met === false && hasStats ? 'row-locked' : '');
 
   const mobileDetail = [];
-  if (item.skillReqs) mobileDetail.push(item.skillReqs.split(';').map(s=>s.trim()).join(' · '));
-  if (item.questPrereqs) mobileDetail.push('🔑 ' + item.questPrereqs.split(';').map(s=>s.trim()).join(', '));
-  if (item.location) mobileDetail.push('📍 ' + item.location);
-  const mobileDetailHtml = mobileDetail.length ? `<div class="card-detail">${mobileDetail.join(' &nbsp;|&nbsp; ')}</div>` : '';
+  if (item.location) {
+    mobileDetail.push('📍 ' + item.location);
+  } else if (item.skillReqs) {
+    mobileDetail.push(item.skillReqs.split(';').map(s=>s.trim()).join(' · '));
+  }
+  const mobileDetailHtml = mobileDetail.length ? `<div class="card-detail">${mobileDetail.join('')}</div>` : '';
 
   const displayOrder = ironmanMode ? (item.imOrder || item.order) : item.order;
 
@@ -3606,7 +3759,7 @@ function openDetail(order) {
   const done = completedSet.has(item.order);
   document.getElementById('detail-actions').innerHTML = `
     <button class="btn" onclick="toggleDone(${item.order}); closeDetailBtn()">${done ? '✗ Mark Incomplete' : '✓ Mark Complete'}</button>
-    <button class="btn btn-ghost" onclick="buildPathTo(${item.order})" title="Recursively find all incomplete prerequisites and add them to Custom Path" style="border-color:#4a7fc8;color:#8abcf8">🗺 Build Path to This</button>
+    <button class="btn btn-ghost" onclick="buildPathTo(${item.order})" title="Recursively find all incomplete prerequisites and add them to Custom Path" style="border-color:#4a7fc8;color:#8abcf8">🗺 Build Path</button>
     ${item.source ? `<a href="${item.source}" target="_blank"><button class="btn btn-ghost">Open Guide ↗</button></a>` : ''}
   `;
   document.getElementById('detail-overlay').classList.add('open');
@@ -4091,12 +4244,17 @@ function buildSkillsGrid() {
   const grid = document.getElementById('skills-grid');
   grid.innerHTML = SKILLS.map(s =>
     `<div class="skill-input-row">
-      <img class="skill-icon" src="${s.icon}" alt="${s.name}" title="${s.name}" onerror="this.style.display='none'">
       <span class="skill-name-lbl">${s.name}</span>
-      <input class="skill-level-input" type="number" min="1" max="99"
-        id="skill-${s.name.toLowerCase()}"
-        value="${playerStats[s.name.toLowerCase()] || ''}"
-        placeholder="1">
+      <div class="skill-mob-top">
+        <img class="skill-icon" src="${s.icon}" alt="${s.name}" title="${s.name}" onerror="this.style.display='none'">
+        <div class="skill-level-wrap">
+          <input class="skill-level-input" type="number" min="1" max="99"
+            id="skill-${s.name.toLowerCase()}"
+            value="${playerStats[s.name.toLowerCase()] || ''}"
+            placeholder="–">
+          <span class="skill-level-max">/99</span>
+        </div>
+      </div>
     </div>`
   ).join('');
   const qpInput = document.getElementById('qp-input');
@@ -4158,6 +4316,11 @@ function showPage(name) {
   if (btn) btn.classList.add('active');
   if (name === 'stats') { buildSkillsGrid(); updateCombatDisplay(); }
   if (name === 'planner') renderPlanner();
+  if (name === 'clog') initClog();
+
+  // Hash routing
+  const hash = name === 'progression' ? '' : '#' + name;
+  history.replaceState(null, '', location.pathname + (hash ? hash : ' ').trim());
 
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
@@ -4832,6 +4995,293 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+// ============================================================
+// COLLECTION LOG
+// ============================================================
+
+var clogState = {
+  cat: 'All',
+  activeSource: null,
+  filterObtained: false,
+  filterMissing: false
+};
+
+// User's obtained items — keyed by item name (lowercase), value true
+// When Supabase plugin data arrives, populate this from the sync:
+//   clogObtained['abyssal whip'] = true;
+var clogObtained = JSON.parse(localStorage.getItem('ps_clog_obtained') || '{}');
+
+function saveClogObtained() {
+  localStorage.setItem('ps_clog_obtained', JSON.stringify(clogObtained));
+}
+
+function toggleClogItem(name) {
+  var key = name.toLowerCase();
+  if (clogObtained[key]) {
+    delete clogObtained[key];
+  } else {
+    clogObtained[key] = true;
+  }
+  saveClogObtained();
+  renderClogMain();
+  renderClogSidebar();
+  updateClogSummary();
+}
+
+function initClog() {
+  if (!window.CLOG_DATA) return;
+  clogState.activeSource = null;
+  renderClogSidebar();
+  renderClogMain();
+  updateClogSummary();
+}
+
+function getClogItems() {
+  if (!window.CLOG_DATA) return [];
+  var items = window.CLOG_DATA;
+  if (clogState.cat !== 'All') {
+    items = items.filter(function(i) { return i.category === clogState.cat; });
+  }
+  return items;
+}
+
+function getClogSources() {
+  var items = getClogItems();
+  var seen = {};
+  var sources = [];
+  items.forEach(function(i) {
+    if (!seen[i.source]) { seen[i.source] = true; sources.push(i.source); }
+  });
+  return sources; // preserve in-game order from CLOG_DATA sort field
+}
+
+function getSourceItems(source) {
+  return getClogItems().filter(function(i) { return i.source === source; });
+}
+
+function isObtained(name) {
+  return !!clogObtained[name.toLowerCase()];
+}
+
+function updateClogSummary() {
+  var items = getClogItems();
+  var total = items.length;
+  var got = items.filter(function(i) { return isObtained(i.name); }).length;
+  var el = document.getElementById('clog-summary');
+  if (el) el.textContent = got + ' / ' + total + ' obtained';
+}
+
+function renderClogSidebar() {
+  var sidebar = document.getElementById('clog-sidebar');
+  if (!sidebar || !window.CLOG_DATA) return;
+  var sources = getClogSources();
+  var html = '<button class="clog-src-btn' + (clogState.activeSource === null ? ' active' : '') + '" onclick="setClogSource(null)">Overview</button>';
+  sources.forEach(function(src) {
+    var srcItems = getSourceItems(src);
+    var total = srcItems.length;
+    var got = srcItems.filter(function(i) { return isObtained(i.name); }).length;
+    var isDone = total > 0 && got === total;
+    var isActive = clogState.activeSource === src;
+    var label = src.length > 18 ? src.substring(0, 17) + '…' : src;
+    html += '<button class="clog-src-btn' + (isDone ? ' src-done' : '') + (isActive ? ' active' : '') + '"' +
+      ' onclick="setClogSource(\'' + src.replace(/'/g, "\\'") + '\')" title="' + src + '">' +
+      '<span>' + label + '</span>' +
+      '<span class="clog-src-count">' + got + '/' + total + '</span>' +
+      '</button>';
+  });
+  sidebar.innerHTML = html;
+}
+
+function renderClogMain() {
+  var main = document.getElementById('clog-main');
+  if (!main || !window.CLOG_DATA) return;
+
+  // No source selected — show overview grid of all sources in current category
+  if (!clogState.activeSource) {
+    renderClogOverview(main);
+    return;
+  }
+
+  var search = (document.getElementById('clog-search') || {}).value || '';
+  search = search.toLowerCase().trim();
+
+  var source = clogState.activeSource;
+  var items = getSourceItems(source);
+
+  if (search) {
+    items = items.filter(function(i) { return i.name.toLowerCase().indexOf(search) !== -1; });
+  }
+  if (clogState.filterObtained) {
+    items = items.filter(function(i) { return isObtained(i.name); });
+  }
+  if (clogState.filterMissing) {
+    items = items.filter(function(i) { return !isObtained(i.name); });
+  }
+
+  var allItems = getSourceItems(source);
+  var total = allItems.length;
+  var got = allItems.filter(function(i) { return isObtained(i.name); }).length;
+  var pct = total > 0 ? Math.round((got / total) * 100) : 0;
+  var progColor = pct === 100 ? '#3d9e3d' : pct >= 50 ? '#8a9e3d' : pct >= 25 ? '#c8a84b' : '#8b6030';
+
+  var html = '<div style="margin-bottom:10px">' +
+    '<button onclick="setClogSource(null)" style="background:none;border:none;color:var(--text-muted);font-family:\'Cinzel\',serif;font-size:0.7rem;letter-spacing:0.05em;cursor:pointer;padding:0;margin-bottom:10px;" ' +
+    'onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--text-muted)\'">' +
+    '← Back to overview</button>' +
+    '</div>' +
+    '<div class="clog-src-header">' +
+    '<span class="clog-src-title">' + source + '</span>' +
+    '<span class="clog-src-meta">' + got + ' / ' + total + ' items</span>' +
+    '</div>' +
+    '<div class="clog-prog-bar"><div class="clog-prog-fill" style="width:' + pct + '%;background:' + progColor + '"></div></div>';
+
+  if (!items.length) {
+    html += '<div class="clog-empty">No items match your current filters.</div>';
+  } else {
+    html += '<div class="clog-item-grid">';
+    items.forEach(function(item) {
+      var obtained = isObtained(item.name);
+      var iconName = item.name.replace(/ /g, '_').replace(/'/g, '%27');
+      var iconUrl = 'https://oldschool.runescape.wiki/images/' + iconName + '.png';
+      html += '<div class="clog-item-tile' + (obtained ? ' obtained' : '') + '" ' +
+        'onclick="toggleClogItem(\'' + item.name.replace(/'/g, "\\'") + '\')" title="Click to toggle obtained">' +
+        '<img class="clog-item-icon" src="' + iconUrl + '" alt="" onerror="this.style.display=\'none\'">' +
+        '<span class="clog-item-name">' + item.name + '</span>' +
+        '<span class="clog-item-hint">' + (obtained ? '✓ obtained' : '') + '</span>' +
+        '</div>';
+    });
+    html += '</div>';
+  }
+
+  main.innerHTML = html;
+}
+
+function renderClogOverview(main) {
+  var sources = getClogSources();
+  if (!sources.length) {
+    main.innerHTML = '<div class="clog-empty">No sources found.</div>';
+    return;
+  }
+
+  var search = (document.getElementById('clog-search') || {}).value || '';
+  search = search.toLowerCase().trim();
+  if (search) {
+    sources = sources.filter(function(s) { return s.toLowerCase().indexOf(search) !== -1; });
+  }
+
+  // Split into completed vs in-progress vs not-started
+  var completed = [], inProgress = [], notStarted = [];
+  sources.forEach(function(src) {
+    var items = getSourceItems(src);
+    var total = items.length;
+    var got = items.filter(function(i) { return isObtained(i.name); }).length;
+    if (total === 0) return;
+    if (got === total) completed.push(src);
+    else if (got > 0) inProgress.push(src);
+    else notStarted.push(src);
+  });
+
+  var html = '';
+
+  function renderSection(label, list) {
+    if (!list.length) return;
+    html += '<div class="clog-section-divider">' + label + '</div>';
+    html += '<div class="clog-overview-grid">';
+    list.forEach(function(src) {
+      var items = getSourceItems(src);
+      var total = items.length;
+      var got = items.filter(function(i) { return isObtained(i.name); }).length;
+      var pct = total > 0 ? Math.round((got / total) * 100) : 0;
+      var progColor = pct === 100 ? '#3d9e3d' : pct >= 50 ? '#8a9e3d' : pct >= 25 ? '#c8a84b' : '#8b6030';
+      var isDone = got === total && total > 0;
+      html += '<div class="clog-overview-card' + (isDone ? ' ov-done' : '') + '" onclick="setClogSource(\'' + src.replace(/'/g, "\\'") + '\')">' +
+        '<div class="clog-overview-name">' + src + '</div>' +
+        '<div class="clog-overview-count">' + got + ' / ' + total + ' items</div>' +
+        '<div class="clog-prog-bar" style="height:5px;margin-bottom:4px"><div class="clog-prog-fill" style="width:' + pct + '%;background:' + progColor + '"></div></div>' +
+        '<div class="clog-overview-pct">' + pct + '%</div>' +
+        '</div>';
+    });
+    html += '</div>';
+  }
+
+  if (inProgress.length) renderSection('In progress', inProgress);
+  if (notStarted.length) renderSection('Not started', notStarted);
+  if (completed.length) renderSection('Completed', completed);
+
+  if (!html) html = '<div class="clog-empty">No sources match your search.</div>';
+  main.innerHTML = html;
+}
+
+function setClogCat(cat, el) {
+  clogState.cat = cat;
+  clogState.activeSource = null; // always show overview on category change
+  document.querySelectorAll('.clog-cat-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var hashSuffix = cat === 'All' ? '' : '/' + cat.toLowerCase();
+  history.replaceState(null, '', location.pathname + '#clog' + hashSuffix);
+  renderClogSidebar();
+  renderClogMain();
+  updateClogSummary();
+}
+
+function setClogSource(source) {
+  clogState.activeSource = source;
+  // Close mobile sidebar
+  var sidebar = document.getElementById('clog-sidebar');
+  if (sidebar) sidebar.classList.remove('mob-open');
+  var toggle = document.getElementById('clog-mob-toggle');
+  if (toggle) toggle.textContent = '▼ Browse sources';
+  renderClogSidebar();
+  renderClogMain();
+  // Scroll main panel to top
+  var main = document.getElementById('clog-main');
+  if (main) main.scrollTop = 0;
+}
+
+function toggleClogFilter(type) {
+  if (type === 'obtained') {
+    clogState.filterObtained = !clogState.filterObtained;
+    if (clogState.filterObtained) clogState.filterMissing = false;
+    document.getElementById('clog-f-missing').classList.remove('active');
+    document.getElementById('clog-f-obtained').classList.toggle('active', clogState.filterObtained);
+  } else {
+    clogState.filterMissing = !clogState.filterMissing;
+    if (clogState.filterMissing) clogState.filterObtained = false;
+    document.getElementById('clog-f-obtained').classList.remove('active');
+    document.getElementById('clog-f-missing').classList.toggle('active', clogState.filterMissing);
+  }
+  renderClogMain();
+}
+
+function toggleClogSidebar() {
+  var sidebar = document.getElementById('clog-sidebar');
+  var toggle = document.getElementById('clog-mob-toggle');
+  if (!sidebar) return;
+  var open = sidebar.classList.toggle('mob-open');
+  if (toggle) toggle.textContent = open ? '▲ Hide sources' : '▼ Browse sources';
+}
+
+// Hash routing on load — restore clog tab + category
+(function() {
+  var hash = window.location.hash;
+  if (hash && hash.startsWith('#clog')) {
+    var parts = hash.replace('#clog', '').replace('/', '');
+    var cat = parts ? parts.charAt(0).toUpperCase() + parts.slice(1) : 'All';
+    var validCats = ['All', 'Bosses', 'Raids', 'Clues', 'Minigames', 'Other'];
+    if (validCats.indexOf(cat) === -1) cat = 'All';
+    // Defer until after CLOG_DATA loads
+    window.addEventListener('load', function() {
+      showPage('clog');
+      var tab = document.querySelector('.clog-cat-tab[data-cat="' + cat + '"]');
+      setClogCat(cat, tab);
+    });
+  } else if (hash === '#stats') {
+    window.addEventListener('load', function() { showPage('stats'); });
+  } else if (hash === '#planner') {
+    window.addEventListener('load', function() { showPage('planner'); });
+  }
+})();
+
 </script>
 <div id="tier-float"></div>
 
@@ -4924,6 +5374,139 @@ document.addEventListener('keydown', function(e) {
       .sp-feat-grid{grid-template-columns:1fr;}
       .sp-title{font-size:20px;letter-spacing:2px;}
     }
+
+  /* ===== COLLECTION LOG PAGE ===== */
+  .clog-page { display:flex; flex-direction:column; height:calc(100vh - 64px); overflow:hidden; }
+
+  .clog-cat-tabs {
+    display:flex; background:#1a1408; border-bottom:2px solid var(--gold-dark);
+    overflow-x:auto; scrollbar-width:none; flex-shrink:0;
+  }
+  .clog-cat-tabs::-webkit-scrollbar { display:none; }
+  .clog-cat-tab {
+    padding:10px 18px; font-family:'Cinzel',serif; font-size:0.75rem; font-weight:600;
+    letter-spacing:0.07em; color:var(--text-muted); cursor:pointer; white-space:nowrap;
+    border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.15s; flex-shrink:0;
+  }
+  .clog-cat-tab:hover { color:var(--gold-light); }
+  .clog-cat-tab.active { color:var(--gold); border-bottom-color:var(--gold); background:rgba(200,168,75,0.07); }
+
+  .clog-toolbar {
+    background:var(--stone-mid); border-bottom:1px solid var(--stone-light);
+    padding:8px 14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex-shrink:0;
+  }
+  .clog-search {
+    background:var(--stone); border:1px solid var(--stone-lighter); border-radius:3px;
+    color:var(--text-light); font-family:'Source Sans 3',sans-serif; font-size:0.88rem;
+    padding:5px 10px; outline:none; width:200px; transition:border-color 0.2s;
+  }
+  .clog-search:focus { border-color:var(--gold-dark); }
+  .clog-search::placeholder { color:var(--stone-lighter); }
+  .clog-filter-chip {
+    background:var(--stone-mid); border:1px solid var(--stone-lighter); border-radius:2px;
+    color:var(--text-muted); font-family:'Source Sans 3',sans-serif; font-size:0.78rem;
+    padding:4px 10px; cursor:pointer; transition:all 0.15s; white-space:nowrap;
+  }
+  .clog-filter-chip:hover { border-color:var(--gold-dark); color:var(--gold-light); }
+  .clog-filter-chip.active { background:rgba(200,168,75,0.15); border-color:var(--gold); color:var(--gold); }
+  .clog-filter-chip.f-obtained.active { background:rgba(42,107,42,0.2); border-color:var(--green-light); color:#6fc96f; }
+  .clog-filter-chip.f-missing.active { background:rgba(139,32,32,0.15); border-color:var(--red-light); color:#e08080; }
+  .clog-summary-txt { margin-left:auto; font-family:'Cinzel',serif; font-size:0.7rem; color:var(--text-muted); letter-spacing:0.04em; white-space:nowrap; }
+
+  .clog-body { display:flex; flex:1; overflow:hidden; }
+
+  /* SIDEBAR */
+  .clog-sidebar {
+    width:220px; min-width:220px; background:#1e1a10;
+    border-right:1px solid var(--stone-mid); overflow-y:auto; flex-shrink:0;
+  }
+  .clog-sidebar-section { padding:10px 10px 4px; font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone-lighter); text-transform:uppercase; }
+  .clog-src-btn {
+    width:100%; display:flex; justify-content:space-between; align-items:center;
+    padding:7px 10px; font-size:0.78rem; color:var(--text-muted); background:none; border:none;
+    border-left:2px solid transparent; cursor:pointer; transition:all 0.1s; text-align:left;
+  }
+  .clog-src-btn:hover { color:var(--gold-light); background:rgba(200,168,75,0.05); }
+  .clog-src-btn.active { color:var(--gold); border-left-color:var(--gold); background:rgba(200,168,75,0.08); }
+  .clog-src-btn.src-done { color:#6fc96f; }
+  .clog-src-btn.src-done.active { border-left-color:var(--green-light); }
+  .clog-src-count { font-size:0.68rem; color:var(--stone-lighter); margin-left:4px; flex-shrink:0; }
+  .clog-src-btn.src-done .clog-src-count { color:var(--green-light); }
+
+  /* MAIN PANEL */
+  .clog-main { flex:1; overflow-y:auto; padding:14px; min-width:0; }
+
+  .clog-src-header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; }
+  .clog-src-title { font-family:'Cinzel',serif; font-size:0.9rem; font-weight:700; color:var(--gold); letter-spacing:0.04em; }
+  .clog-src-meta { font-size:0.75rem; color:var(--stone-lighter); }
+
+  .clog-prog-bar { height:3px; background:var(--stone-mid); border-radius:2px; margin-bottom:10px; overflow:hidden; }
+  .clog-prog-fill { height:100%; border-radius:2px; transition:width 0.4s ease; }
+
+  .clog-item-grid { display:flex; flex-direction:column; gap:2px; margin-bottom:16px; }
+  .clog-item-tile {
+    display:flex; align-items:center; gap:10px; padding:6px 10px;
+    background:#1e1a10; border:1px solid var(--stone-mid); border-radius:2px;
+    font-size:0.85rem; color:var(--text-muted); cursor:pointer; transition:all 0.1s;
+    user-select:none;
+  }
+  .clog-item-tile:hover { border-color:var(--stone-lighter); background:#261f11; color:var(--parchment); }
+  .clog-item-tile.obtained { background:rgba(42,107,42,0.15); border-color:rgba(61,158,61,0.4); color:#6fc96f; }
+  .clog-item-tile.obtained:hover { background:rgba(42,107,42,0.22); }
+  .clog-item-tile .clog-dot { width:7px; height:7px; border-radius:50%; background:var(--stone-light); flex-shrink:0; }
+  .clog-item-tile.obtained .clog-dot { background:var(--green-light); }
+  .clog-item-tile .clog-item-icon { width:24px; height:24px; object-fit:contain; image-rendering:pixelated; flex-shrink:0; opacity:0.85; }
+  .clog-item-tile.obtained .clog-item-icon { opacity:1; }
+  .clog-item-tile .clog-item-name { flex:1; }
+  .clog-item-tile .clog-item-hint { font-size:0.72rem; color:var(--stone-lighter); margin-left:auto; white-space:nowrap; }
+  .clog-item-tile.obtained .clog-item-hint { color:var(--green-light); }
+
+  .clog-section-divider {
+    display:flex; align-items:center; gap:8px; margin:12px 0 8px;
+    font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.1em; color:var(--stone-lighter); text-transform:uppercase;
+  }
+  .clog-section-divider::before, .clog-section-divider::after { content:''; flex:1; height:1px; background:var(--stone-mid); }
+
+  .clog-empty { text-align:center; padding:3rem 1rem; color:var(--stone-lighter); font-family:'IM Fell English',serif; font-style:italic; font-size:0.95rem; }
+
+  /* OVERVIEW GRID */
+  .clog-overview-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:10px; margin-bottom:8px; }
+  .clog-overview-card {
+    background:#1e1a10; border:1px solid var(--stone-mid); border-radius:3px;
+    padding:14px 16px; cursor:pointer; transition:border-color 0.15s, background 0.15s;
+  }
+  .clog-overview-card:hover { border-color:var(--stone-lighter); background:#261f11; }
+  .clog-overview-card.ov-done { border-color:rgba(61,158,61,0.45); }
+  .clog-overview-card.ov-done:hover { border-color:var(--green-light); }
+  .clog-overview-name { font-family:'Cinzel',serif; font-size:0.88rem; font-weight:600; color:var(--gold); letter-spacing:0.03em; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .clog-overview-card.ov-done .clog-overview-name { color:#6fc96f; }
+  .clog-overview-count { font-size:0.78rem; color:var(--text-muted); margin-bottom:8px; }
+  .clog-overview-pct { font-size:0.72rem; color:var(--stone-lighter); margin-top:5px; text-align:right; }
+
+  @media(max-width:700px) {
+    .clog-overview-grid { grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:7px; }
+  }
+
+  /* MOBILE */
+  .clog-mob-source-toggle {
+    display:none; width:100%; background:#1e1a10; border:none; border-bottom:1px solid var(--stone-mid);
+    color:var(--text-muted); font-family:'Cinzel',serif; font-size:0.72rem; letter-spacing:0.06em;
+    padding:9px 14px; text-align:left; cursor:pointer; flex-shrink:0;
+  }
+
+  @media(max-width:700px) {
+    .clog-page { height:auto; overflow:visible; }
+    .clog-body { flex-direction:column; overflow:visible; }
+    .clog-mob-source-toggle { display:block; }
+    .clog-sidebar { display:none; width:100%; min-width:0; border-right:none; border-bottom:1px solid var(--stone-mid); max-height:200px; }
+    .clog-sidebar.mob-open { display:block; }
+    .clog-main { overflow-y:visible; padding:10px; }
+    .clog-search { width:100%; }
+    .clog-summary-txt { display:none; }
+    .clog-item-grid { gap:2px; }
+    .clog-item-tile { font-size:0.82rem; padding:7px 8px; }
+    .clog-cat-tab { padding:9px 12px; font-size:0.68rem; }
+  }
   </style>
 
   <div id="splash-modal">
