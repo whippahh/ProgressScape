@@ -2646,6 +2646,28 @@
         <span style="font-size:0.85rem;color:var(--text-muted)">Current quest points (used to check QP requirements)</span>
       </div>
     </div>
+
+    <!-- ===== ACCOUNT DASHBOARD ===== -->
+    <div id="account-dashboard" style="margin-top:2rem;display:block">
+
+      <div style="font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--stone-lighter)">Account Overview</div>
+
+      <!-- Stat cards row -->
+      <div id="dash-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.6rem;margin-bottom:1.5rem;"></div>
+
+      <!-- Skill heatmap -->
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Skill Levels</div>
+      <div id="dash-heatmap" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:1.5rem;"></div>
+
+      <!-- Progression breakdown -->
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Progression Breakdown</div>
+      <div id="dash-progression" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;"></div>
+
+      <!-- Collection log summary -->
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Collection Log</div>
+      <div id="dash-clog" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+
+    </div>
   </div>
 </div>
 
@@ -4292,8 +4314,117 @@ function saveStats() {
 function updateCombatDisplay() {
   const combatEl = document.getElementById('combat-level-display');
   const totalEl = document.getElementById('total-level-display');
-  if (combatEl) combatEl.textContent = Object.keys(playerStats).length > 0 ? getCombatLevel() : '—';
-  if (totalEl) totalEl.textContent = Object.keys(playerStats).length > 0 ? getTotalLevel() : '—';
+  if (combatEl) combatEl.textContent = getCombatLevel();
+  if (totalEl) totalEl.textContent = getTotalLevel();
+  renderDashboard();
+}
+
+function renderDashboard() {
+  const dash = document.getElementById('account-dashboard');
+  if (!dash || typeof SPINE_DATA === 'undefined') return;
+
+  const levels = SKILLS.map(s => parseInt(playerStats[s.name.toLowerCase()]) || 1);
+  const total = levels.reduce((a,b) => a+b, 0);
+  const nineties = levels.filter(l => l >= 99).length;
+  const eighties = levels.filter(l => l >= 80 && l < 99).length;
+  const maxTotal = SKILLS.length * 99;
+  const fromMax = maxTotal - total;
+
+  const totalQuests = SPINE_DATA.filter(i => i.type === 'Quest').length;
+  const doneQuests = SPINE_DATA.filter(i => i.type === 'Quest' && completedSet.has(i.order)).length;
+  const totalBosses = SPINE_DATA.filter(i => i.type === 'Boss').length;
+  const doneBosses = SPINE_DATA.filter(i => i.type === 'Boss' && completedSet.has(i.order)).length;
+  const totalDiaries = SPINE_DATA.filter(i => i.type === 'Diary').length;
+  const doneDiaries = SPINE_DATA.filter(i => i.type === 'Diary' && completedSet.has(i.order)).length;
+  const clogObtainedCount = (window.CLOG_DATA && typeof clogObtained !== 'undefined') ? (() => {
+    const u = {};
+    window.CLOG_DATA.forEach(i => { if (clogObtained[i.name.toLowerCase()]) u[i.name.toLowerCase()] = true; });
+    return Object.keys(u).length;
+  })() : 0;
+
+  const cards = [
+    { label: 'Total Level', value: total.toLocaleString(), sub: fromMax + ' from max' },
+    { label: '99s', value: nineties, sub: eighties + ' at 80+' },
+    { label: 'Quests', value: doneQuests + '/' + totalQuests, sub: Math.round(doneQuests/totalQuests*100) + '%' },
+    { label: 'Bosses', value: doneBosses + '/' + totalBosses, sub: Math.round(doneBosses/totalBosses*100) + '%' },
+    { label: 'Diaries', value: doneDiaries + '/' + totalDiaries, sub: Math.round(doneDiaries/totalDiaries*100) + '%' },
+    { label: 'Collection Log', value: clogObtainedCount + '/1698', sub: Math.round(clogObtainedCount/1698*100) + '%' },
+  ];
+
+  const cardsEl = document.getElementById('dash-cards');
+  if (cardsEl) cardsEl.innerHTML = cards.map(c => `
+    <div style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1rem;">
+      <div style="font-family:'Cinzel',serif;font-size:0.6rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.3rem">${c.label}</div>
+      <div style="font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:var(--gold);line-height:1">${c.value}</div>
+      <div style="font-size:0.72rem;color:var(--stone-lighter);margin-top:0.2rem">${c.sub}</div>
+    </div>`).join('');
+
+  const skillColorFn = function(lvl) {
+    if (lvl >= 99) return { bg: 'rgba(200,168,75,0.35)', border: 'var(--gold)', text: 'var(--gold)' };
+    if (lvl >= 90) return { bg: 'rgba(42,107,42,0.35)', border: '#3d9e3d', text: '#6fc96f' };
+    if (lvl >= 70) return { bg: 'rgba(26,58,107,0.35)', border: '#2a5aa0', text: '#7ab0f0' };
+    if (lvl >= 50) return { bg: 'rgba(120,80,200,0.2)', border: '#6040a0', text: '#b080f0' };
+    if (lvl >= 30) return { bg: 'rgba(61,53,38,0.8)', border: 'var(--stone-lighter)', text: 'var(--text-muted)' };
+    return { bg: 'rgba(42,33,24,0.6)', border: 'var(--stone-light)', text: 'var(--stone-lighter)' };
+  };
+
+  const heatmapEl = document.getElementById('dash-heatmap');
+  if (heatmapEl) heatmapEl.innerHTML = SKILLS.map(s => {
+    const lvl = parseInt(playerStats[s.name.toLowerCase()]) || 1;
+    const c = skillColorFn(lvl);
+    return `<div title="${s.name}: ${lvl}" style="background:${c.bg};border:1px solid ${c.border};border-radius:3px;padding:5px 4px;text-align:center;cursor:default;">
+      <img src="${s.icon}" style="width:14px;height:14px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto 2px">
+      <div style="font-family:'Cinzel',serif;font-size:0.62rem;font-weight:700;color:${c.text};line-height:1">${lvl}</div>
+    </div>`;
+  }).join('');
+
+  const progBarFn = function(label, done, tot, color) {
+    const pct = tot > 0 ? Math.round(done/tot*100) : 0;
+    return `<div style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.6rem 0.85rem;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
+        <span style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.05em">${label}</span>
+        <span style="font-family:'Cinzel',serif;font-size:0.75rem;color:${color}">${done} / ${tot} <span style="color:var(--stone-lighter);font-size:0.65rem">${pct}%</span></span>
+      </div>
+      <div style="height:4px;background:var(--stone-mid);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;transition:width 0.4s"></div>
+      </div>
+    </div>`;
+  };
+
+  const tierBars = TIERS.map(t => {
+    const items = SPINE_DATA.filter(i => i.order >= t.minOrder && i.order <= t.maxOrder);
+    const done = items.filter(i => completedSet.has(i.order)).length;
+    const colors = { early:'#6fc96f', mid:'#7ab0f0', late:'#e07070', end:'var(--gold)' };
+    return progBarFn(t.label, done, items.length, colors[t.id] || 'var(--gold)');
+  });
+
+  const typeBars = [
+    { label:'Quests', type:'Quest', color:'#6fc96f' },
+    { label:'Bosses', type:'Boss', color:'#e07070' },
+    { label:'Activities', type:'Activity/Goal', color:'#7ab0f0' },
+    { label:'Diaries', type:'Diary', color:'#90d8ff' },
+    { label:'Miniquests', type:'Miniquest', color:'#f0c858' },
+    { label:'Unlocks', type:'Unlock', color:'#c090ff' },
+  ].map(t => {
+    const items = SPINE_DATA.filter(i => i.type === t.type);
+    const done = items.filter(i => completedSet.has(i.order)).length;
+    return progBarFn(t.label, done, items.length, t.color);
+  });
+
+  const progEl = document.getElementById('dash-progression');
+  if (progEl) progEl.innerHTML = [...tierBars, ...typeBars].join('');
+
+  const clogEl = document.getElementById('dash-clog');
+  if (clogEl && window.CLOG_DATA && typeof clogObtained !== 'undefined') {
+    const clogCats = ['Bosses','Raids','Clues','Minigames','Other'];
+    const clogColors = { Bosses:'#e07070', Raids:'var(--gold)', Clues:'#f0c858', Minigames:'#7ab0f0', Other:'#b080f0' };
+    clogEl.innerHTML = clogCats.map(cat => {
+      const items = window.CLOG_DATA.filter(i => i.category === cat);
+      const uniqueNames = [...new Set(items.map(i => i.name.toLowerCase()))];
+      const got = uniqueNames.filter(n => clogObtained[n]).length;
+      return progBarFn(cat, got, uniqueNames.length, clogColors[cat] || 'var(--gold)');
+    }).join('');
+  }
 }
 
 function clearStats() {
@@ -4314,7 +4445,7 @@ function showPage(name) {
   document.getElementById(`page-${name}`).classList.add('active');
   const btn = document.querySelector(`.nav-btn[onclick="showPage('${name}')"]`);
   if (btn) btn.classList.add('active');
-  if (name === 'stats') { buildSkillsGrid(); updateCombatDisplay(); }
+  if (name === 'stats') { buildSkillsGrid(); updateCombatDisplay(); renderDashboard(); }
   if (name === 'planner') renderPlanner();
   if (name === 'clog') initClog();
 
@@ -5295,88 +5426,152 @@ function toggleClogSidebar() {
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
     #splash-modal * { box-sizing: border-box; margin: 0; padding: 0; }
     #splash-modal {
-      width: 100%; max-width: 660px;
+      width: 100%; max-width: 680px;
       background: #13100a;
-      border: 1px solid #5a4520;
-      border-radius: 2px;
+      border: 1px solid #6b5020;
+      border-radius: 4px;
       overflow: hidden;
       position: relative;
-      box-shadow: 0 0 0 1px #2a1e0a, 0 32px 80px rgba(0,0,0,0.85), inset 0 1px 0 rgba(201,168,76,0.15);
-      padding-bottom: 0;
+      box-shadow: 0 0 0 1px #2a1e0a, 0 40px 100px rgba(0,0,0,0.9), inset 0 1px 0 rgba(201,168,76,0.2);
     }
     #splash-modal .sp-header {
-      padding:24px 28px 18px; text-align:center;
-      background:linear-gradient(180deg,#1e1608 0%,#13100a 100%);
-      border-bottom:1px solid #2e2210;
+      padding: 28px 32px 20px;
+      text-align: center;
+      background: linear-gradient(180deg, #1e1608 0%, #161208 60%, #13100a 100%);
+      border-bottom: 1px solid #3a2a10;
     }
-    .sp-divrow { display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px; }
-    .sp-divline { flex:1;height:1px;background:linear-gradient(90deg,transparent,#5a4520,transparent);max-width:80px; }
-    .sp-gem { width:7px;height:7px;background:#c9a84c;transform:rotate(45deg); }
-    .sp-title { font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:#e8c96a;letter-spacing:4px;text-transform:uppercase;line-height:1;margin-bottom:6px;text-shadow:0 0 40px rgba(201,168,76,0.4); }
-    .sp-sub { font-family:'Crimson Text',serif;font-style:italic;font-size:14px;color:#7a6840;letter-spacing:1px; }
-    .sp-tabs { display:flex;background:#0d0b07;border-bottom:1px solid #2e2210; }
+    .sp-divrow { display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px; }
+    .sp-divline { flex:1;height:1px;background:linear-gradient(90deg,transparent,#6b5020,transparent);max-width:100px; }
+    .sp-gem { width:8px;height:8px;background:#c9a84c;transform:rotate(45deg);box-shadow:0 0 8px rgba(201,168,76,0.5); }
+    .sp-sub { font-family:'IM Fell English',serif;font-style:italic;font-size:15px;color:#9a8050;letter-spacing:0.5px;margin-top:4px; }
+
+    /* TABS */
+    .sp-tabs {
+      display:flex;
+      background:#0d0b07;
+      border-bottom:2px solid #3a2a10;
+    }
     .sp-tab {
-      flex:1;padding:10px 4px;text-align:center;
-      font-family:'Cinzel',serif;font-size:10px;color:#5a4a28;cursor:pointer;
-      letter-spacing:1px;text-transform:uppercase;border:none;background:none;
-      border-bottom:2px solid transparent;transition:all 0.2s;position:relative;
+      flex:1;padding:12px 8px;text-align:center;
+      font-family:'Cinzel',serif;font-size:11px;font-weight:600;
+      color:#6b5a30;cursor:pointer;
+      letter-spacing:1.5px;text-transform:uppercase;
+      border:none;background:none;
+      border-bottom:2px solid transparent;
+      margin-bottom:-2px;
+      transition:all 0.2s;
     }
-    .sp-tab::after { content:'';position:absolute;right:0;top:25%;bottom:25%;width:1px;background:#2e2210; }
-    .sp-tab:last-child::after { display:none; }
-    .sp-tab.sp-active { color:#e8c96a;border-bottom:2px solid #c9a84c;background:linear-gradient(180deg,rgba(201,168,76,0.05) 0%,transparent 100%); }
-    .sp-tab:hover:not(.sp-active) { color:#a08840; }
-    .sp-panel { display:none;padding:22px 28px 18px; }
+    .sp-tab:hover:not(.sp-active) { color:#b8902a;background:rgba(201,168,76,0.04); }
+    .sp-tab.sp-active {
+      color:#e8c96a;
+      border-bottom:2px solid #c9a84c;
+      background:linear-gradient(180deg,rgba(201,168,76,0.08) 0%,transparent 100%);
+    }
+
+    /* PANELS */
+    .sp-panel { display:none;padding:28px 32px 24px;min-height:260px; }
     .sp-panel.sp-active { display:block; }
-    .sp-feat-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px; }
+
+    /* OVERVIEW GRID */
+    .sp-feat-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0; }
     .sp-feat-card {
-      background:#18140d;border:1px solid #2e2210;border-radius:2px;padding:14px;
-      position:relative;overflow:hidden;transition:border-color 0.2s;
+      background:#1a1508;border:1px solid #3a2a10;border-radius:3px;
+      padding:18px 16px;position:relative;overflow:hidden;
+      transition:border-color 0.2s,background 0.2s;
     }
-    .sp-feat-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--sp-accent,#c9a84c),transparent);opacity:0.6; }
+    .sp-feat-card::before {
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--sp-accent,#c9a84c),transparent);
+    }
     .sp-feat-card:nth-child(1){--sp-accent:#c9a84c}
-    .sp-feat-card:nth-child(2){--sp-accent:#7abf8e}
-    .sp-feat-card:nth-child(3){--sp-accent:#6aa8d4}
+    .sp-feat-card:nth-child(2){--sp-accent:#6fc96f}
+    .sp-feat-card:nth-child(3){--sp-accent:#7ab0f0}
     .sp-feat-card:nth-child(4){--sp-accent:#c47a5a}
-    .sp-feat-card:hover { border-color:#5a4520; }
-    .sp-feat-icon { font-size:20px;margin-bottom:8px;display:block; }
-    .sp-feat-title { font-family:'Cinzel',serif;font-size:10px;color:#c9a84c;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px; }
-    .sp-feat-desc { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
-    .sp-step-list { list-style:none;display:flex;flex-direction:column;gap:14px; }
-    .sp-step-item { display:flex;gap:14px;align-items:flex-start; }
-    .sp-step-num {
-      width:28px;height:28px;min-width:28px;
-      background:linear-gradient(135deg,#2e2210,#1a1508);border:1px solid #5a4520;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      font-family:'Cinzel',serif;font-size:11px;color:#c9a84c;font-weight:600;
+    .sp-feat-card:hover { border-color:#6b5020;background:#1e180a; }
+    .sp-feat-icon { font-size:22px;margin-bottom:10px;display:block; }
+    .sp-feat-title {
+      font-family:'Cinzel',serif;font-size:11px;font-weight:700;
+      color:#c9a84c;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;
     }
-    .sp-step-title { font-family:'Cinzel',serif;font-size:11px;color:#d4b86a;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px; }
-    .sp-step-detail { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
-    .sp-pill { display:inline-block;background:#1e1a10;border:1px solid #3a2e14;border-radius:2px;padding:1px 6px;font-family:'Cinzel',serif;font-size:9px;color:#c9a84c;letter-spacing:0.5px;vertical-align:middle; }
-    .sp-pill-green { border-color:#2a4a32;color:#7abf8e;background:#0f1e14; }
-    .sp-tip-list { display:flex;flex-direction:column;gap:10px; }
-    .sp-tip-item { display:flex;gap:12px;padding:12px 14px;background:#18140d;border:1px solid #2e2210;border-radius:2px; }
-    .sp-tip-dot { width:6px;min-width:6px;height:6px;background:#c9a84c;transform:rotate(45deg);margin-top:5px; }
-    .sp-tip-head { font-family:'Cinzel',serif;font-size:10px;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px; }
-    .sp-tip-text { font-family:'Crimson Text',serif;font-size:14px;color:#7a6840;line-height:1.5; }
-    .sp-hint { font-family:'Crimson Text',serif;font-style:italic;font-size:13px;color:#3a2e14;text-align:center;margin-top:12px; }
-    .sp-footer { border-top:1px solid #2e2210;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;background:#0d0b07; }
-    .sp-dots { display:flex;gap:8px;align-items:center; }
-    .sp-dot { width:6px;height:6px;background:#2e2210;transform:rotate(45deg);cursor:pointer;transition:all 0.2s; }
-    .sp-dot.sp-active { background:#c9a84c;box-shadow:0 0 6px rgba(201,168,76,0.5); }
-    .sp-skip { font-family:'Crimson Text',serif;font-style:italic;font-size:15px;color:#4a3e22;cursor:pointer;background:none;border:none;padding:4px 0;transition:color 0.15s; }
-    .sp-skip:hover { color:#7a6840; }
+    .sp-feat-desc { font-family:'Source Sans 3',sans-serif;font-size:13.5px;color:#a8946a;line-height:1.6; }
+
+    /* GETTING STARTED */
+    .sp-step-list { list-style:none;display:flex;flex-direction:column;gap:18px; }
+    .sp-step-item { display:flex;gap:16px;align-items:flex-start; }
+    .sp-step-num {
+      width:32px;height:32px;min-width:32px;
+      background:linear-gradient(135deg,#2e2210,#1a1508);
+      border:1px solid #6b5020;border-radius:3px;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Cinzel',serif;font-size:12px;color:#c9a84c;font-weight:700;
+      flex-shrink:0;
+    }
+    .sp-step-title {
+      font-family:'Cinzel',serif;font-size:12px;font-weight:700;
+      color:#e8c96a;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;
+    }
+    .sp-step-detail { font-family:'Source Sans 3',sans-serif;font-size:13.5px;color:#a8946a;line-height:1.6; }
+
+    /* PILLS */
+    .sp-pill {
+      display:inline-block;background:#221c0e;border:1px solid #6b5020;
+      border-radius:2px;padding:1px 8px;
+      font-family:'Cinzel',serif;font-size:10px;color:#c9a84c;
+      letter-spacing:0.5px;vertical-align:middle;
+    }
+    .sp-pill-green { border-color:#2a6b2a;color:#6fc96f;background:#0f1e0f; }
+
+    /* FEATURES / TIPS */
+    .sp-tip-list { display:flex;flex-direction:column;gap:12px; }
+    .sp-tip-item {
+      display:flex;gap:14px;padding:14px 16px;
+      background:#1a1508;border:1px solid #3a2a10;border-radius:3px;
+      transition:border-color 0.15s;
+    }
+    .sp-tip-item:hover { border-color:#6b5020; }
+    .sp-tip-dot { width:7px;min-width:7px;height:7px;background:#c9a84c;transform:rotate(45deg);margin-top:6px;flex-shrink:0; }
+    .sp-tip-head {
+      font-family:'Cinzel',serif;font-size:11px;font-weight:700;
+      color:#e8c96a;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;
+    }
+    .sp-tip-text { font-family:'Source Sans 3',sans-serif;font-size:13.5px;color:#a8946a;line-height:1.6; }
+
+    /* FOOTER */
+    .sp-footer {
+      border-top:1px solid #3a2a10;padding:16px 32px;
+      display:flex;justify-content:space-between;align-items:center;
+      background:#0d0b07;
+    }
+    .sp-dots { display:flex;gap:10px;align-items:center; }
+    .sp-dot {
+      width:8px;height:8px;border-radius:1px;
+      background:#2e2210;transform:rotate(45deg);
+      cursor:pointer;transition:all 0.2s;border:1px solid #3a2a10;
+    }
+    .sp-dot.sp-active { background:#c9a84c;border-color:#c9a84c;box-shadow:0 0 8px rgba(201,168,76,0.5); }
+    .sp-dot:hover:not(.sp-active) { background:#5a4020;border-color:#6b5020; }
+    .sp-skip {
+      font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.5px;
+      color:#5a4a28;cursor:pointer;background:none;border:none;
+      transition:color 0.15s;text-transform:uppercase;
+    }
+    .sp-skip:hover { color:#9a8050; }
     .sp-next {
       font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;
       color:#13100a;background:linear-gradient(135deg,#d4a843,#c9a84c,#b8922e);
-      border:none;padding:13px 28px;cursor:pointer;border-radius:2px;
+      border:none;padding:12px 32px;cursor:pointer;border-radius:2px;
       transition:opacity 0.15s,transform 0.1s;
-      box-shadow:0 2px 12px rgba(201,168,76,0.25),inset 0 1px 0 rgba(255,255,255,0.15);
+      box-shadow:0 2px 16px rgba(201,168,76,0.3),inset 0 1px 0 rgba(255,255,255,0.2);
+      font-weight:700;
     }
-    .sp-next:hover { opacity:0.9;transform:translateY(-1px); }
+    .sp-next:hover { opacity:0.9;transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,168,76,0.4); }
     .sp-next:active { transform:translateY(0); }
-    @media(max-width:480px){
-      .sp-feat-grid{grid-template-columns:1fr;}
-      .sp-title{font-size:20px;letter-spacing:2px;}
+
+    @media(max-width:520px){
+      .sp-feat-grid { grid-template-columns:1fr; }
+      .sp-panel { padding:20px 18px 18px; }
+      #splash-modal .sp-header { padding:20px 18px 16px; }
+      .sp-footer { padding:14px 18px; }
     }
 
   /* ===== COLLECTION LOG PAGE ===== */
@@ -5536,7 +5731,6 @@ function toggleClogSidebar() {
         <div class="sp-feat-card"><span class="sp-feat-icon">🗺</span><div class="sp-feat-title">Custom Path</div><div class="sp-feat-desc">Build your own goal list with dependency trees. Add tasks, custom entries, and notes.</div></div>
         <div class="sp-feat-card"><span class="sp-feat-icon">📤</span><div class="sp-feat-title">Share &amp; Import</div><div class="sp-feat-desc">Share your path with friends via a compact code or .json file. Import theirs instantly.</div></div>
       </div>
-      <div class="sp-hint">— Use the tabs above to explore Getting Started, Features &amp; Tips —</div>
     </div>
 
     <div class="sp-panel" id="sp-tab-1">
@@ -5573,7 +5767,7 @@ function toggleClogSidebar() {
         <div class="sp-dot" onclick="spShowTab(2)"></div>
         <div class="sp-dot" onclick="spShowTab(3)"></div>
       </div>
-      <div style="display:flex;gap:16px;align-items:center;">
+      <div style="display:flex;gap:20px;align-items:center;">
         <button class="sp-skip" onclick="spDismiss(true)">Don't show again</button>
         <button class="sp-next" id="sp-next-btn" onclick="spNext()">Begin &rarr;</button>
       </div>
