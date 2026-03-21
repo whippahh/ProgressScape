@@ -2475,6 +2475,47 @@
     text-overflow: ellipsis;
   }
 
+  /* Co-prereq annotation row (downstream tree) */
+  .tn-also-wrap {
+    padding: 0.15rem 0.5rem 0.35rem calc(17px + 14px + 0.9rem + 4px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-items: center;
+    margin-top: -0.1rem;
+    margin-bottom: 0.1rem;
+  }
+  .tn-also-label {
+    font-size: 0.68rem;
+    color: var(--stone-lighter);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    white-space: nowrap;
+    margin-right: 0.2rem;
+    flex-shrink: 0;
+  }
+  .tn-also-pill {
+    font-size: 0.67rem;
+    padding: 0.12rem 0.45rem;
+    border-radius: 2px;
+    background: rgba(61,53,38,0.5);
+    border: 1px solid rgba(107,95,72,0.25);
+    color: var(--stone-lighter);
+    white-space: nowrap;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .tn-also-pill.done  {
+    color: rgba(90,174,90,0.7);
+    border-color: rgba(90,174,90,0.18);
+    background: rgba(42,80,42,0.25);
+  }
+  .tn-also-pill.more  {
+    color: rgba(107,95,72,0.7);
+    border-style: dashed;
+    font-style: italic;
+    background: transparent;
+  }
+
   /* Connector lines */
   .tree-children {
     position: relative;
@@ -2503,6 +2544,620 @@
     .tree-children > .tree-node-wrap::before { left: -18px; width: 14px; }
   }
 
+  /* ===== COMPARE PAGE ===== */
+  .compare-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 3rem;
+  }
+  .compare-page h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.35rem;
+  }
+
+  /* Player slots row */
+  .cmp-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+  }
+  .cmp-slot {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    padding: 0.85rem 1rem;
+    min-width: 220px;
+    flex: 1 1 220px;
+    max-width: 320px;
+    position: relative;
+  }
+  .cmp-slot label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .cmp-slot .cpi-row {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .cmp-slot input[type=text] {
+    flex: 1;
+    min-width: 100px;
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.45rem 0.75rem;
+    outline: none;
+  }
+  .cmp-slot-remove {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--stone-lighter);
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: color 0.15s;
+  }
+  .cmp-slot-remove:hover { color: #e07070; }
+  .cmp-add-slot-btn {
+    align-self: center;
+    flex: 0 0 auto;
+  }
+  .compare-status {
+    font-size: 0.82rem;
+    margin-top: 0.45rem;
+    min-height: 1.2em;
+  }
+  .compare-status.loading { color: var(--text-muted); }
+  .compare-status.success { color: var(--green-light); }
+  .compare-status.error   { color: #e06060; }
+
+  /* Results area */
+  #compare-results { margin-top: 0.25rem; }
+
+  /* Section heading */
+  .cmp-section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 1.75rem 0 0.75rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--stone-lighter);
+  }
+
+  /* Summary cards */
+  .cmp-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .cmp-summary-card {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    flex: 1 1 180px;
+    min-width: 160px;
+  }
+  .cmp-summary-card .csn {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cmp-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+    gap: 0.5rem;
+  }
+  .cmp-stat-row .val {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-light);
+    white-space: nowrap;
+  }
+  .cmp-stat-row .val.win  { color: var(--green-light); }
+  .cmp-stat-row .val.lose { color: #e07070; }
+
+  /* Tier unlock section */
+  .cmp-tier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.6rem;
+  }
+  .cmp-tier-card {
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+  }
+  .cmp-tier-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.55rem;
+  }
+  .cmp-tier-bars { display: flex; flex-direction: column; gap: 0.4rem; }
+  .cmp-tier-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.82rem;
+  }
+  .cmp-tier-bar-row .pname {
+    min-width: 0;
+    width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    font-size: 0.78rem;
+  }
+  .cmp-tier-bar-track {
+    flex: 1;
+    height: 7px;
+    background: var(--stone-mid);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .cmp-tier-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+  .cmp-tier-bar-row .pct {
+    width: 36px;
+    text-align: right;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* Skill grid — OSRS 3-col layout on desktop */
+  .cmp-skills {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+  .cmp-skill-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    padding: 0.4rem 0.65rem;
+  }
+  .cmp-skill-row img {
+    width: 15px; height: 15px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+  .cmp-skill-row .sname {
+    flex: 1;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .cmp-skill-vals {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    flex-shrink: 0;
+  }
+  .cmp-skill-row .sv {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 28px;
+    text-align: center;
+  }
+  .cmp-skill-row .sv.win  { color: var(--green-light); }
+  .cmp-skill-row .sv.lose { color: #e07070; }
+  .cmp-skill-row .sv.tie  { color: var(--text-muted); }
+  .cmp-skill-row .sdiv   { color: var(--stone-lighter); font-size: 0.7rem; }
+
+  /* KC / plugin tables */
+  .cmp-kc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .cmp-kc-table th {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 0.45rem 0.75rem;
+    border-bottom: 1px solid var(--stone-lighter);
+    white-space: nowrap;
+  }
+  .cmp-kc-table th:not(:first-child) { text-align: right; }
+  .cmp-kc-table td {
+    padding: 0.38rem 0.75rem;
+    border-bottom: 1px solid rgba(107,95,72,0.2);
+    color: var(--text-muted);
+    font-size: 0.88rem;
+  }
+  .cmp-kc-table td:not(:first-child) {
+    text-align: right;
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-light);
+  }
+  .cmp-kc-table td.win  { color: var(--green-light); }
+  .cmp-kc-table td.lose { color: #e07070; }
+  .cmp-kc-table tr:last-child td { border-bottom: none; }
+
+  /* Coming Soon overlay for plugin-gated sections */
+  .cmp-coming-soon-wrap {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cmp-coming-soon-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(18,14,8,0.82);
+    backdrop-filter: blur(2px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    z-index: 2;
+    border-radius: 4px;
+    border: 1px solid var(--stone-lighter);
+  }
+  .cmp-coming-soon-overlay .cs-icon { font-size: 1.4rem; }
+  .cmp-coming-soon-overlay .cs-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .cmp-coming-soon-overlay .cs-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 280px;
+    line-height: 1.4;
+  }
+  /* Ghost content behind overlay — blurred skeleton rows */
+  .cmp-ghost-rows { pointer-events: none; filter: blur(3px); opacity: 0.35; padding: 0.5rem; }
+  .cmp-ghost-row {
+    height: 36px;
+    background: var(--stone);
+    border-radius: 3px;
+    margin-bottom: 0.35rem;
+    border: 1px solid var(--stone-lighter);
+  }
+
+  @media (max-width: 900px) {
+    .cmp-skills { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .cmp-slot { max-width: 100%; flex-basis: 100%; }
+    .cmp-skills { grid-template-columns: 1fr; }
+    .cmp-tier-grid { grid-template-columns: 1fr; }
+    .cmp-kc-table th, .cmp-kc-table td { padding: 0.35rem 0.5rem; font-size: 0.8rem; }
+  }
+
+  /* ===== MILESTONE BADGES ===== */
+  .ms-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 3px;
+    padding: 0.35rem 0.65rem;
+    cursor: default;
+    user-select: none;
+    transition: opacity 0.3s, filter 0.3s;
+    position: relative;
+  }
+  .ms-badge.ms-locked {
+    background: rgba(42,33,24,0.5);
+    border: 1px solid rgba(107,95,72,0.35);
+    opacity: 0.38;
+    filter: grayscale(1);
+  }
+  .ms-badge.ms-earned {
+    background: rgba(61,53,38,0.7);
+    border: 1px solid var(--stone-lighter);
+  }
+  .ms-badge.ms-earned.ms-gold {
+    background: rgba(200,168,75,0.1);
+    border: 1px solid var(--gold-dark);
+  }
+  .ms-badge img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+  }
+  .ms-badge span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  .ms-badge.ms-earned span {
+    color: var(--text-light);
+  }
+  .ms-badge.ms-earned.ms-gold span {
+    color: var(--gold);
+  }
+
+  /* Sparkle: scale-pop + gold glow pulse, plays once */
+  @keyframes msBadgeSparkle {
+    0%   { transform: scale(1);    box-shadow: 0 0 0px rgba(200,168,75,0); }
+    15%  { transform: scale(1.18); box-shadow: 0 0 12px rgba(200,168,75,0.9), 0 0 24px rgba(200,168,75,0.5); }
+    35%  { transform: scale(0.96); box-shadow: 0 0 8px  rgba(200,168,75,0.6); }
+    55%  { transform: scale(1.07); box-shadow: 0 0 14px rgba(200,168,75,0.7), 0 0 28px rgba(200,168,75,0.3); }
+    75%  { transform: scale(1.01); box-shadow: 0 0 6px  rgba(200,168,75,0.4); }
+    100% { transform: scale(1);    box-shadow: 0 0 4px  rgba(200,168,75,0.2); }
+  }
+  .ms-badge.ms-sparkle {
+    animation: msBadgeSparkle 0.7s ease-out forwards;
+  }
+  /* Lingering soft glow after sparkle settles (earned gold badges) */
+  .ms-badge.ms-earned.ms-gold {
+    box-shadow: 0 0 4px rgba(200,168,75,0.18);
+  }
+
+  /* ===== BOSS TRACKER PAGE ===== */
+  .boss-tracker-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.25rem 1.25rem 3rem;
+  }
+
+  .boss-tracker-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .boss-tracker-search {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    padding: 0.4rem 0.75rem;
+    outline: none;
+    width: 200px;
+  }
+
+  .bt-summary {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* Boss cards grid */
+  .boss-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .boss-card {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    padding: 0.85rem 1rem;
+    transition: border-color 0.2s;
+  }
+  .boss-card:hover { border-color: var(--stone-lighter); }
+  .boss-card.bc-all-done {
+    border-color: rgba(90,174,90,0.35);
+    background: rgba(42,80,42,0.15);
+  }
+
+  .bc-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.65rem;
+  }
+  .bc-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-light);
+    line-height: 1.25;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+  }
+  .bc-name:hover { color: var(--gold-light); }
+
+  .bc-kc-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+  .bc-kc-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .bc-kc-input {
+    background: var(--stone);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 3px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    padding: 0.25rem 0.4rem;
+    width: 72px;
+    outline: none;
+    text-align: center;
+  }
+  .bc-kc-input:focus { border-color: var(--gold-dark); }
+
+  /* Drop progress bar */
+  .bc-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+  .bc-progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--stone);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bc-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--green-light);
+    transition: width 0.35s;
+  }
+  .bc-progress-fill.done { background: #5aae5a; }
+  .bc-progress-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Drop rows */
+  .bc-drops { display: flex; flex-direction: column; gap: 0.2rem; }
+  .bc-drop-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.28rem 0.4rem;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: background 0.1s;
+    min-width: 0;
+  }
+  .bc-drop-row:hover { background: rgba(0,0,0,0.3); }
+  .bc-drop-row.bc-drop-done { opacity: 0.5; }
+  .bc-drop-row.bc-drop-done .bc-drop-name { text-decoration: line-through; color: var(--text-muted); }
+
+  .bc-drop-check {
+    width: 13px; height: 13px;
+    border: 1px solid var(--stone-lighter);
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    color: #5aae5a;
+    background: var(--stone);
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .bc-drop-row.bc-drop-done .bc-drop-check {
+    background: rgba(42,80,42,0.6);
+    border-color: rgba(90,174,90,0.4);
+  }
+
+  .bc-drop-name {
+    flex: 1;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .bc-drop-rate {
+    font-size: 0.72rem;
+    color: var(--stone-lighter);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .bc-drop-price {
+    font-size: 0.72rem;
+    color: var(--gold-dark);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* No-results empty state */
+  .bt-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .boss-cards-grid { grid-template-columns: 1fr; }
+    .boss-tracker-search { width: 100%; }
+    .bt-summary { margin-left: 0; }
+  }
+
 </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
@@ -2521,8 +3176,10 @@
     <nav>
       <button class="nav-btn active" onclick="showPage('progression')">Progression</button>
       <button class="nav-btn" onclick="showPage('stats')">My Stats</button>
-      <button class="nav-btn" onclick="showPage('planner')">Custom Path</button>
+      <button class="nav-btn" onclick="showPage('bosses')">Bosses</button>
       <button class="nav-btn" onclick="showPage('clog')">Collection Log</button>
+      <button class="nav-btn" onclick="showPage('planner')">Custom Path</button>
+      <button class="nav-btn" onclick="showPage('compare')">Compare</button>
     </nav>
     <div class="header-right">
       <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
@@ -2652,6 +3309,12 @@
 
       <div style="font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--stone-lighter)">Account Overview</div>
 
+      <!-- Milestone badges -->
+      <div id="dash-milestones-wrap" style="display:none;margin-bottom:1.5rem;">
+        <div style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Milestones</div>
+        <div id="dash-milestones" style="display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+      </div>
+
       <!-- Stat cards row -->
       <div id="dash-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.6rem;margin-bottom:1.5rem;"></div>
 
@@ -2705,6 +3368,49 @@
         <div class="clog-empty">Select a source from the left to view its items.</div>
       </div>
     </div>
+
+  </div>
+</div>
+
+<!-- ===== BOSS TRACKER PAGE ===== -->
+<div id="page-bosses" class="page">
+  <div class="boss-tracker-page">
+
+    <div class="boss-tracker-toolbar">
+      <input type="text" class="boss-tracker-search" id="bt-search"
+        placeholder="Search bosses…" oninput="renderBossTracker()">
+      <button class="chip active" data-btfilter="all"    onclick="setBtFilter('all',this)">All</button>
+      <button class="chip" data-btfilter="easy"          onclick="setBtFilter('easy',this)">Easy</button>
+      <button class="chip" data-btfilter="medium"        onclick="setBtFilter('medium',this)">Medium</button>
+      <button class="chip" data-btfilter="hard"          onclick="setBtFilter('hard',this)">Hard</button>
+      <button class="chip" data-btfilter="elite"         onclick="setBtFilter('elite',this)">Elite</button>
+      <button class="chip" data-btfilter="master"        onclick="setBtFilter('master',this)">Master</button>
+      <button class="chip" data-btfilter="grandmaster"   onclick="setBtFilter('grandmaster',this)">GM</button>
+      <span class="bt-summary" id="bt-summary"></span>
+    </div>
+
+    <div class="boss-cards-grid" id="bt-grid"></div>
+
+  </div>
+</div>
+
+<!-- ===== COMPARE PAGE ===== -->
+<div id="page-compare" class="page">
+  <div class="compare-page">
+
+    <h2>Group Comparison</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.25rem;font-family:'IM Fell English',serif;font-style:italic">
+      Compare skill levels, unlockable content, and boss KC across up to 6 players.
+    </p>
+
+    <div id="cmp-slots" class="cmp-slots"></div>
+
+    <div style="margin-bottom:1.5rem;display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-ghost cmp-add-slot-btn" id="cmp-add-btn" onclick="addCompareSlot()">+ Add Player</button>
+      <button class="btn btn-ghost" style="color:#e07070;border-color:rgba(224,112,112,0.3)" onclick="clearAllCompareSlots()">Clear All</button>
+    </div>
+
+    <div id="compare-results"></div>
 
   </div>
 </div>
@@ -2920,7 +3626,10 @@
 <div id="tree-view-overlay" class="planner-modal-overlay" onclick="treeViewOverlayClick(event)">
   <div class="planner-modal tree-view-modal">
     <div class="planner-modal-header">
-      <span class="planner-modal-title" id="tree-view-title">Dependency Tree</span>
+      <div>
+        <span class="planner-modal-title" id="tree-view-title">Dependency Tree</span>
+        <div id="tree-view-subtitle" style="font-size:0.72rem;color:var(--text-muted);margin-top:0.15rem;font-family:'Source Sans 3',sans-serif"></div>
+      </div>
       <div class="tree-view-toolbar">
         <button class="btn btn-ghost" onclick="treeExpandAll()">Expand All</button>
         <button class="btn btn-ghost" onclick="treeCollapseAll()">Collapse All</button>
@@ -2928,7 +3637,7 @@
       </div>
     </div>
     <div class="tree-view-body" id="tree-view-body"></div>
-    <div class="tree-view-legend">
+    <div class="tree-view-legend" id="tree-view-legend">
       <span><span style="color:#5aae5a">&#x2713;</span> Completed</span>
       <span><span style="color:#ae5a5a">&#x2717;</span> Incomplete</span>
       <span style="opacity:0.55">Completed nodes collapsed by default &mdash; click &#x25B6; to expand</span>
@@ -3054,7 +3763,86 @@ function init() {
   loadPlan();
   renderPlanner();
   loadFilterFromURL();
+  fetchGEPrices(); // non-blocking — fires and forgets, page works fine if it fails
 }
+
+// ============================================================
+// GE PRICE LAYER
+// ============================================================
+
+// Populated by fetchGEPrices(). Keyed by numeric item ID.
+// { 12922: { high: 1234567, low: 1200000 }, ... }
+window.GE_PRICES = null; // null = not yet fetched; {} = fetched but empty (error)
+
+// Collect every item ID referenced in SPINE_DATA notableDrops at runtime.
+// Returns a sorted array of unique positive integers.
+function collectSpineItemIds() {
+  var ids = new Set();
+  SPINE_DATA.forEach(function(item) {
+    (item.notableDrops || []).forEach(function(drop) {
+      if (drop.length > 2 && typeof drop[2] === 'number' && drop[2] > 0) {
+        ids.add(drop[2]);
+      }
+    });
+  });
+  return Array.from(ids).sort(function(a, b) { return a - b; });
+}
+
+async function fetchGEPrices() {
+  try {
+    var ids = collectSpineItemIds();
+    if (!ids.length) { window.GE_PRICES = {}; return; }
+
+    var url = 'https://prices.runescape.wiki/api/v1/latest?id=' + ids.join(',');
+    var resp = await fetch(url, {
+      headers: {
+        // Wiki API requires a User-Agent identifying the app
+        'User-Agent': 'ProgressScape/1.0 (progressscape.net; progression tracker)'
+      }
+    });
+    if (!resp.ok) { window.GE_PRICES = {}; return; }
+
+    var json = await resp.json();
+    // Response: { "data": { "<itemId>": { "high": int, "highTime": int, "low": int, "lowTime": int } } }
+    window.GE_PRICES = json.data || {};
+
+    // Prices just arrived — refresh any surfaces already visible
+    // Boss tracker: full re-render (cards need price injected)
+    var bossPage = document.getElementById('page-bosses');
+    if (bossPage && bossPage.classList.contains('active')) {
+      renderBossTracker();
+    }
+    // Detail modal: re-open same item so drop rows get prices
+    var detailOverlay = document.getElementById('detail-overlay');
+    if (detailOverlay && detailOverlay.classList.contains('open')) {
+      var titleEl = document.getElementById('detail-title');
+      if (titleEl) {
+        var currentItem = SPINE_DATA.find(function(d) { return d.name === titleEl.textContent; });
+        if (currentItem) openDetail(currentItem.order);
+      }
+    }
+  } catch (e) {
+    // Network failure, CORS block, malformed JSON — silently degrade
+    window.GE_PRICES = {};
+  }
+}
+
+// Returns a formatted price string for an item ID, or null if unavailable.
+// Uses the 'high' (instant buy) price — what a player would pay.
+// fmt: 'full' = "1,234,567 gp"  |  'short' = "1.2M" / "234K" / "5,432 gp"
+function gePrice(itemId, fmt) {
+  if (!window.GE_PRICES || !itemId) return null;
+  var entry = window.GE_PRICES[String(itemId)];
+  if (!entry || !entry.high) return null;
+  var gp = entry.high;
+  if (fmt === 'short') {
+    if (gp >= 1000000) return (gp / 1000000).toFixed(gp >= 10000000 ? 0 : 1).replace(/\.0$/, '') + 'M';
+    if (gp >= 1000)    return (gp / 1000).toFixed(gp >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'K';
+    return gp.toLocaleString() + ' gp';
+  }
+  return gp.toLocaleString() + ' gp';
+}
+
 
 function loadFromStorage() {
   try {
@@ -3703,6 +4491,7 @@ function clearProgress() {
   playerQP = 0;
   openTiers.clear();
   autoDetectOpenTier();
+  try { localStorage.removeItem('osrs_spine_badges_seen'); } catch(e) {}
   saveToStorage();
   const qpInput = document.getElementById('qp-input');
   if (qpInput) qpInput.value = 0;
@@ -3757,10 +4546,14 @@ function openDetail(order) {
   }
   if (item.info) rows.push(['Notes', `<span style="font-family:'IM Fell English',serif;font-style:italic">${item.info}</span>`]);
   if (item.notableDrops && item.notableDrops.length > 0) {
-    const dropsHtml = item.notableDrops.map(([dropName, dropRate]) => {
+    const dropsHtml = item.notableDrops.map(([dropName, dropRate, itemId]) => {
       const dropKey = `${item.order}-${dropName}`;
       const mainEntry = SPINE_DATA.find(d => d.order !== item.order && d.name.toLowerCase() === dropName.toLowerCase());
       const dropDone = !!obtainedDrops[dropKey];
+      const price = gePrice(itemId, 'short');
+      const priceHtml = price
+        ? `<span style="font-size:0.72rem;color:var(--gold-dark);white-space:nowrap;margin-left:0.25rem" title="GE price (instant buy)">${price}</span>`
+        : '';
       return `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.35rem;padding:0.3rem 0.5rem;background:rgba(0,0,0,0.2);border-radius:3px">
         <div class="check-box ${dropDone ? 'checked' : ''}" style="width:14px;height:14px;flex-shrink:0"
           onclick="toggleDropDone('${dropKey}', ${item.order}, ${mainEntry ? mainEntry.order : 'null'})" title="Mark obtained"></div>
@@ -3769,6 +4562,7 @@ function openDetail(order) {
           ${dropName}${mainEntry ? ' <span style="color:var(--gold-dark);font-size:0.7rem">→</span>' : ''}
         </span>
         <span style="font-size:0.73rem;color:var(--stone-lighter);white-space:nowrap">${dropRate}</span>
+        ${priceHtml}
       </div>`;
     }).join('');
     rows.push(['Notable Drops', dropsHtml]);
@@ -3782,6 +4576,7 @@ function openDetail(order) {
   document.getElementById('detail-actions').innerHTML = `
     <button class="btn" onclick="toggleDone(${item.order}); closeDetailBtn()">${done ? '✗ Mark Incomplete' : '✓ Mark Complete'}</button>
     <button class="btn btn-ghost" onclick="buildPathTo(${item.order})" title="Recursively find all incomplete prerequisites and add them to Custom Path" style="border-color:#4a7fc8;color:#8abcf8">🗺 Build Path</button>
+    <button class="btn btn-ghost" onclick="showDownstreamTree(${item.order})" title="See what completing this opens up" style="border-color:rgba(200,168,75,0.35);color:var(--gold-dark)">⚔ Opens The Way</button>
     ${item.source ? `<a href="${item.source}" target="_blank"><button class="btn btn-ghost">Open Guide ↗</button></a>` : ''}
   `;
   document.getElementById('detail-overlay').classList.add('open');
@@ -3807,7 +4602,13 @@ function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
   saveToStorage();
   renderTable();
   updateProgress();
-  openDetail(sourceOrder);
+  // Refresh whichever surface triggered the toggle
+  const bossPage = document.getElementById('page-bosses');
+  if (bossPage && bossPage.classList.contains('active')) {
+    refreshBossCard(sourceOrder);
+  } else {
+    openDetail(sourceOrder);
+  }
 }
 
 function closeDetail(e) {
@@ -4003,7 +4804,12 @@ function showTreeView(goalName) {
   var root = buildQuestTree(goalName, new Set());
   if (!root) return;
   document.getElementById('tree-view-title').textContent = goalName;
+  document.getElementById('tree-view-subtitle').textContent = '';
   document.getElementById('tree-view-body').innerHTML = renderTreeNode(root, true, 0);
+  document.getElementById('tree-view-legend').innerHTML =
+    '<span><span style="color:#5aae5a">&#x2713;</span> Completed</span>' +
+    '<span><span style="color:#ae5a5a">&#x2717;</span> Incomplete</span>' +
+    '<span style="opacity:0.55">Completed nodes collapsed by default &mdash; click &#x25B6; to expand</span>';
   document.getElementById('tree-view-overlay').classList.add('open');
 }
 
@@ -4111,8 +4917,189 @@ function treeViewOverlayClick(e) {
 }
 
 // ============================================================
-// FLOATING RANDOM TASK PANEL
+// DOWNSTREAM UNLOCKS TREE
 // ============================================================
+
+// Built lazily on first use and cached — SPINE_DATA doesn't change at runtime
+var _downstreamIndex = null;
+
+function getDownstreamIndex() {
+  if (_downstreamIndex) return _downstreamIndex;
+  var idx = {}; // order → [child orders that list it as a prereq]
+  var nameToOrder = {};
+  SPINE_DATA.forEach(function(item) {
+    nameToOrder[item.name.toLowerCase().trim()] = item.order;
+  });
+  SPINE_DATA.forEach(function(item) {
+    var prereqsRaw = (item.questPrereqs || '').trim();
+    if (!prereqsRaw) return;
+    prereqsRaw.split(';').forEach(function(raw) {
+      raw = raw.trim();
+      if (!raw) return;
+      var parentOrder = nameToOrder[raw.toLowerCase()];
+      if (parentOrder === undefined) return; // unresolvable freetext — skip
+      if (!idx[parentOrder]) idx[parentOrder] = [];
+      idx[parentOrder].push(item.order);
+    });
+  });
+  _downstreamIndex = idx;
+  return idx;
+}
+
+// Build downstream tree node.
+// visitedPath: Set of orders already on THIS branch — prevents cycles.
+// cameFromOrder: the parent order we arrived from, so we can exclude it from co-prereq annotation.
+function buildDownstreamNode(order, cameFromOrder, visitedPath) {
+  if (visitedPath.has(order)) return null; // cycle guard
+  var item = SPINE_DATA.find(function(d) { return d.order === order; });
+  if (!item) return null;
+
+  var completed = completedSet.has(order);
+
+  // Co-prereqs: other prerequisites of this node besides the one we came from
+  var nameToItem = {};
+  SPINE_DATA.forEach(function(d) { nameToItem[d.name.toLowerCase().trim()] = d; });
+
+  var coPrereqs = [];
+  if (item.questPrereqs) {
+    item.questPrereqs.split(';').forEach(function(raw) {
+      raw = raw.trim();
+      if (!raw) return;
+      var prereqItem = nameToItem[raw.toLowerCase()];
+      var prereqOrder = prereqItem ? prereqItem.order : -1;
+      if (prereqOrder === cameFromOrder) return; // this is the path we came from — exclude
+      coPrereqs.push({
+        name: prereqItem ? prereqItem.name : raw,
+        order: prereqOrder,
+        completed: prereqOrder >= 0 ? completedSet.has(prereqOrder) : false,
+        resolved: prereqOrder >= 0
+      });
+    });
+  }
+
+  // Build children recursively
+  var idx = getDownstreamIndex();
+  var childOrders = idx[order] || [];
+  var newVisited = new Set(visitedPath);
+  newVisited.add(order);
+
+  var children = childOrders
+    .map(function(childOrder) {
+      return buildDownstreamNode(childOrder, order, newVisited);
+    })
+    .filter(Boolean);
+
+  // Sort: incomplete/partially-unlocked first, fully completed last
+  children.sort(function(a, b) {
+    if (a.completed === b.completed) return 0;
+    return a.completed ? 1 : -1;
+  });
+
+  return {
+    order: order,
+    name: item.name,
+    type: item.type,
+    completed: completed,
+    coPrereqs: coPrereqs,
+    children: children
+  };
+}
+
+function renderDownstreamNode(node, isRoot, depth) {
+  var uid = 'ds_' + node.order;
+  var hasChildren = node.children && node.children.length > 0;
+  var startCollapsed = !isRoot && node.completed && hasChildren;
+
+  var nodeClass = 'tree-node';
+  if (isRoot) nodeClass += ' tn-root';
+  nodeClass += node.completed ? ' tn-done' : ' tn-todo';
+
+  var typeBadge = node.type
+    ? '<span class="type-badge" style="font-size:0.59rem;padding:0.08rem 0.32rem;flex-shrink:0">' + node.type + '</span>'
+    : '';
+
+  var statusIcon = node.completed
+    ? '<span class="tn-status tn-status-done">&#x2713;</span>'
+    : '<span class="tn-status tn-status-todo">&#x2717;</span>';
+
+  var toggleBtn = hasChildren
+    ? '<button class="tn-toggle" onclick="treeToggle(\'' + uid + '\')" title="' + (startCollapsed ? 'Expand' : 'Collapse') + '">' + (startCollapsed ? '&#x25B6;' : '&#x25BC;') + '</button>'
+    : '<span class="tn-toggle-spacer"></span>';
+
+  var html = '<div class="tree-node-wrap" id="' + uid + '">';
+  html += '<div class="' + nodeClass + '">';
+  html += toggleBtn;
+  html += statusIcon;
+  html += '<span class="tn-name">' + node.name + '</span>';
+  html += typeBadge;
+  html += '</div>';
+
+  // Co-prereq annotation pills (not on root, not when only 1 total prereq)
+  if (!isRoot && node.coPrereqs.length > 0) {
+    var MAX_PILLS = 4;
+    var pills = node.coPrereqs.slice(0, MAX_PILLS).map(function(p) {
+      var cls = 'tn-also-pill' + (p.completed ? ' done' : '');
+      var tick = p.completed ? '✓ ' : '';
+      return '<span class="' + cls + '">' + tick + p.name + '</span>';
+    }).join('');
+    var extra = node.coPrereqs.length - MAX_PILLS;
+    if (extra > 0) {
+      pills += '<span class="tn-also-pill more">+' + extra + ' more</span>';
+    }
+    html += '<div class="tn-also-wrap"><span class="tn-also-label">needs alongside:</span>' + pills + '</div>';
+  }
+
+  if (hasChildren) {
+    html += '<div class="tree-children' + (startCollapsed ? ' tree-collapsed' : '') + '" id="' + uid + '_ch">';
+    for (var i = 0; i < node.children.length; i++) {
+      html += renderDownstreamNode(node.children[i], false, depth + 1);
+    }
+    html += '</div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function showDownstreamTree(order) {
+  var item = SPINE_DATA.find(function(d) { return d.order === order; });
+  if (!item) return;
+
+  var idx = getDownstreamIndex();
+  var directCount = (idx[order] || []).length;
+
+  if (directCount === 0) {
+    // Nothing downstream — show a message in the modal rather than an empty tree
+    document.getElementById('tree-view-title').textContent = item.name;
+    document.getElementById('tree-view-subtitle').textContent = '';
+    document.getElementById('tree-view-body').innerHTML =
+      '<p style="color:var(--text-muted);font-size:0.9rem;padding:1.25rem 0;font-family:\'IM Fell English\',serif;font-style:italic;line-height:1.6">' +
+      'This stands alone — nothing in the progression spine requires it as a stepping stone.' +
+      '</p>';
+    document.getElementById('tree-view-legend').innerHTML =
+      '<span style="font-family:\'IM Fell English\',serif;font-style:italic;color:var(--stone-lighter)">Complete it for its own reward.</span>';
+    document.getElementById('tree-view-overlay').classList.add('open');
+    return;
+  }
+
+  var root = buildDownstreamNode(order, -1, new Set());
+  if (!root) return;
+
+  function countNodes(n) { return 1 + n.children.reduce(function(s, c) { return s + countNodes(c); }, 0); }
+  var total = countNodes(root) - 1;
+
+  document.getElementById('tree-view-title').textContent = item.name;
+  document.getElementById('tree-view-subtitle').innerHTML =
+    '<span style="font-family:\'IM Fell English\',serif;font-style:italic">Opens the path to ' + total + ' further ' + (total === 1 ? 'challenge' : 'challenges') + '</span>';
+  document.getElementById('tree-view-body').innerHTML = renderDownstreamNode(root, true, 0);
+  document.getElementById('tree-view-legend').innerHTML =
+    '<span><span style="color:#5aae5a">&#x2713;</span> Already conquered</span>' +
+    '<span><span style="color:#ae5a5a">&#x2717;</span> Yet to be done</span>' +
+    '<span style="font-family:\'IM Fell English\',serif;font-style:italic;color:var(--stone-lighter)">Faded names — other deeds required alongside this road</span>';
+  document.getElementById('tree-view-overlay').classList.add('open');
+}
+
+
 function toggleRandomPanel() {
   const panel = document.getElementById('floating-rand-panel');
   panel.classList.toggle('open');
@@ -4323,6 +5310,102 @@ function renderDashboard() {
   const dash = document.getElementById('account-dashboard');
   if (!dash || typeof SPINE_DATA === 'undefined') return;
 
+  // ── MILESTONE BADGES ────────────────────────────────────────
+  (function renderMilestones() {
+    const wrap = document.getElementById('dash-milestones-wrap');
+    const container = document.getElementById('dash-milestones');
+    if (!wrap || !container) return;
+
+    // Pre-compute data the badge conditions need
+    const levels = SKILLS.map(s => parseInt(playerStats[s.name.toLowerCase()]) || 1);
+    const ninetyNines = SKILLS.filter(s => (parseInt(playerStats[s.name.toLowerCase()]) || 1) >= 99);
+    const totalQuests = SPINE_DATA.filter(i => i.type === 'Quest').length;
+    const doneQuests  = SPINE_DATA.filter(i => i.type === 'Quest' && completedSet.has(i.order)).length;
+    const allDiaries  = SPINE_DATA.filter(i => i.type === 'Diary');
+    const doneDiaryOrders = new Set(allDiaries.filter(i => completedSet.has(i.order)).map(i => i.order));
+    const cb = getCombatLevel();
+
+    const tierDone = tier => allDiaries
+      .filter(i => i.name.startsWith(tier + ' '))
+      .every(i => doneDiaryOrders.has(i.order));
+
+    // Static badge definitions (always shown — locked or earned)
+    // Individual skill-99 badges are dynamically appended below
+    const BADGE_DEFS = [
+      { id: 'qp_cape',      label: 'Quest Cape',    desc: 'All ' + totalQuests + ' quests complete',    icon: 'https://oldschool.runescape.wiki/images/Quest_point_cape.png',       earned: doneQuests === totalQuests && totalQuests > 0, gold: true  },
+      { id: 'diary_easy',   label: 'Easy Diaries',  desc: 'All Easy diaries complete',                  icon: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',    earned: tierDone('Easy'),   gold: false },
+      { id: 'diary_medium', label: 'Med Diaries',   desc: 'All Medium diaries complete',                icon: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',    earned: tierDone('Medium'), gold: false },
+      { id: 'diary_hard',   label: 'Hard Diaries',  desc: 'All Hard diaries complete',                  icon: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',    earned: tierDone('Hard'),   gold: false },
+      { id: 'diary_elite',  label: 'Elite Diaries', desc: 'All Elite diaries complete',                 icon: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',    earned: tierDone('Elite'),  gold: false },
+      { id: 'diary_cape',   label: 'Diary Cape',    desc: 'All ' + allDiaries.length + ' diaries complete', icon: 'https://oldschool.runescape.wiki/images/Achievement_diary_cape.png', earned: allDiaries.every(i => doneDiaryOrders.has(i.order)), gold: true },
+      { id: 'first_99',     label: 'First 99',      desc: 'Reached level 99 in a skill',                icon: ninetyNines.length > 0 ? 'https://oldschool.runescape.wiki/images/' + ninetyNines[0].name + '_icon.png' : 'https://oldschool.runescape.wiki/images/Stats_icon.png', earned: ninetyNines.length > 0, gold: false },
+      { id: 'max_cape',     label: 'Max Cape',      desc: 'All ' + SKILLS.length + ' skills at level 99', icon: 'https://oldschool.runescape.wiki/images/Max_cape.png',               earned: levels.every(l => l >= 99), gold: true },
+      { id: 'cb_100',       label: 'CB 100',        desc: 'Combat level 100',                           icon: 'https://oldschool.runescape.wiki/images/Worn_Equipment.png',          earned: cb >= 100,  gold: false },
+      { id: 'cb_110',       label: 'CB 110',        desc: 'Combat level 110',                           icon: 'https://oldschool.runescape.wiki/images/Worn_Equipment.png',          earned: cb >= 110,  gold: false },
+      { id: 'cb_126',       label: 'Max Combat',    desc: 'Combat level 126',                           icon: 'https://oldschool.runescape.wiki/images/Worn_Equipment.png',          earned: cb >= 126,  gold: true  },
+      { id: 'fire_cape',    label: 'Fire Cape',     desc: 'Defeated TzTok-Jad',                         icon: 'https://oldschool.runescape.wiki/images/Fire_cape.png',               earned: completedSet.has(279),  gold: false },
+      { id: 'infernal_cape',label: 'Infernal Cape', desc: 'Defeated TzKal-Zuk',                         icon: 'https://oldschool.runescape.wiki/images/Infernal_cape.png',           earned: completedSet.has(466),  gold: true  },
+    ];
+
+    // Append one badge per skill 99 beyond the first (only earned ones — these don't have a locked state)
+    ninetyNines.slice(1).forEach(s => {
+      BADGE_DEFS.push({
+        id: '99_' + s.name.toLowerCase(),
+        label: s.name + ' 99',
+        desc: 'Level 99 ' + s.name,
+        icon: 'https://oldschool.runescape.wiki/images/' + s.name + '_icon.png',
+        earned: true,
+        gold: false,
+        dynamicOnly: true, // never shown locked
+      });
+    });
+
+    // Sparkle detection: diff against last-seen earned set in localStorage
+    const LS_KEY = 'osrs_spine_badges_seen';
+    var seenRaw = '{}';
+    try { seenRaw = localStorage.getItem(LS_KEY) || '{}'; } catch(e) {}
+    var seen = {};
+    try { seen = JSON.parse(seenRaw); } catch(e) {}
+
+    const newlyEarned = new Set();
+    BADGE_DEFS.forEach(b => {
+      if (b.earned && !seen[b.id]) newlyEarned.add(b.id);
+    });
+
+    // Persist updated seen state
+    if (newlyEarned.size > 0) {
+      BADGE_DEFS.forEach(b => { if (b.earned) seen[b.id] = true; });
+      try { localStorage.setItem(LS_KEY, JSON.stringify(seen)); } catch(e) {}
+    }
+
+    // Render — static badges always shown (locked or earned); dynamic 99s only when earned
+    const toRender = BADGE_DEFS.filter(b => !b.dynamicOnly || b.earned);
+    wrap.style.display = 'block';
+
+    container.innerHTML = toRender.map(b => {
+      const cls = ['ms-badge', b.earned ? 'ms-earned' : 'ms-locked', b.earned && b.gold ? 'ms-gold' : ''].filter(Boolean).join(' ');
+      return `<div class="${cls}" title="${b.desc}" data-badge-id="${b.id}">` +
+        `<img src="${b.icon}" alt="" onerror="this.style.display='none'">` +
+        `<span>${b.label}</span>` +
+        `</div>`;
+    }).join('');
+
+    // Trigger sparkle on newly-earned badges after DOM settles
+    if (newlyEarned.size > 0) {
+      requestAnimationFrame(function() {
+        newlyEarned.forEach(function(id) {
+          var el = container.querySelector('[data-badge-id="' + id + '"]');
+          if (!el) return;
+          el.classList.add('ms-sparkle');
+          el.addEventListener('animationend', function() {
+            el.classList.remove('ms-sparkle');
+          }, { once: true });
+        });
+      });
+    }
+  })();
+  // ── END MILESTONE BADGES ─────────────────────────────────────
+
   const levels = SKILLS.map(s => parseInt(playerStats[s.name.toLowerCase()]) || 1);
   const total = levels.reduce((a,b) => a+b, 0);
   const nineties = levels.filter(l => l >= 99).length;
@@ -4431,6 +5514,7 @@ function clearStats() {
   if (!confirm('Reset all stats?')) return;
   playerStats = Object.fromEntries(SKILLS.map(s => [s.name.toLowerCase(), 1]));
   playerQP = 0;
+  try { localStorage.removeItem('osrs_spine_badges_seen'); } catch(e) {}
   saveToStorage();
   buildSkillsGrid();
   renderTable();
@@ -4448,6 +5532,12 @@ function showPage(name) {
   if (name === 'stats') { buildSkillsGrid(); updateCombatDisplay(); renderDashboard(); }
   if (name === 'planner') renderPlanner();
   if (name === 'clog') initClog();
+  if (name === 'bosses') renderBossTracker();
+  if (name === 'compare') {
+    if (compareSlots.length === 0) initCompareSlots();
+    else renderCompareSlotInputs();
+    renderCompare();
+  }
 
   // Hash routing
   const hash = name === 'progression' ? '' : '#' + name;
@@ -5396,7 +6486,507 @@ function toggleClogSidebar() {
   if (toggle) toggle.textContent = open ? '▲ Hide sources' : '▼ Browse sources';
 }
 
-// Hash routing on load — restore clog tab + category
+// ============================================================
+// FRIEND / GROUP COMPARISON
+// ============================================================
+
+// OSRS in-game skill panel order (3-col grid, row by row)
+const CMP_SKILL_ORDER = [
+  'Attack',      'Hitpoints',    'Mining',
+  'Strength',    'Agility',      'Smithing',
+  'Defence',     'Herblore',     'Fishing',
+  'Ranged',      'Thieving',     'Cooking',
+  'Prayer',      'Crafting',     'Firemaking',
+  'Magic',       'Fletching',    'Woodcutting',
+  'Runecraft',   'Slayer',       'Farming',
+  'Construction','Hunter',       'Sailing',
+];
+
+// Player slot colours — cycle through for bars/highlights
+const CMP_COLORS = ['#7ab0f0','#6fc96f','#f0c858','#e07070','#c090ff','#90d8ff'];
+
+// Isolated state — array of {id, rsn, stats, kc} | null per slot
+var compareSlots = [];   // array of slot data (null = not yet loaded)
+var compareSlotCount = 0; // ever-incrementing ID counter
+
+// ── Pure helper functions (no globals read) ──────────────────
+
+function cmpCombatLevel(s) {
+  if (!s || !Object.keys(s).length) return 3;
+  const def = s.defence || 1, hp = s.hitpoints || 10, pray = s.prayer || 1;
+  const atk = s.attack || 1, str = s.strength || 1;
+  const rng = s.ranged || 1, mag = s.magic || 1;
+  return Math.floor(
+    0.25 * (def + hp + Math.floor(pray / 2)) +
+    Math.max(0.325 * (atk + str), 0.325 * Math.floor(rng * 1.5), 0.325 * Math.floor(mag * 1.5))
+  );
+}
+
+function cmpTotalLevel(s) {
+  if (!s) return 0;
+  return SKILLS.reduce((sum, sk) => sum + (s[sk.name.toLowerCase()] || 1), 0);
+}
+
+function cmpUnlockCount(stats, tierMin, tierMax) {
+  if (!stats || !Object.keys(stats).length) return 0;
+  const cb = cmpCombatLevel(stats);
+  const tot = cmpTotalLevel(stats);
+  let count = 0;
+  for (const item of SPINE_DATA) {
+    if (item.order < tierMin || item.order > tierMax) continue;
+    const reqs = parseSkillReqs(item.skillReqs);
+    if (!reqs.length) { count++; continue; }
+    let ok = true;
+    for (const req of reqs) {
+      if (req.isQP) continue;
+      const key = req.skill.toLowerCase();
+      const have = key === 'combat' ? cb : (key === 'total level' || key === 'total') ? tot : (stats[key] || 1);
+      if (have < req.level) { ok = false; break; }
+    }
+    if (ok) count++;
+  }
+  return count;
+}
+
+// ── Slot DOM management ───────────────────────────────────────
+
+function renderCompareSlotInputs() {
+  const container = document.getElementById('cmp-slots');
+  if (!container) return;
+  const addBtn = document.getElementById('cmp-add-btn');
+  if (addBtn) addBtn.style.display = compareSlotCount >= 6 ? 'none' : '';
+
+  container.innerHTML = compareSlots.map((slot, idx) => {
+    const canRemove = compareSlots.length > 2;
+    return `<div class="cmp-slot" id="cmp-slot-${slot.id}">
+      ${canRemove ? `<button class="cmp-slot-remove" onclick="removeCompareSlot(${slot.id})" title="Remove">✕</button>` : ''}
+      <label>Player ${idx + 1}</label>
+      <div class="cpi-row">
+        <input type="text" id="cmp-rsn-${slot.id}" placeholder="Enter RSN…"
+          value="${slot.rsn || ''}"
+          onkeydown="if(event.key==='Enter') loadComparePlayer(${slot.id})">
+        <button class="btn" onclick="loadComparePlayer(${slot.id})">Lookup</button>
+        <button class="btn btn-ghost" onclick="loadCompareFromMyStats(${slot.id})" title="Use your currently loaded stats">Use Mine</button>
+      </div>
+      <div id="cmp-status-${slot.id}" class="compare-status ${slot.statusCls || ''}">${slot.statusMsg || ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function addCompareSlot() {
+  if (compareSlots.length >= 6) return;
+  compareSlotCount++;
+  compareSlots.push({ id: compareSlotCount, rsn: '', stats: null, kc: null, statusCls: '', statusMsg: '' });
+  renderCompareSlotInputs();
+}
+
+function removeCompareSlot(id) {
+  if (compareSlots.length <= 2) return;
+  compareSlots = compareSlots.filter(s => s.id !== id);
+  renderCompareSlotInputs();
+  renderCompare();
+}
+
+function clearAllCompareSlots() {
+  compareSlots = [];
+  compareSlotCount = 0;
+  // Re-initialise with two empty slots
+  initCompareSlots();
+  renderCompare();
+}
+
+function initCompareSlots() {
+  compareSlots = [];
+  compareSlotCount = 2;
+  compareSlots.push({ id: 1, rsn: '', stats: null, kc: null, statusCls: '', statusMsg: '' });
+  compareSlots.push({ id: 2, rsn: '', stats: null, kc: null, statusCls: '', statusMsg: '' });
+  renderCompareSlotInputs();
+}
+
+// ── Hiscores fetch (unchanged, still isolated) ────────────────
+
+async function fetchHiscoresForCompare(rsn) {
+  const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
+  const proxies = [
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`,
+    `https://corsproxy.io/?url=${encodeURIComponent(hiscoresUrl)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`
+  ];
+  const skillMap = {
+    'Attack':'attack','Defence':'defence','Strength':'strength','Hitpoints':'hitpoints',
+    'Ranged':'ranged','Prayer':'prayer','Magic':'magic','Cooking':'cooking',
+    'Woodcutting':'woodcutting','Fletching':'fletching','Fishing':'fishing',
+    'Firemaking':'firemaking','Crafting':'crafting','Smithing':'smithing',
+    'Mining':'mining','Herblore':'herblore','Agility':'agility','Thieving':'thieving',
+    'Slayer':'slayer','Farming':'farming','Runecraft':'runecraft','Hunter':'hunter',
+    'Construction':'construction','Sailing':'sailing'
+  };
+  for (const proxyUrl of proxies) {
+    try {
+      const resp = await fetch(proxyUrl);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      if (!data || (!data.skills && !data.activities)) continue;
+      const stats = {};
+      (data.skills || []).forEach(s => {
+        const key = skillMap[s.name];
+        if (key && s.level > 0) stats[key] = Math.max(1, s.level);
+      });
+      const kc = {};
+      const spineNameMap = {};
+      SPINE_DATA.forEach(item => {
+        if (item.entryType === 'boss' || item.type === 'Boss') {
+          spineNameMap[item.name.toLowerCase().replace(/[^a-z0-9]/g, '')] = item.order;
+        }
+      });
+      (data.activities || []).forEach(activity => {
+        const score = activity.score;
+        if (!score || score < 1) return;
+        const norm = activity.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (spineNameMap[norm] !== undefined) { kc[spineNameMap[norm]] = score; return; }
+        for (const [spineName, order] of Object.entries(spineNameMap)) {
+          if (norm.includes(spineName) || spineName.includes(norm)) { kc[order] = score; break; }
+        }
+      });
+      return { stats, kc };
+    } catch { /* try next */ }
+  }
+  throw new Error('Player not found or Hiscores unavailable');
+}
+
+async function loadComparePlayer(id) {
+  const slot = compareSlots.find(s => s.id === id);
+  if (!slot) return;
+  const input = document.getElementById('cmp-rsn-' + id);
+  const statusEl = document.getElementById('cmp-status-' + id);
+  const rsn = input ? input.value.trim() : '';
+  if (!rsn) return;
+  slot.rsn = rsn;
+  slot.stats = null; slot.kc = null;
+  slot.statusCls = 'loading'; slot.statusMsg = '⏳ Looking up ' + rsn + '…';
+  if (statusEl) { statusEl.className = 'compare-status loading'; statusEl.textContent = slot.statusMsg; }
+  try {
+    const result = await fetchHiscoresForCompare(rsn);
+    slot.stats = result.stats;
+    slot.kc = result.kc;
+    slot.statusCls = 'success'; slot.statusMsg = '✓ Loaded ' + rsn;
+    if (statusEl) { statusEl.className = 'compare-status success'; statusEl.textContent = slot.statusMsg; }
+  } catch (e) {
+    slot.statusCls = 'error'; slot.statusMsg = '✗ ' + e.message;
+    if (statusEl) { statusEl.className = 'compare-status error'; statusEl.textContent = slot.statusMsg; }
+  }
+  renderCompare();
+}
+
+function loadCompareFromMyStats(id) {
+  const slot = compareSlots.find(s => s.id === id);
+  if (!slot) return;
+  const statusEl = document.getElementById('cmp-status-' + id);
+  const hasRealStats = playerStats && Object.values(playerStats).some(v => v > 1);
+  if (!hasRealStats) {
+    slot.statusCls = 'error'; slot.statusMsg = '✗ No stats loaded — use Lookup or enter stats manually first.';
+    if (statusEl) { statusEl.className = 'compare-status error'; statusEl.textContent = slot.statusMsg; }
+    return;
+  }
+  const rsn = document.getElementById('rsn-input-stats').value.trim()
+           || document.getElementById('rsn-input').value.trim()
+           || 'You';
+  slot.rsn = rsn;
+  slot.stats = Object.assign({}, playerStats);
+  slot.kc = Object.assign({}, bossKC);
+  slot.statusCls = 'success'; slot.statusMsg = '✓ Using your current stats';
+  const input = document.getElementById('cmp-rsn-' + id);
+  if (input) input.value = rsn;
+  if (statusEl) { statusEl.className = 'compare-status success'; statusEl.textContent = slot.statusMsg; }
+  renderCompare();
+}
+
+// ── Render ────────────────────────────────────────────────────
+
+function renderCompare() {
+  const el = document.getElementById('compare-results');
+  if (!el) return;
+
+  const loaded = compareSlots.filter(s => s.stats !== null);
+
+  if (loaded.length === 0) { el.innerHTML = ''; return; }
+  if (loaded.length === 1) {
+    el.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;font-style:italic;padding:1rem 0">
+      Loaded <strong style="color:var(--text-light)">${loaded[0].rsn}</strong>. Load at least one more player to compare.
+    </p>`;
+    return;
+  }
+
+  const tierColors = { early:'#6fc96f', mid:'#7ab0f0', late:'#e07070', end:'var(--gold)' };
+
+  // ── Summary cards ─────────────────────────────────────────
+  function summaryCards() {
+    const maxTot = Math.max(...loaded.map(p => cmpTotalLevel(p.stats)));
+    const maxCB  = Math.max(...loaded.map(p => cmpCombatLevel(p.stats)));
+    const maxUnl = Math.max(...loaded.map(p => cmpUnlockCount(p.stats, 1, Infinity)));
+    return loaded.map((p, i) => {
+      const tot = cmpTotalLevel(p.stats);
+      const cb  = cmpCombatLevel(p.stats);
+      const unl = cmpUnlockCount(p.stats, 1, Infinity);
+      return `<div class="cmp-summary-card">
+        <div class="csn" style="border-left:3px solid ${CMP_COLORS[i % CMP_COLORS.length]};padding-left:0.5rem">${p.rsn}</div>
+        <div class="cmp-stat-row"><span>Total Level</span><span class="val ${tot === maxTot ? 'win' : ''}">${tot.toLocaleString()}</span></div>
+        <div class="cmp-stat-row"><span>Combat Level</span><span class="val ${cb === maxCB ? 'win' : ''}">${cb}</span></div>
+        <div class="cmp-stat-row"><span>Entries Unlockable</span><span class="val ${unl === maxUnl ? 'win' : ''}">${unl}</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Tier unlock bars ──────────────────────────────────────
+  function tierSection() {
+    return TIERS.map(t => {
+      const total = SPINE_DATA.filter(i => i.order >= t.minOrder && i.order <= t.maxOrder).length;
+      const bars = loaded.map((p, i) => {
+        const u = cmpUnlockCount(p.stats, t.minOrder, t.maxOrder);
+        const pct = total > 0 ? Math.round(u / total * 100) : 0;
+        const col = CMP_COLORS[i % CMP_COLORS.length];
+        return `<div class="cmp-tier-bar-row">
+          <span class="pname" title="${p.rsn}">${p.rsn}</span>
+          <div class="cmp-tier-bar-track"><div class="cmp-tier-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+          <span class="pct">${pct}%</span>
+        </div>`;
+      }).join('');
+      return `<div class="cmp-tier-card">
+        <div class="cmp-tier-label">${t.label}</div>
+        <div class="cmp-tier-bars">${bars}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Skill grid (OSRS order) ───────────────────────────────
+  function skillGrid() {
+    // Build icon lookup from SKILLS array
+    const iconMap = {};
+    SKILLS.forEach(sk => { iconMap[sk.name] = sk.icon; });
+
+    return CMP_SKILL_ORDER.map(skillName => {
+      const key = skillName.toLowerCase();
+      const vals = loaded.map(p => p.stats[key] || 1);
+      const maxVal = Math.max(...vals);
+      const minVal = Math.min(...vals);
+      const valSpans = vals.map((v, i) => {
+        const cls = vals.length > 1 ? (v === maxVal && maxVal !== minVal ? 'win' : v === minVal && maxVal !== minVal ? 'lose' : 'tie') : 'tie';
+        return (i > 0 ? '<span class="sdiv">·</span>' : '') +
+               `<span class="sv ${cls}">${v}</span>`;
+      }).join('');
+      return `<div class="cmp-skill-row">
+        <img src="${iconMap[skillName] || ''}" alt="">
+        <span class="sname">${skillName}</span>
+        <div class="cmp-skill-vals">${valSpans}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Boss KC table ─────────────────────────────────────────
+  function kcTable() {
+    const bosses = SPINE_DATA.filter(i => i.type === 'Boss' || i.entryType === 'boss');
+    const rows = bosses.filter(i => loaded.some(p => (p.kc[i.order] || 0) > 0));
+    if (!rows.length) return '<p style="color:var(--text-muted);font-size:0.88rem;font-style:italic;padding:0.5rem 0">No boss KC found for any loaded player.</p>';
+    rows.sort((x, y) => {
+      const sumY = loaded.reduce((s, p) => s + (p.kc[y.order] || 0), 0);
+      const sumX = loaded.reduce((s, p) => s + (p.kc[x.order] || 0), 0);
+      return sumY - sumX;
+    });
+    const header = `<tr><th>Boss</th>${loaded.map(p => `<th>${p.rsn}</th>`).join('')}</tr>`;
+    const body = rows.map(i => {
+      const vals = loaded.map(p => p.kc[i.order] || 0);
+      const maxKC = Math.max(...vals);
+      const cells = vals.map((v, idx) => {
+        const cls = v === maxKC && maxKC > 0 && vals.filter(x => x === maxKC).length < vals.length ? 'win'
+                  : v < maxKC && maxKC > 0 && v > 0 ? 'lose' : '';
+        return `<td class="${cls}">${v > 0 ? v.toLocaleString() : '—'}</td>`;
+      }).join('');
+      return `<tr><td>${i.name}</td>${cells}</tr>`;
+    }).join('');
+    return `<div style="overflow-x:auto"><table class="cmp-kc-table"><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  // ── Coming Soon section (plugin-gated) ────────────────────
+  function comingSoonSection(title, ghostRowCount) {
+    const ghostRows = Array(ghostRowCount).fill('<div class="cmp-ghost-row"></div>').join('');
+    return `<div class="cmp-coming-soon-wrap">
+      <div class="cmp-ghost-rows">${ghostRows}</div>
+      <div class="cmp-coming-soon-overlay">
+        <span class="cs-icon">🔌</span>
+        <span class="cs-title">${title}</span>
+        <span class="cs-sub">Requires the ProgressScape RuneLite plugin — coming once the plugin hub submission is approved.</span>
+      </div>
+    </div>`;
+  }
+
+  // ── Legend ────────────────────────────────────────────────
+  const legend = loaded.map((p, i) =>
+    `<span style="display:inline-flex;align-items:center;gap:0.3rem;margin-right:0.75rem">
+      <span style="width:10px;height:10px;border-radius:2px;background:${CMP_COLORS[i % CMP_COLORS.length]};display:inline-block;flex-shrink:0"></span>
+      <span style="font-size:0.82rem;color:var(--text-muted)">${p.rsn}</span>
+    </span>`
+  ).join('');
+
+  el.innerHTML = `
+    <div style="margin-bottom:1rem">${legend}</div>
+
+    <div class="cmp-section-title">Overview</div>
+    <div class="cmp-summary">${summaryCards()}</div>
+
+    <div class="cmp-section-title">Content Unlockable by Tier
+      <span style="font-weight:400;letter-spacing:0;text-transform:none;font-family:'Source Sans 3',sans-serif;font-size:0.78rem;color:var(--stone-lighter);margin-left:0.5rem">(skill reqs met, excl. QP &amp; quest prereqs)</span>
+    </div>
+    <div class="cmp-tier-grid">${tierSection()}</div>
+
+    <div class="cmp-section-title">Skills</div>
+    <div class="cmp-skills">${skillGrid()}</div>
+
+    <div class="cmp-section-title">Boss Kill Count</div>
+    ${kcTable()}
+
+    <div class="cmp-section-title">Quest Completions</div>
+    ${comingSoonSection('Quest Completion Data', 6)}
+
+    <div class="cmp-section-title">Achievement Diaries</div>
+    ${comingSoonSection('Diary Completion Data', 4)}
+
+    <div class="cmp-section-title">Collection Log</div>
+    ${comingSoonSection('Collection Log Data', 5)}
+  `;
+}
+
+// Hook into showPage
+
+// ============================================================
+// BOSS TRACKER
+// ============================================================
+
+var btActiveFilter = 'all';
+
+function setBtFilter(filter, el) {
+  btActiveFilter = filter;
+  document.querySelectorAll('[data-btfilter]').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.btfilter === filter);
+  });
+  renderBossTracker();
+}
+
+function renderBossTracker() {
+  var grid = document.getElementById('bt-grid');
+  var summaryEl = document.getElementById('bt-summary');
+  if (!grid) return;
+
+  var search = (document.getElementById('bt-search') || {}).value || '';
+  search = search.toLowerCase().trim();
+
+  var bosses = SPINE_DATA.filter(function(item) {
+    if (item.type !== 'Boss' && item.entryType !== 'boss') return false;
+    if (btActiveFilter !== 'all') {
+      var tierClass = (item.bossTier || '').toLowerCase().replace(' tier', '').trim();
+      if (tierClass !== btActiveFilter) return false;
+    }
+    if (search && item.name.toLowerCase().indexOf(search) === -1) return false;
+    return true;
+  });
+
+  var totalKC   = bosses.reduce(function(s, b) { return s + (bossKC[b.order] || 0); }, 0);
+  var doneCount = bosses.filter(function(b) { return completedSet.has(b.order); }).length;
+  if (summaryEl) {
+    summaryEl.textContent = bosses.length + ' bosses  ·  ' +
+      doneCount + ' completed  ·  ' +
+      totalKC.toLocaleString() + ' total KC';
+  }
+
+  if (!bosses.length) {
+    grid.innerHTML = '<div class="bt-empty">No bosses match your filters.</div>';
+    return;
+  }
+
+  grid.innerHTML = bosses.map(function(boss) {
+    return buildBossCardHtml(boss);
+  }).join('');
+}
+
+function buildBossCardHtml(boss) {
+  var drops = boss.notableDrops || [];
+  var totalDrops = drops.length;
+  var doneDrops = drops.filter(function(d) {
+    return !!obtainedDrops[boss.order + '-' + d[0]];
+  }).length;
+  var allDone = totalDrops > 0 && doneDrops === totalDrops;
+  var kc = bossKC[boss.order] || 0;
+
+  var tierClass = (boss.bossTier || '').toLowerCase().replace(' tier', '').trim();
+  var tierHtml = boss.bossTier
+    ? '<span class="boss-tier tier-' + tierClass + '" style="font-size:0.68rem">' + boss.bossTier + '</span>'
+    : '';
+
+  var cardClass = 'boss-card' + (allDone ? ' bc-all-done' : '');
+
+  var pct = totalDrops > 0 ? Math.round(doneDrops / totalDrops * 100) : 0;
+  var progressHtml = totalDrops > 0
+    ? '<div class="bc-progress-row">' +
+        '<div class="bc-progress-track">' +
+          '<div class="bc-progress-fill' + (allDone ? ' done' : '') +
+            '" style="width:' + pct + '%"></div>' +
+        '</div>' +
+        '<span class="bc-progress-label">' + doneDrops + ' / ' + totalDrops + ' drops</span>' +
+      '</div>'
+    : '';
+
+  var dropsHtml = drops.map(function(drop) {
+    var dropName = drop[0], dropRate = drop[1], itemId = drop[2];
+    var dropKey = boss.order + '-' + dropName;
+    var done = !!obtainedDrops[dropKey];
+    var price = gePrice(itemId, 'short');
+    var priceHtml = price ? '<span class="bc-drop-price">' + price + '</span>' : '';
+    return '<div class="bc-drop-row' + (done ? ' bc-drop-done' : '') + '"' +
+      ' onclick="toggleDropDone(\'' + dropKey.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + '\', ' + boss.order + ', null)">' +
+      '<div class="bc-drop-check">' + (done ? '✓' : '') + '</div>' +
+      '<span class="bc-drop-name" title="' + dropName.replace(/"/g, '&quot;') + '">' + dropName + '</span>' +
+      '<span class="bc-drop-rate">' + dropRate + '</span>' +
+      priceHtml +
+      '</div>';
+  }).join('');
+
+  return '<div class="' + cardClass + '" id="bc-' + boss.order + '">' +
+    '<div class="bc-header">' +
+      '<span class="bc-name" onclick="openDetail(' + boss.order + ')" title="Open details">' +
+        boss.name + (tierHtml ? '&ensp;' + tierHtml : '') +
+      '</span>' +
+      '<div class="bc-kc-wrap">' +
+        '<span class="bc-kc-label">KC</span>' +
+        '<input class="bc-kc-input" type="number" min="0" value="' + kc + '"' +
+          ' onchange="updateKC(' + boss.order + ', this.value)"' +
+          ' oninput="updateKC(' + boss.order + ', this.value)"' +
+          ' onclick="event.stopPropagation()">' +
+      '</div>' +
+    '</div>' +
+    progressHtml +
+    (dropsHtml ? '<div class="bc-drops">' + dropsHtml + '</div>' : '') +
+    '</div>';
+}
+
+function refreshBossCard(order) {
+  var el = document.getElementById('bc-' + order);
+  if (!el) return;
+  var boss = SPINE_DATA.find(function(d) { return d.order === order; });
+  if (!boss) return;
+  var tmp = document.createElement('div');
+  tmp.innerHTML = buildBossCardHtml(boss);
+  el.parentNode.replaceChild(tmp.firstChild, el);
+  // Update summary counts
+  var summaryEl = document.getElementById('bt-summary');
+  if (summaryEl) {
+    var allBosses = SPINE_DATA.filter(function(i) { return i.type === 'Boss' || i.entryType === 'boss'; });
+    var doneCount = allBosses.filter(function(b) { return completedSet.has(b.order); }).length;
+    var totalKC   = allBosses.reduce(function(s, b) { return s + (bossKC[b.order] || 0); }, 0);
+    summaryEl.textContent = allBosses.length + ' bosses  ·  ' +
+      doneCount + ' completed  ·  ' +
+      totalKC.toLocaleString() + ' total KC';
+  }
+}
+
 (function() {
   var hash = window.location.hash;
   if (hash && hash.startsWith('#clog')) {
@@ -5414,6 +7004,10 @@ function toggleClogSidebar() {
     window.addEventListener('load', function() { showPage('stats'); });
   } else if (hash === '#planner') {
     window.addEventListener('load', function() { showPage('planner'); });
+  } else if (hash === '#compare') {
+    window.addEventListener('load', function() { showPage('compare'); });
+  } else if (hash === '#bosses') {
+    window.addEventListener('load', function() { showPage('bosses'); });
   }
 })();
 
@@ -5423,7 +7017,6 @@ function toggleClogSidebar() {
 <!-- ===== SPLASH / WELCOME MODAL ===== -->
 <div id="splash-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,8,4,0.92);align-items:center;justify-content:center;padding:24px 16px;">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
     #splash-modal * { box-sizing: border-box; margin: 0; padding: 0; }
     #splash-modal {
       width: 100%; max-width: 680px;
