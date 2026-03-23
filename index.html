@@ -1074,13 +1074,15 @@
       display: flex;
       justify-content: center;
       gap: 0.2rem;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
     }
     .nav-btn {
-      font-size: 0.68rem;
-      padding: 0.3rem 0.5rem;
-      flex: 1;
+      font-size: 0.65rem;
+      padding: 0.28rem 0.45rem;
+      flex: 1 1 auto;
+      min-width: 0;
       text-align: center;
+      white-space: nowrap;
     }
     .lookup-inner { gap: 0.75rem; }
     .lookup-group input { width: 100%; }
@@ -1182,7 +1184,8 @@
       padding: 0 0 2rem;
     }
 
-    tbody tr {
+    #main-table tbody tr,
+    .planner-table tbody tr {
       background: var(--stone-mid);
       border: 1px solid rgba(200,168,75,0.12);
       border-radius: 6px;
@@ -1198,19 +1201,23 @@
       width: 100%;
     }
 
-    tbody tr:hover { border-color: rgba(200,168,75,0.3); background: rgba(61,53,38,0.9); }
-    tbody tr.completed { background: rgba(42,107,42,0.15); border-color: rgba(42,107,42,0.3); }
-    tbody tr.row-locked { opacity: 0.5; }
+    #main-table tbody tr:hover,
+    .planner-table tbody tr:hover { border-color: rgba(200,168,75,0.3); background: rgba(61,53,38,0.9); }
+    #main-table tbody tr.completed,
+    .planner-table tbody tr.completed { background: rgba(42,107,42,0.15); border-color: rgba(42,107,42,0.3); }
+    #main-table tbody tr.row-locked { opacity: 0.5; }
 
     /* Checkbox — col 1, spans both rows */
-    tbody tr td:nth-child(1) {
+    #main-table tbody tr td:nth-child(1),
+    .planner-table tbody tr td:nth-child(1) {
       grid-column: 1; grid-row: 1 / 3;
       display: flex; align-items: center; justify-content: center;
       padding: 0.6rem 0.4rem; width: auto;
     }
 
     /* Order number — col 2 row 1 */
-    tbody tr td:nth-child(2) {
+    #main-table tbody tr td:nth-child(2),
+    .planner-table tbody tr td:nth-child(2) {
       grid-column: 2; grid-row: 1;
       padding: 0.5rem 0.5rem 0.1rem;
       font-size: 0.68rem; color: var(--text-muted);
@@ -1218,7 +1225,8 @@
     }
 
     /* Name + card-detail — col 2 row 2 */
-    tbody tr td:nth-child(3) {
+    #main-table tbody tr td:nth-child(3),
+    .planner-table tbody tr td:nth-child(3) {
       grid-column: 2; grid-row: 2;
       padding: 0 0.5rem 0.5rem;
       font-size: 0.9rem; font-weight: 600; color: var(--parchment);
@@ -1227,32 +1235,42 @@
     }
 
     /* Type badge — col 3, spans both rows */
-    tbody tr td:nth-child(4) {
+    #main-table tbody tr td:nth-child(4),
+    .planner-table tbody tr td:nth-child(4) {
       grid-column: 3; grid-row: 1 / 3;
       display: flex; flex-direction: column;
       align-items: flex-end; justify-content: flex-start;
       padding: 0.5rem 0.5rem 0.5rem 0.2rem;
       gap: 0.25rem; overflow: hidden; min-width: 0;
     }
-    tbody tr td:nth-child(4) .type-badge {
+    #main-table tbody tr td:nth-child(4) .type-badge,
+    .planner-table tbody tr td:nth-child(4) .type-badge {
       font-size: 0.58rem; padding: 0.15rem 0.35rem;
       white-space: nowrap; max-width: 88px;
       overflow: hidden; text-overflow: ellipsis;
     }
-    tbody tr td:nth-child(4) .boss-tier {
+    #main-table tbody tr td:nth-child(4) .boss-tier,
+    .planner-table tbody tr td:nth-child(4) .boss-tier {
       font-size: 0.55rem; white-space: nowrap;
       text-align: right; display: block;
     }
 
     /* Hide everything else */
-    tbody tr td:nth-child(5),
-    tbody tr td:nth-child(6),
-    tbody tr td:nth-child(7),
-    tbody tr td:nth-child(8),
-    tbody tr td:nth-child(9),
-    tbody tr td:nth-child(10) { display: none; }
+    #main-table tbody tr td:nth-child(5),
+    #main-table tbody tr td:nth-child(6),
+    #main-table tbody tr td:nth-child(7),
+    #main-table tbody tr td:nth-child(8),
+    #main-table tbody tr td:nth-child(9),
+    #main-table tbody tr td:nth-child(10),
+    .planner-table tbody tr td:nth-child(5),
+    .planner-table tbody tr td:nth-child(6),
+    .planner-table tbody tr td:nth-child(7),
+    .planner-table tbody tr td:nth-child(8),
+    .planner-table tbody tr td:nth-child(9),
+    .planner-table tbody tr td:nth-child(10) { display: none; }
 
-    tbody tr.completed td:nth-child(3) { color: #6fc96f; }
+    #main-table tbody tr.completed td:nth-child(3),
+    .planner-table tbody tr.completed td:nth-child(3) { color: #6fc96f; }
 
     /* Progress bar padding */
     .progress-bar-wrap {
@@ -1693,52 +1711,12 @@
     background: rgba(200,168,75,0.15);
   }
 
-  /* ===== ORACLE LAUNCHER ===== */
-  #oracle-launcher {
+  /* ===== FLOATING RANDOM PANEL ===== */
+  .floating-rand-trigger {
     position: fixed;
     bottom: 1.25rem;
     right: 1.25rem;
-    z-index: 302;
-    background: linear-gradient(135deg, #2a1f0a, var(--stone-mid));
-    border: 1px solid var(--gold-dark);
-    border-radius: 8px;
-    color: var(--gold);
-    font-family: 'Cinzel', serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    padding: 0.55rem 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.6);
-    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-    user-select: none;
-    white-space: nowrap;
-  }
-
-  #oracle-launcher:hover {
-    border-color: var(--gold);
-    background: linear-gradient(135deg, #3a2a0e, #4a3c28);
-    box-shadow: 0 4px 24px rgba(200,168,75,0.25);
-  }
-
-  #oracle-launcher-icon {
-    font-size: 1rem;
-    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-    display: inline-block;
-  }
-
-  #oracle-launcher.open #oracle-launcher-icon {
-    transform: rotate(135deg);
-  }
-
-  /* ===== ORACLE TRIGGER BUTTONS ===== */
-  .floating-rand-trigger {
-    position: fixed;
-    right: 1.25rem;
-    z-index: 301;
+    z-index: 300;
     background: linear-gradient(135deg, #2a1f0a, var(--stone-mid));
     border: 1px solid var(--gold-dark);
     border-radius: 8px;
@@ -1753,25 +1731,10 @@
     align-items: center;
     gap: 0.4rem;
     box-shadow: 0 4px 18px rgba(0,0,0,0.6);
+    transition: all 0.15s;
     user-select: none;
     white-space: nowrap;
-    /* collapsed state */
-    bottom: 1.25rem;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(0) scale(0.9);
-    transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
-                border-color 0.15s, background 0.15s, box-shadow 0.15s;
   }
-
-  .floating-rand-trigger.oracle-visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  #trigger-task.oracle-visible   { bottom: 4rem;   transform: translateY(0) scale(1); }
-  #trigger-combat.oracle-visible { bottom: 6.75rem; transform: translateY(0) scale(1); }
-  #trigger-clog.oracle-visible   { bottom: 9.5rem;  transform: translateY(0) scale(1); }
 
   .floating-rand-trigger:hover {
     border-color: var(--gold);
@@ -1783,7 +1746,7 @@
     position: fixed;
     bottom: 4.5rem;
     right: 1.25rem;
-    z-index: 310;
+    z-index: 299;
     width: 320px;
     max-width: calc(100vw - 2.5rem);
     max-height: calc(100vh - 6rem);
@@ -1973,79 +1936,16 @@
     text-overflow: ellipsis;
   }
 
-  /* ===== CA TIER BADGES (oracle) ===== */
-  .ca-tier-badge {
-    display: inline-block;
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    padding: 0.1rem 0.45rem;
-    border-radius: 3px;
-    text-transform: uppercase;
-  }
-  .ca-tier-easy        { background: rgba(61,158,61,0.18);  color: #5abf5a; border: 1px solid rgba(61,158,61,0.4); }
-  .ca-tier-medium      { background: rgba(74,127,200,0.18); color: #7aacee; border: 1px solid rgba(74,127,200,0.4); }
-  .ca-tier-hard        { background: rgba(200,168,75,0.18); color: #e8c96a; border: 1px solid rgba(200,168,75,0.4); }
-  .ca-tier-elite       { background: rgba(160,80,200,0.18); color: #c87ae8; border: 1px solid rgba(160,80,200,0.4); }
-  .ca-tier-master      { background: rgba(200,80,80,0.18);  color: #e87a7a; border: 1px solid rgba(200,80,80,0.4); }
-  .ca-tier-grandmaster { background: rgba(200,140,40,0.25); color: #f0a040; border: 1px solid rgba(200,140,40,0.5); }
-
-  .ca-type-badge {
-    display: inline-block;
-    font-size: 0.65rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
-    background: rgba(255,255,255,0.06);
-    color: var(--text-muted);
-    border: 1px solid var(--stone-lighter);
-    margin-left: 0.3rem;
-  }
-
-  .frand-desc {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    line-height: 1.4;
-    margin-top: 0.4rem;
-  }
-
-  .frand-source {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    color: var(--stone-lighter);
-    margin-top: 0.25rem;
-    letter-spacing: 0.03em;
-  }
-
-  .frand-clog-progress {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-top: 0.3rem;
-  }
-
-  .frand-clog-progress span {
-    color: var(--gold);
-    font-weight: 600;
-  }
-
   @media (max-width: 500px) {
     .floating-rand-panel {
       right: 0.75rem;
       bottom: 4.2rem;
       width: calc(100vw - 1.5rem);
     }
-    #oracle-launcher {
+    .floating-rand-trigger {
       right: 0.75rem;
       bottom: 0.75rem;
     }
-    .floating-rand-trigger {
-      right: 0.75rem;
-    }
-    #trigger-task.oracle-visible   { bottom: 3.75rem; }
-    #trigger-combat.oracle-visible { bottom: 6.5rem; }
-    #trigger-clog.oracle-visible   { bottom: 9.25rem; }
     .back-to-top {
       right: 0.75rem;
       bottom: 5rem;
@@ -2942,14 +2842,24 @@
   .cmp-skill-row .sdiv   { color: var(--stone-lighter); font-size: 0.7rem; }
 
   /* KC / plugin tables */
+  .cmp-kc-wrap {
+    background: var(--stone-mid);
+    border: 1px solid var(--stone-lighter);
+    border-radius: 4px;
+    overflow: hidden;
+  }
   .cmp-kc-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.88rem;
+    table-layout: fixed;
+  }
+  .cmp-kc-table thead tr {
+    background: var(--stone);
   }
   .cmp-kc-table th {
     font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--text-muted);
     letter-spacing: 0.06em;
@@ -2958,13 +2868,32 @@
     padding: 0.45rem 0.75rem;
     border-bottom: 1px solid var(--stone-lighter);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    line-height: 1.2;
   }
+  .cmp-kc-table th:first-child { width: 45%; }
   .cmp-kc-table th:not(:first-child) { text-align: right; }
+  .cmp-kc-table tbody tr {
+    background: var(--stone-mid);
+  }
+  .cmp-kc-table tbody tr:nth-child(even) {
+    background: rgba(0,0,0,0.15);
+  }
+  .cmp-kc-table tbody tr:hover {
+    background: var(--stone-light);
+  }
   .cmp-kc-table td {
     padding: 0.38rem 0.75rem;
-    border-bottom: 1px solid rgba(107,95,72,0.2);
+    border-bottom: 1px solid rgba(107,95,72,0.15);
     color: var(--text-muted);
     font-size: 0.88rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+    line-height: 1.2;
   }
   .cmp-kc-table td:not(:first-child) {
     text-align: right;
@@ -2972,6 +2901,9 @@
     font-size: 0.82rem;
     font-weight: 600;
     color: var(--text-light);
+    white-space: nowrap;
+    vertical-align: middle;
+    line-height: 1.2;
   }
   .cmp-kc-table td.win  { color: var(--green-light); }
   .cmp-kc-table td.lose { color: #e07070; }
@@ -3022,6 +2954,16 @@
     border: 1px solid var(--stone-lighter);
   }
 
+  /* Undo the global display:block applied to all tables in the mobile card view query */
+  @media (max-width: 768px) {
+    .cmp-kc-table               { display: table !important; }
+    .cmp-kc-table thead         { display: table-header-group !important; }
+    .cmp-kc-table tbody         { display: table-row-group !important; }
+    .cmp-kc-table tr            { display: table-row !important; border: none !important; border-radius: 0 !important; margin: 0 !important; padding: 0 !important; width: auto !important; grid-template-columns: unset !important; }
+    .cmp-kc-table th,
+    .cmp-kc-table td            { display: table-cell !important; }
+  }
+
   @media (max-width: 900px) {
     .cmp-skills { grid-template-columns: repeat(2, 1fr); }
   }
@@ -3029,7 +2971,8 @@
     .cmp-slot { max-width: 100%; flex-basis: 100%; }
     .cmp-skills { grid-template-columns: 1fr; }
     .cmp-tier-grid { grid-template-columns: 1fr; }
-    .cmp-kc-table th, .cmp-kc-table td { padding: 0.35rem 0.5rem; font-size: 0.8rem; }
+    .cmp-kc-table th, .cmp-kc-table td { padding: 0.3rem 0.4rem; font-size: 0.75rem; }
+    .cmp-kc-table th:first-child { width: 40%; }
   }
 
   /* ===== MILESTONE BADGES ===== */
@@ -3102,6 +3045,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 1.25rem 1.25rem 3rem;
+    overflow-x: hidden;
   }
 
   .boss-tracker-toolbar {
@@ -3135,7 +3079,7 @@
   /* Boss cards grid */
   .boss-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
     gap: 0.75rem;
   }
 
@@ -3145,6 +3089,8 @@
     border-radius: 4px;
     padding: 0.85rem 1rem;
     transition: border-color 0.2s;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .boss-card:hover { border-color: var(--stone-lighter); }
   .boss-card.bc-all-done {
@@ -3296,11 +3242,357 @@
   }
 
   @media (max-width: 600px) {
-    .boss-cards-grid { grid-template-columns: 1fr; }
+    .boss-tracker-page { padding: 1rem 0.75rem 3rem; }
+    .boss-cards-grid { grid-template-columns: 1fr; width: 100%; }
     .boss-tracker-search { width: 100%; }
     .bt-summary { margin-left: 0; }
+    .bc-kc-input { width: 60px; font-size: 0.8rem; }
   }
 
+  @media (max-width: 360px) {
+    .boss-tracker-page { padding: 0.75rem 0.5rem 3rem; }
+    .boss-cards-grid { grid-template-columns: 1fr; width: 100%; }
+    .boss-card { padding: 0.6rem 0.7rem; min-width: 0; box-sizing: border-box; }
+    .bc-header { gap: 0.3rem; }
+    .bc-name { font-size: 0.8rem; }
+    .bc-kc-wrap { gap: 0.25rem; }
+    .bc-kc-input { width: 52px; font-size: 0.75rem; padding: 0.2rem 0.25rem; }
+  }
+
+
+  /* ===== COMBAT ACHIEVEMENTS PAGE ===== */
+  .ca-page { padding: 1.5rem 2rem 4rem; max-width: 1100px; margin: 0 auto; }
+
+  .ca-overview-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; padding: 0.5rem 0; margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--stone-lighter);
+    user-select: none;
+  }
+  .ca-overview-toggle h2 {
+    font-family: 'Cinzel', serif; font-size: 1.15rem;
+    color: var(--gold); letter-spacing: 0.04em;
+  }
+  .ca-overview-toggle .ca-pts-summary {
+    font-size: 0.82rem; color: var(--text-muted);
+  }
+  .ca-overview-toggle .ca-pts-summary strong { color: var(--gold); }
+  .ca-chevron {
+    font-size: 0.75rem; color: var(--text-muted);
+    transition: transform 0.2s; margin-left: 0.75rem;
+  }
+  .ca-chevron.collapsed { transform: rotate(-90deg); }
+
+  .ca-overview-panel { margin-bottom: 1.25rem; }
+
+  /* Reward bar */
+  .ca-reward-bar-wrap {
+    background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+    border-radius: 4px; padding: 0.85rem 1rem; margin-bottom: 1rem;
+  }
+  .ca-reward-bar-labels {
+    display: flex; justify-content: space-between;
+    font-size: 0.72rem; color: var(--text-muted);
+    font-family: 'Cinzel', serif; margin-bottom: 0.5rem;
+  }
+  .ca-reward-bar-track {
+    position: relative; height: 10px;
+    background: var(--stone); border-radius: 3px;
+    border: 1px solid var(--stone-lighter); margin-bottom: 0.65rem;
+    overflow: visible;
+  }
+  .ca-reward-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    transition: width 0.4s;
+  }
+  .ca-reward-milestones {
+    position: relative; height: 36px; margin-top: 4px;
+  }
+  .ca-milestone {
+    position: absolute; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    transform: translateX(-50%);
+  }
+  .ca-m-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--stone-lighter); border: 1px solid var(--stone-lighter);
+  }
+  .ca-m-dot.reached { background: var(--gold); border-color: var(--gold); }
+  .ca-m-dot.next { background: var(--stone); border: 2px solid var(--gold); }
+  .ca-m-label {
+    font-size: 0.62rem; color: var(--stone-lighter);
+    font-family: 'Cinzel', serif; text-align: center; line-height: 1.3;
+  }
+  .ca-m-label.reached { color: var(--text-muted); }
+  .ca-m-label.next { color: var(--gold); }
+
+  /* Two-col overview */
+  .ca-overview-cols {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+
+  /* Tier grid */
+  .ca-tier-grid-title {
+    font-family: 'Cinzel', serif; font-size: 0.7rem;
+    color: var(--gold); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 0.6rem; text-align: center;
+  }
+  .ca-tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .ca-tier-card {
+    background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+    border-radius: 4px; padding: 0.6rem 0.75rem; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .ca-tier-card:hover { border-color: var(--gold-dark); }
+  .ca-tier-card.active { border-color: var(--gold); background: rgba(200,168,75,0.08); }
+  .ca-tier-card-header {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 3px;
+  }
+  .ca-tier-name { font-family: 'Cinzel', serif; font-size: 0.75rem; font-weight: 700; }
+  .ca-tier-name.easy   { color: #7ab840; }
+  .ca-tier-name.medium { color: #e0a020; }
+  .ca-tier-name.hard   { color: #e06820; }
+  .ca-tier-name.elite  { color: #9060d0; }
+  .ca-tier-name.master { color: #c84040; }
+  .ca-tier-name.gm     { color: var(--gold); }
+  .ca-tier-pts { font-size: 0.62rem; color: var(--text-muted); font-family: 'Cinzel', serif; }
+  .ca-tier-counts { font-size: 0.82rem; color: var(--text-light); font-family: 'Cinzel', serif; }
+  .ca-tier-counts span { color: var(--text-muted); font-size: 0.72rem; }
+  .ca-tier-bar-track {
+    height: 3px; background: var(--stone); border-radius: 2px; margin-top: 5px;
+  }
+  .ca-tier-bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+  .fill-easy   { background: #7ab840; }
+  .fill-medium { background: #e0a020; }
+  .fill-hard   { background: #e06820; }
+  .fill-elite  { background: #9060d0; }
+  .fill-master { background: #c84040; }
+  .fill-gm     { background: var(--gold); }
+
+  /* Combat profile */
+  .ca-profile-title {
+    font-family: 'Cinzel', serif; font-size: 0.7rem;
+    color: var(--gold); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 0.6rem; text-align: center;
+  }
+  .ca-profile-card {
+    background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+    border-radius: 4px; padding: 0.75rem 1rem;
+  }
+  .ca-profile-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.38rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .ca-profile-row:last-child { border-bottom: none; }
+  .ca-profile-key { font-size: 0.78rem; color: var(--text-muted); }
+  .ca-profile-val { font-size: 0.82rem; color: var(--text-light); font-weight: 600; text-align: right; }
+  .ca-profile-val.muted { color: var(--stone-lighter); font-style: italic; font-weight: 400; }
+  .ca-profile-sub { font-size: 0.68rem; color: var(--text-muted); }
+
+  /* Tier tabs */
+  .ca-tab-bar {
+    display: flex; gap: 0.3rem; margin-bottom: 0.75rem; flex-wrap: wrap;
+  }
+  .ca-tab {
+    background: none; border: 1px solid var(--stone-lighter);
+    color: var(--text-muted); font-family: 'Cinzel', serif;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+    padding: 0.35rem 0.9rem; cursor: pointer; border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .ca-tab:hover { border-color: var(--gold-dark); color: var(--gold-light); }
+  .ca-tab.active { border-color: var(--gold); color: var(--gold); background: rgba(200,168,75,0.1); }
+  .ca-tab .ca-tab-n { font-size: 0.62rem; opacity: 0.7; margin-left: 3px; }
+
+  /* Filters */
+  .ca-filters-row {
+    display: flex; gap: 0.5rem; margin-bottom: 0.85rem; flex-wrap: wrap; align-items: center;
+  }
+  .ca-search {
+    flex: 1; min-width: 160px;
+    background: var(--stone); border: 1px solid var(--stone-lighter);
+    border-radius: 3px; color: var(--text-light);
+    font-family: 'Source Sans 3', sans-serif; font-size: 0.88rem;
+    padding: 0.4rem 0.75rem; outline: none;
+  }
+  .ca-search:focus { border-color: var(--gold-dark); }
+  .ca-search::placeholder { color: var(--stone-lighter); }
+  .ca-filter-select {
+    background: var(--stone); border: 1px solid var(--stone-lighter);
+    border-radius: 3px; color: var(--text-muted);
+    font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+    padding: 0.4rem 0.6rem; outline: none; cursor: pointer;
+  }
+  .ca-filter-select:focus { border-color: var(--gold-dark); }
+  .ca-hide-done-btn {
+    background: none; border: 1px solid var(--stone-lighter);
+    border-radius: 3px; color: var(--text-muted);
+    font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.04em;
+    padding: 0.4rem 0.75rem; cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .ca-hide-done-btn.active {
+    border-color: #5aae5a; color: #6fc96f; background: rgba(42,80,42,0.15);
+  }
+  .ca-tier-summary {
+    font-size: 0.75rem; color: var(--text-muted);
+    margin-bottom: 0.75rem; display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+  .ca-tier-summary strong { color: var(--text-light); }
+
+  /* Boss group */
+  .ca-boss-group { margin-bottom: 0.6rem; }
+  .ca-boss-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+    border-radius: 3px; padding: 0.45rem 0.75rem; margin-bottom: 2px;
+  }
+  .ca-boss-name {
+    font-family: 'Cinzel', serif; font-size: 0.82rem;
+    color: var(--text-light); font-weight: 600;
+  }
+  .ca-boss-right { display: flex; align-items: center; gap: 0.5rem; }
+  .ca-boss-mini-bar {
+    width: 48px; height: 3px;
+    background: var(--stone); border-radius: 2px; overflow: hidden;
+  }
+  .ca-boss-mini-fill { height: 100%; border-radius: 2px; background: var(--green-light); }
+  .ca-boss-mini-fill.done { background: #5aae5a; }
+  .ca-boss-count { font-size: 0.68rem; color: var(--text-muted); font-family: 'Cinzel', serif; }
+  .ca-boss-count.done { color: #6fc96f; }
+
+  /* Task rows */
+  .ca-task-row {
+    display: flex; align-items: flex-start; gap: 0.55rem;
+    padding: 0.42rem 0.75rem; border-radius: 3px; transition: background 0.1s;
+  }
+  .ca-task-row:hover { background: rgba(255,255,255,0.03); }
+  .ca-task-row.done { background: rgba(42,107,42,0.18); }
+  .ca-task-row.done:hover { background: rgba(42,107,42,0.26); }
+  .ca-task-row.done .ca-task-name { color: #6fc96f; text-decoration: none; }
+  .ca-task-row.done .ca-task-desc { color: rgba(111,201,111,0.6); }
+  .ca-task-row.done .ca-task-check { background: rgba(42,80,42,0.6); border-color: rgba(90,174,90,0.5); }
+  .ca-task-row.done .ca-type-badge { opacity: 0.5; }
+  .ca-task-row.done .ca-task-tier-badge { opacity: 0.5; }
+  .ca-task-check {
+    width: 13px; height: 13px; border: 1px solid var(--stone-lighter);
+    border-radius: 2px; background: var(--stone); flex-shrink: 0;
+    margin-top: 3px; cursor: pointer; transition: all 0.1s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.55rem; color: #5aae5a;
+  }
+  .ca-task-check.done {
+    background: rgba(42,80,42,0.6); border-color: rgba(90,174,90,0.5);
+  }
+  .ca-task-info { flex: 1; min-width: 0; }
+  .ca-task-name {
+    font-size: 0.85rem; color: var(--text-light); font-weight: 600;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .ca-task-name.done { color: #6fc96f; text-decoration: none; }
+  .ca-task-desc {
+    font-size: 0.77rem; color: var(--text-muted); margin-top: 1px;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .ca-task-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+  .ca-type-badge {
+    font-size: 0.65rem; padding: 0.15rem 0.45rem; border-radius: 10px;
+    white-space: nowrap; font-family: 'Source Sans 3', sans-serif;
+    width: 80px; text-align: center; display: inline-block;
+  }
+  .ca-task-tier-badge {
+    font-size: 0.62rem; padding: 0.15rem 0.45rem; border-radius: 10px;
+    white-space: nowrap; font-family: 'Cinzel', serif; font-weight: 600;
+    border: 1px solid currentColor; opacity: 0.8;
+    min-width: 78px; text-align: center; display: inline-block;
+  }
+  .ca-task-tier-badge.easy   { color: #7ab840; }
+  .ca-task-tier-badge.medium { color: #e0a020; }
+  .ca-task-tier-badge.hard   { color: #e06820; }
+  .ca-task-tier-badge.elite  { color: #9060d0; }
+  .ca-task-tier-badge.master { color: #c84040; }
+  .ca-task-tier-badge.gm     { color: var(--gold); }
+
+  .ca-type-kc       { background: rgba(26,58,107,0.3); color: #7ab0f0; }
+  .ca-type-mech     { background: rgba(120,80,200,0.2); color: #b080f0; }
+  .ca-type-speed    { background: rgba(180,120,30,0.2); color: #e8b848; }
+  .ca-type-restrict { background: rgba(139,32,32,0.2); color: #e06060; }
+  .ca-type-perf     { background: rgba(42,107,42,0.2); color: #6fc96f; }
+  .ca-type-stam     { background: rgba(180,60,120,0.2); color: #e080c0; }
+
+  .ca-empty {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--text-muted); font-family: 'IM Fell English', serif;
+    font-style: italic; font-size: 1rem;
+  }
+
+  /* Boss card CA row */
+  .bc-ca-row {
+    display: flex; align-items: center; gap: 0.4rem;
+    margin-top: 0.45rem; padding-top: 0.4rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .bc-ca-label {
+    font-family: 'Cinzel', serif; font-size: 0.6rem;
+    color: var(--stone-lighter); letter-spacing: 0.05em; flex-shrink: 0;
+  }
+  .bc-ca-bar {
+    flex: 1; height: 2px; background: var(--stone); border-radius: 1px; overflow: hidden;
+  }
+  .bc-ca-fill { height: 100%; background: var(--gold-dark); border-radius: 1px; }
+  .bc-ca-count { font-size: 0.65rem; color: var(--text-muted); font-family: 'Cinzel', serif; flex-shrink: 0; }
+  .bc-ca-count.done { color: var(--gold); }
+
+  /* Modal CA section */
+  .detail-ca-section { margin-top: 0.75rem; }
+  .detail-ca-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .detail-ca-frac {
+    font-family: 'Cinzel', serif; font-size: 0.72rem;
+    color: var(--gold); white-space: nowrap;
+  }
+  .detail-ca-bar { flex: 1; height: 3px; background: var(--stone); border-radius: 2px; overflow: hidden; }
+  .detail-ca-bar-fill { height: 100%; background: var(--gold-dark); border-radius: 2px; }
+  .detail-ca-link {
+    font-size: 0.7rem; color: var(--green-light); cursor: pointer;
+    white-space: nowrap; background: none; border: none;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .detail-ca-link:hover { color: #8fd88f; }
+  .detail-ca-task {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.32rem 0.5rem; border-radius: 3px;
+    background: rgba(0,0,0,0.15); margin-bottom: 0.25rem;
+    cursor: pointer; transition: background 0.1s;
+  }
+  .detail-ca-task:hover { background: rgba(0,0,0,0.28); }
+  .detail-ca-task-check {
+    width: 12px; height: 12px; border: 1px solid var(--stone-lighter);
+    border-radius: 2px; background: var(--stone); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.55rem; color: #5aae5a; transition: all 0.1s;
+  }
+  .detail-ca-task-check.done { background: rgba(42,80,42,0.6); border-color: rgba(90,174,90,0.5); }
+  .detail-ca-task-name { flex: 1; font-size: 0.8rem; color: var(--text-light); }
+  .detail-ca-task-name.done { color: var(--text-muted); text-decoration: line-through; }
+  .detail-ca-task-tier {
+    font-family: 'Cinzel', serif; font-size: 0.62rem; white-space: nowrap;
+  }
+  .detail-ca-task-tier.easy   { color: #7ab840; }
+  .detail-ca-task-tier.medium { color: #e0a020; }
+  .detail-ca-task-tier.hard   { color: #e06820; }
+  .detail-ca-task-tier.elite  { color: #9060d0; }
+  .detail-ca-task-tier.master { color: #c84040; }
+  .detail-ca-task-tier.gm     { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .ca-page { padding: 1rem 0.75rem 3rem; }
+    .ca-overview-cols { grid-template-columns: 1fr; }
+    .ca-tier-grid { grid-template-columns: 1fr 1fr; }
+  }
 </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
@@ -3320,6 +3612,7 @@
       <button class="nav-btn active" onclick="showPage('progression')">Progression</button>
       <button class="nav-btn" onclick="showPage('stats')">My Stats</button>
       <button class="nav-btn" onclick="showPage('bosses')">Bosses</button>
+      <button class="nav-btn" onclick="showPage('combat')">Combat Tasks</button>
       <button class="nav-btn" onclick="showPage('clog')">Collection Log</button>
       <button class="nav-btn" onclick="showPage('planner')">Custom Path</button>
       <button class="nav-btn" onclick="showPage('compare')">Compare</button>
@@ -3540,6 +3833,75 @@
   </div>
 </div>
 
+<!-- ===== COMBAT ACHIEVEMENTS PAGE ===== -->
+<div id="page-combat" class="page">
+  <div class="ca-page">
+
+    <!-- Overview toggle header -->
+    <div class="ca-overview-toggle" onclick="toggleCaOverview()" id="ca-overview-toggle">
+      <h2>Combat Achievements</h2>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span class="ca-pts-summary" id="ca-pts-summary"></span>
+        <span class="ca-chevron" id="ca-chevron">▼</span>
+      </div>
+    </div>
+
+    <!-- Collapsible overview panel -->
+    <div class="ca-overview-panel" id="ca-overview-panel">
+
+      <!-- Reward bar -->
+      <div class="ca-reward-bar-wrap">
+        <div class="ca-reward-bar-labels">
+          <span>Points progress</span>
+          <span id="ca-bar-label"></span>
+        </div>
+        <div class="ca-reward-bar-track">
+          <div class="ca-reward-bar-fill" id="ca-reward-fill" style="width:0%"></div>
+        </div>
+        <div class="ca-reward-milestones" id="ca-milestones"></div>
+      </div>
+
+      <!-- Two-col: tier grid + combat profile -->
+      <div class="ca-overview-cols">
+        <div>
+          <div class="ca-tier-grid-title">Difficulty Tiers</div>
+          <div class="ca-tier-grid" id="ca-tier-grid"></div>
+        </div>
+        <div>
+          <div class="ca-profile-title">Combat Profile</div>
+          <div class="ca-profile-card" id="ca-profile-card"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tier tabs -->
+    <div class="ca-tab-bar" id="ca-tab-bar"></div>
+
+    <!-- Filters -->
+    <div class="ca-filters-row">
+      <input type="text" class="ca-search" id="ca-search" placeholder="Search tasks or boss…" oninput="renderCaTaskList()">
+      <select class="ca-filter-select" id="ca-type-filter" onchange="renderCaTaskList()">
+        <option value="">All types</option>
+        <option value="Kill Count">Kill Count</option>
+        <option value="Mechanical">Mechanical</option>
+        <option value="Speed">Speed</option>
+        <option value="Restriction">Restriction</option>
+        <option value="Perfection">Perfection</option>
+        <option value="Stamina">Stamina</option>
+      </select>
+      <button class="ca-hide-done-btn" id="ca-hide-done-btn" onclick="toggleCaHideDone()">Hide Completed</button>
+    </div>
+
+    <!-- Tier summary stats -->
+    <div class="ca-tier-summary" id="ca-tier-summary"></div>
+
+    <!-- Task list -->
+    <div id="ca-task-list"></div>
+
+  </div>
+</div>
+
 <!-- ===== COMPARE PAGE ===== -->
 <div id="page-compare" class="page">
   <div class="compare-page">
@@ -3576,19 +3938,9 @@
   </div>
 </div>
 
-<!-- ===== ORACLE LAUNCHER ===== -->
-<div id="oracle-launcher" onclick="toggleOracleLauncher()" title="Oracles">
-  <span id="oracle-launcher-icon">🎲</span>
-  <span>Oracles</span>
-</div>
-<div id="trigger-task" class="floating-rand-trigger" onclick="toggleRandomPanel()" title="Task Oracle">
-  🎲 <span>Task Oracle</span>
-</div>
-<div id="trigger-combat" class="floating-rand-trigger" onclick="toggleCombatPanel()" title="Combat Oracle">
-  ⚔️ <span>Combat Oracle</span>
-</div>
-<div id="trigger-clog" class="floating-rand-trigger" onclick="toggleClogOraclePanel()" title="Collection Oracle">
-  📦 <span>Collection Oracle</span>
+<!-- ===== FLOATING RANDOM TASK PANEL ===== -->
+<div class="floating-rand-trigger" onclick="toggleRandomPanel()" title="Random Task">
+  🎲 <span>Random</span>
 </div>
 
 <div id="floating-rand-panel" class="floating-rand-panel">
@@ -3631,88 +3983,6 @@
   <div id="float-history-wrap" style="display:none">
     <div class="frand-hist-title">Recent Rolls</div>
     <div id="float-history-list" class="frand-hist-list"></div>
-  </div>
-</div>
-
-<!-- ===== COMBAT ORACLE PANEL ===== -->
-<div id="combat-oracle-panel" class="floating-rand-panel">
-  <div class="frand-header">
-    <span class="frand-title">⚔️ Combat Oracle</span>
-    <button class="frand-close" onclick="closeCombatPanel()">✕</button>
-  </div>
-
-  <div class="frand-filters">
-    <button class="chip active" data-cafilter="Easy"        onclick="toggleCAFilter('Easy')">Easy</button>
-    <button class="chip active" data-cafilter="Medium"      onclick="toggleCAFilter('Medium')">Medium</button>
-    <button class="chip active" data-cafilter="Hard"        onclick="toggleCAFilter('Hard')">Hard</button>
-    <button class="chip active" data-cafilter="Elite"       onclick="toggleCAFilter('Elite')">Elite</button>
-    <button class="chip active" data-cafilter="Master"      onclick="toggleCAFilter('Master')">Master</button>
-    <button class="chip active" data-cafilter="Grandmaster" onclick="toggleCAFilter('Grandmaster')">GM</button>
-    <button class="chip active" data-cafilter="ca-incomplete" onclick="toggleCAFilter('ca-incomplete')">Skip Done</button>
-  </div>
-
-  <div class="frand-result-area" style="flex-direction:column;align-items:flex-start">
-    <div id="combat-spin-idle" class="frand-idle" style="width:100%;text-align:center">Press a button to receive your task…</div>
-    <div id="combat-spin-result" style="display:none;width:100%">
-      <div id="combat-spin-name" class="frand-name"></div>
-      <div id="combat-spin-badges" style="margin:0.3rem 0 0.2rem"></div>
-      <div id="combat-spin-boss" class="frand-source"></div>
-      <div id="combat-spin-desc" class="frand-desc"></div>
-    </div>
-  </div>
-
-  <div class="frand-btns">
-    <button class="spin-btn frand-spin-btn" onclick="combatSpin(false)">🎲 Surprise Me</button>
-    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="combatSpin(true)" title="Suggests lowest incomplete tier first">💡 Suggest Task</button>
-  </div>
-  <div class="frand-subbtns">
-    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="combatMarkDone()">✓ Mark Done & Roll Again</button>
-    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearCombatHistory()">🗑 Clear</button>
-  </div>
-
-  <div id="combat-history-wrap" style="display:none">
-    <div class="frand-hist-title">Recent Rolls</div>
-    <div id="combat-history-list" class="frand-hist-list"></div>
-  </div>
-</div>
-
-<!-- ===== COLLECTION ORACLE PANEL ===== -->
-<div id="clog-oracle-panel" class="floating-rand-panel">
-  <div class="frand-header">
-    <span class="frand-title">📦 Collection Oracle</span>
-    <button class="frand-close" onclick="closeClogOraclePanel()">✕</button>
-  </div>
-
-  <div class="frand-filters">
-    <button class="chip active" data-clogfilter="Bosses"    onclick="toggleClogOracleFilter('Bosses')">Bosses</button>
-    <button class="chip active" data-clogfilter="Raids"     onclick="toggleClogOracleFilter('Raids')">Raids</button>
-    <button class="chip active" data-clogfilter="Clues"     onclick="toggleClogOracleFilter('Clues')">Clues</button>
-    <button class="chip active" data-clogfilter="Minigames" onclick="toggleClogOracleFilter('Minigames')">Minigames</button>
-    <button class="chip active" data-clogfilter="Other"     onclick="toggleClogOracleFilter('Other')">Other</button>
-    <button class="chip active" data-clogfilter="clog-missing" onclick="toggleClogOracleFilter('clog-missing')">Skip Obtained</button>
-  </div>
-
-  <div class="frand-result-area" style="flex-direction:column;align-items:flex-start">
-    <div id="clog-oracle-idle" class="frand-idle" style="width:100%;text-align:center">Press a button to receive your task…</div>
-    <div id="clog-oracle-result" style="display:none;width:100%">
-      <div id="clog-oracle-name" class="frand-name"></div>
-      <div id="clog-oracle-source" class="frand-source"></div>
-      <div id="clog-oracle-progress" class="frand-clog-progress"></div>
-    </div>
-  </div>
-
-  <div class="frand-btns">
-    <button class="spin-btn frand-spin-btn" onclick="clogOracleSpin(false)">🎲 Surprise Me</button>
-    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="clogOracleSpin(true)" title="Suggests the source closest to completion">💡 Suggest Item</button>
-  </div>
-  <div class="frand-subbtns">
-    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clogOracleMarkObtained()">✓ Mark Obtained & Roll Again</button>
-    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearClogOracleHistory()">🗑 Clear</button>
-  </div>
-
-  <div id="clog-oracle-history-wrap" style="display:none">
-    <div class="frand-hist-title">Recent Rolls</div>
-    <div id="clog-oracle-history-list" class="frand-hist-list"></div>
   </div>
 </div>
 
@@ -3929,17 +4199,6 @@ let bossKC = {};
 let obtainedDrops = {};
 let spinHistory = [];
 let currentSpinItem = null;
-
-// Combat Oracle state
-var caCompleted = JSON.parse(localStorage.getItem('ps_ca_completed') || '{}');
-var caFilters = new Set(['Easy','Medium','Hard','Elite','Master','Grandmaster','ca-incomplete']);
-var currentCombatItem = null;
-var combatHistory = [];
-
-// Collection Oracle state
-var clogOracleFilters = new Set(['Bosses','Raids','Clues','Minigames','Other','clog-missing']);
-var currentClogOracleItem = null;
-var clogOracleHistory = [];
 let userNotes = {};
 let ironmanMode = false;
 // Track which accordion tiers are open (by tier id)
@@ -4704,10 +4963,41 @@ function markTierDone(tierId, e) {
   var tier = TIERS.find(function(t) { return t.id === tierId; });
   if (!tier) return;
   var data = getActiveData();
+
+  // Start with all items in this tier
   var tierItems = data.filter(function(item) {
     var ord = ironmanMode ? (item.imOrder || item.order) : item.order;
     return ord >= tier.minOrder && ord <= tier.maxOrder;
   });
+
+  // Apply active type filters — only mark what's currently visible
+  var typeFilters = ['Quest','Boss','Activity/Goal','Unlock','Miniquest','Diary'].filter(function(t) { return activeFilters.has(t); });
+  var hasLocked = activeFilters.has('locked');
+  var hasAvailable = activeFilters.has('available');
+  if (!activeFilters.has('all')) {
+    tierItems = tierItems.filter(function(item) {
+      var pass = false;
+      if (typeFilters.length > 0 && typeFilters.includes(item.type)) pass = true;
+      if (hasLocked || hasAvailable) {
+        var m = meetsReqs(item);
+        if (hasLocked && m === false) pass = true;
+        if (hasAvailable && (m === true || m === null)) pass = true;
+      }
+      return pass;
+    });
+  }
+
+  // Apply search filter
+  var search = (document.getElementById('search-input') || {}).value || '';
+  search = search.toLowerCase().trim();
+  if (search) {
+    tierItems = tierItems.filter(function(item) {
+      return item.name.toLowerCase().includes(search) ||
+             item.location.toLowerCase().includes(search) ||
+             item.type.toLowerCase().includes(search);
+    });
+  }
+
   var allDone = tierItems.every(function(item) { return completedSet.has(item.order); });
   tierItems.forEach(function(item) {
     if (allDone) { completedSet.delete(item.order); }
@@ -4816,6 +5106,33 @@ function openDetail(order) {
       </div>`;
     }).join('');
     rows.push(['Notable Drops', dropsHtml]);
+  }
+  // Combat Achievements section in modal
+  if (item.type === 'Boss' || item.entryType === 'boss') {
+    var caTasks = getCaTasksForBoss(item.name);
+    if (caTasks.length > 0) {
+      var caTotal = caTasks.length;
+      var caDone = caTasks.filter(function(t) { return caCompleted[t.id]; }).length;
+      var caPct = caTotal > 0 ? Math.round(caDone / caTotal * 100) : 0;
+      var caTasksHtml = caTasks.map(function(t) {
+        var done = !!caCompleted[t.id];
+        var tierKey = t.tier === 'Grandmaster' ? 'gm' : t.tier.toLowerCase();
+        return '<div class="detail-ca-task" onclick="toggleCaTask(\'' + t.id + '\')">' +
+          '<div class="detail-ca-task-check' + (done ? ' done' : '') + '">' + (done ? '✓' : '') + '</div>' +
+          '<span class="detail-ca-task-name' + (done ? ' done' : '') + '">' + t.name + '</span>' +
+          '<span class="detail-ca-task-tier ' + tierKey + '">' + t.tier + '</span>' +
+        '</div>';
+      }).join('');
+      var caHtml = '<div class="detail-ca-section">' +
+        '<div class="detail-ca-header">' +
+          '<div class="detail-ca-bar"><div class="detail-ca-bar-fill" style="width:' + caPct + '%"></div></div>' +
+          '<span class="detail-ca-frac">' + caDone + ' / ' + caTotal + ' tasks</span>' +
+          '<button class="detail-ca-link" onclick="closeDetailBtn();setCaBossFilter(\'' + item.name + '\');showPage(\'combat\');event.stopPropagation()">↗ View all CAs</button>' +
+        '</div>' +
+        caTasksHtml +
+      '</div>';
+      rows.push(['Combat Tasks', caHtml]);
+    }
   }
   rows.push(['My Notes', `<textarea id="user-note-ta" class="user-note-ta" placeholder="Add your own notes…" onblur="saveNote(${item.order}, this.value)" onclick="event.stopPropagation()">${userNotes[item.order] || ''}</textarea>`]);
   if (item.source) rows.push(['Guide', `<a href="${item.source}" target="_blank" style="color:var(--gold-light)">${item.source.replace(/https?:\/\//,'').substring(0,50)}…</a>`]);
@@ -5352,12 +5669,8 @@ function showDownstreamTree(order) {
 
 function toggleRandomPanel() {
   const panel = document.getElementById('floating-rand-panel');
-  const isOpening = !panel.classList.contains('open');
-  closeAllOraclePanels();
-  if (isOpening) {
-    panel.classList.add('open');
-    renderFloatingHistory();
-  }
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) renderFloatingHistory();
 }
 
 function closeRandomPanel() {
@@ -5501,384 +5814,6 @@ function toggleRandFilter(f) {
 }
 
 // ============================================================
-// COMBAT ORACLE
-// ============================================================
-function toggleCombatPanel() {
-  const panel = document.getElementById('combat-oracle-panel');
-  const isOpening = !panel.classList.contains('open');
-  closeAllOraclePanels();
-  if (isOpening) {
-    panel.classList.add('open');
-    renderCombatHistory();
-  }
-}
-
-function closeCombatPanel() {
-  document.getElementById('combat-oracle-panel').classList.remove('open');
-}
-
-function toggleCAFilter(f) {
-  if (caFilters.has(f)) {
-    caFilters.delete(f);
-  } else {
-    caFilters.add(f);
-  }
-  document.querySelectorAll(`[data-cafilter="${f}"]`).forEach(el => {
-    el.classList.toggle('active', caFilters.has(f));
-  });
-}
-
-function getCAPool(suggest) {
-  if (!window.CA_DATA) return [];
-  return CA_DATA.filter(function(ca) {
-    if (!caFilters.has(ca.tier)) return false;
-    if (caFilters.has('ca-incomplete') && caCompleted[ca.id]) return false;
-    if (suggest && caCompleted[ca.id]) return false;
-    return true;
-  });
-}
-
-function combatSpin(suggest) {
-  var pool = suggest ? getCAPoolSuggested() : getCAPool(false);
-  var resultEl = document.getElementById('combat-spin-result');
-  var idleEl   = document.getElementById('combat-spin-idle');
-
-  if (!pool.length) {
-    resultEl.style.display = 'none';
-    idleEl.style.display = 'block';
-    idleEl.textContent = suggest
-      ? 'No incomplete tasks found. Try a higher tier!'
-      : 'No tasks match your filters!';
-    return;
-  }
-
-  idleEl.style.display = 'none';
-  resultEl.style.display = 'block';
-  var nameEl = document.getElementById('combat-spin-name');
-  nameEl.classList.add('spinning');
-
-  var ticks = 0;
-  var interval = setInterval(function() {
-    nameEl.textContent = pool[Math.floor(Math.random() * pool.length)].name;
-    ticks++;
-    if (ticks > 15) {
-      clearInterval(interval);
-      nameEl.classList.remove('spinning');
-      var chosen = pool[Math.floor(Math.random() * pool.length)];
-      currentCombatItem = chosen;
-      showCombatResult(chosen);
-      addToCombatHistory(chosen);
-    }
-  }, 55);
-}
-
-function getCAPoolSuggested() {
-  // Find the lowest tier with incomplete tasks matching current filters
-  var tierOrder = ['Easy','Medium','Hard','Elite','Master','Grandmaster'];
-  for (var i = 0; i < tierOrder.length; i++) {
-    var tier = tierOrder[i];
-    if (!caFilters.has(tier)) continue;
-    var pool = CA_DATA.filter(function(ca) {
-      return ca.tier === tier && !caCompleted[ca.id];
-    });
-    if (pool.length) return pool;
-  }
-  return getCAPool(true);
-}
-
-function showCombatResult(ca) {
-  document.getElementById('combat-spin-name').textContent = ca.name;
-
-  var tierKey = ca.tier.toLowerCase().replace(' ','');
-  document.getElementById('combat-spin-badges').innerHTML =
-    '<span class="ca-tier-badge ca-tier-' + tierKey + '">' + ca.tier + '</span>' +
-    '<span class="ca-type-badge">' + ca.type + '</span>' +
-    (caCompleted[ca.id] ? ' <span style="color:var(--green-light);font-size:0.7rem">✓ Done</span>' : '');
-
-  document.getElementById('combat-spin-boss').textContent = '👹 ' + ca.boss;
-  document.getElementById('combat-spin-desc').textContent = ca.description;
-  document.getElementById('combat-spin-result').style.display = 'block';
-  document.getElementById('combat-spin-idle').style.display = 'none';
-}
-
-function combatMarkDone() {
-  if (currentCombatItem) {
-    caCompleted[currentCombatItem.id] = true;
-    localStorage.setItem('ps_ca_completed', JSON.stringify(caCompleted));
-  }
-  combatSpin(false);
-}
-
-function addToCombatHistory(ca) {
-  combatHistory = combatHistory.filter(function(h) { return h.id !== ca.id; });
-  combatHistory.unshift({ id: ca.id, name: ca.name, tier: ca.tier });
-  if (combatHistory.length > 10) combatHistory.pop();
-  renderCombatHistory();
-}
-
-function renderCombatHistory() {
-  var list = document.getElementById('combat-history-list');
-  var wrap = document.getElementById('combat-history-wrap');
-  if (!list) return;
-  if (!combatHistory.length) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  var tierKey;
-  list.innerHTML = combatHistory.map(function(h, i) {
-    tierKey = h.tier.toLowerCase().replace(' ','');
-    return '<div class="float-hist-item">' +
-      '<span class="float-hist-num">' + (i + 1) + '</span>' +
-      '<span class="float-hist-name">' + h.name + '</span>' +
-      '<span class="ca-tier-badge ca-tier-' + tierKey + '" style="font-size:0.6rem;padding:0.08rem 0.35rem">' + h.tier + '</span>' +
-      '</div>';
-  }).join('');
-}
-
-function clearCombatHistory() {
-  combatHistory = [];
-  currentCombatItem = null;
-  document.getElementById('combat-spin-result').style.display = 'none';
-  document.getElementById('combat-spin-idle').style.display = 'block';
-  document.getElementById('combat-spin-idle').textContent = 'Press a button to receive your task…';
-  renderCombatHistory();
-}
-
-// ============================================================
-// COLLECTION ORACLE
-// ============================================================
-function toggleClogOraclePanel() {
-  var panel = document.getElementById('clog-oracle-panel');
-  var isOpening = !panel.classList.contains('open');
-  closeAllOraclePanels();
-  if (isOpening) {
-    panel.classList.add('open');
-    renderClogOracleHistory();
-  }
-}
-
-function closeClogOraclePanel() {
-  document.getElementById('clog-oracle-panel').classList.remove('open');
-}
-
-function toggleClogOracleFilter(f) {
-  if (clogOracleFilters.has(f)) {
-    clogOracleFilters.delete(f);
-  } else {
-    clogOracleFilters.add(f);
-  }
-  document.querySelectorAll('[data-clogfilter="' + f + '"]').forEach(function(el) {
-    el.classList.toggle('active', clogOracleFilters.has(f));
-  });
-}
-
-function getClogOraclePool(suggest) {
-  if (!window.CLOG_DATA) return [];
-  return CLOG_DATA.filter(function(item) {
-    if (!clogOracleFilters.has(item.category)) return false;
-    if (clogOracleFilters.has('clog-missing') && isObtained(item.name)) return false;
-    if (suggest && isObtained(item.name)) return false;
-    return true;
-  });
-}
-
-function getClogOraclePoolSuggested() {
-  // Find the source with highest completion % that still has missing items
-  if (!window.CLOG_DATA) return [];
-  var sourceTotals = {};
-  var sourceGot = {};
-  CLOG_DATA.forEach(function(item) {
-    if (!clogOracleFilters.has(item.category)) return;
-    if (!sourceTotals[item.source]) { sourceTotals[item.source] = 0; sourceGot[item.source] = 0; }
-    sourceTotals[item.source]++;
-    if (isObtained(item.name)) sourceGot[item.source]++;
-  });
-  // Find source with highest pct that isn't 100%
-  var best = null, bestPct = -1;
-  Object.keys(sourceTotals).forEach(function(src) {
-    var pct = sourceTotals[src] > 0 ? sourceGot[src] / sourceTotals[src] : 0;
-    if (pct < 1 && pct > bestPct) { bestPct = pct; best = src; }
-  });
-  if (!best) return getClogOraclePool(true);
-  return CLOG_DATA.filter(function(item) {
-    return item.source === best && !isObtained(item.name);
-  });
-}
-
-function clogOracleSpin(suggest) {
-  var pool = suggest ? getClogOraclePoolSuggested() : getClogOraclePool(false);
-  var resultEl = document.getElementById('clog-oracle-result');
-  var idleEl   = document.getElementById('clog-oracle-idle');
-
-  if (!pool.length) {
-    resultEl.style.display = 'none';
-    idleEl.style.display = 'block';
-    idleEl.textContent = suggest
-      ? 'No missing items found — you might be done!'
-      : 'No items match your filters!';
-    return;
-  }
-
-  idleEl.style.display = 'none';
-  resultEl.style.display = 'block';
-  var nameEl = document.getElementById('clog-oracle-name');
-  nameEl.classList.add('spinning');
-
-  var ticks = 0;
-  var interval = setInterval(function() {
-    nameEl.textContent = pool[Math.floor(Math.random() * pool.length)].name;
-    ticks++;
-    if (ticks > 15) {
-      clearInterval(interval);
-      nameEl.classList.remove('spinning');
-      var chosen = pool[Math.floor(Math.random() * pool.length)];
-      currentClogOracleItem = chosen;
-      showClogOracleResult(chosen);
-      addToClogOracleHistory(chosen);
-    }
-  }, 55);
-}
-
-function showClogOracleResult(item) {
-  document.getElementById('clog-oracle-name').textContent = item.name;
-  document.getElementById('clog-oracle-source').textContent = '📍 ' + item.source;
-
-  // Show source progress
-  var srcItems = CLOG_DATA.filter(function(i) { return i.source === item.source; });
-  var got = srcItems.filter(function(i) { return isObtained(i.name); }).length;
-  var total = srcItems.length;
-  var pct = total > 0 ? Math.round(got / total * 100) : 0;
-  document.getElementById('clog-oracle-progress').innerHTML =
-    '<span>' + got + '</span>/' + total + ' obtained from this source (' + pct + '%)' +
-    (isObtained(item.name) ? ' <span style="color:var(--green-light)">✓ Already obtained</span>' : '');
-
-  document.getElementById('clog-oracle-result').style.display = 'block';
-  document.getElementById('clog-oracle-idle').style.display = 'none';
-}
-
-function clogOracleMarkObtained() {
-  if (currentClogOracleItem) {
-    var key = currentClogOracleItem.name.toLowerCase();
-    clogObtained[key] = true;
-    saveClogObtained();
-    // Refresh clog page if visible
-    if (document.getElementById('page-clog') && document.getElementById('page-clog').classList.contains('active')) {
-      renderClogMain();
-      renderClogSidebar();
-      updateClogSummary();
-    }
-  }
-  clogOracleSpin(false);
-}
-
-function addToClogOracleHistory(item) {
-  clogOracleHistory = clogOracleHistory.filter(function(h) { return h.name !== item.name; });
-  clogOracleHistory.unshift({ name: item.name, source: item.source });
-  if (clogOracleHistory.length > 10) clogOracleHistory.pop();
-  renderClogOracleHistory();
-}
-
-function renderClogOracleHistory() {
-  var list = document.getElementById('clog-oracle-history-list');
-  var wrap = document.getElementById('clog-oracle-history-wrap');
-  if (!list) return;
-  if (!clogOracleHistory.length) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  list.innerHTML = clogOracleHistory.map(function(h, i) {
-    return '<div class="float-hist-item">' +
-      '<span class="float-hist-num">' + (i + 1) + '</span>' +
-      '<span class="float-hist-name">' + h.name + '</span>' +
-      '<span style="font-size:0.65rem;color:var(--stone-lighter);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">' + h.source + '</span>' +
-      '</div>';
-  }).join('');
-}
-
-function clearClogOracleHistory() {
-  clogOracleHistory = [];
-  currentClogOracleItem = null;
-  document.getElementById('clog-oracle-result').style.display = 'none';
-  document.getElementById('clog-oracle-idle').style.display = 'block';
-  document.getElementById('clog-oracle-idle').textContent = 'Press a button to receive your task…';
-  renderClogOracleHistory();
-}
-
-// ============================================================
-// ORACLE LAUNCHER
-// ============================================================
-var oracleLauncherOpen = false;
-
-function toggleOracleLauncher() {
-  oracleLauncherOpen = !oracleLauncherOpen;
-  var launcher = document.getElementById('oracle-launcher');
-  launcher.classList.toggle('open', oracleLauncherOpen);
-
-  if (!oracleLauncherOpen) {
-    collapseOracleTriggers();
-    closeAllOraclePanels();
-    return;
-  }
-
-  // Stagger the three buttons sliding up
-  var ids = ['trigger-task', 'trigger-combat', 'trigger-clog'];
-  ids.forEach(function(id, i) {
-    var el = document.getElementById(id);
-    // Reset to collapsed position first (in case re-opening)
-    el.style.transition = 'none';
-    el.classList.remove('oracle-visible');
-    // Force reflow then animate with stagger
-    void el.offsetWidth;
-    el.style.transition = '';
-    setTimeout(function() {
-      el.classList.add('oracle-visible');
-    }, i * 60);
-  });
-
-  // Close launcher if clicking outside
-  setTimeout(function() {
-    document.addEventListener('click', outsideOracleLauncherHandler);
-  }, 0);
-}
-
-function outsideOracleLauncherHandler(e) {
-  var launcher = document.getElementById('oracle-launcher');
-  var t = document.getElementById('trigger-task');
-  var c = document.getElementById('trigger-combat');
-  var g = document.getElementById('trigger-clog');
-  var panels = [
-    document.getElementById('floating-rand-panel'),
-    document.getElementById('combat-oracle-panel'),
-    document.getElementById('clog-oracle-panel')
-  ];
-  // If click is outside launcher, triggers, and panels — collapse
-  var clickedInside = [launcher, t, c, g].some(function(el) { return el && el.contains(e.target); }) ||
-    panels.some(function(p) { return p && p.contains(e.target); });
-  if (!clickedInside) {
-    collapseOracleLauncher();
-  }
-}
-
-function collapseOracleLauncher() {
-  oracleLauncherOpen = false;
-  document.getElementById('oracle-launcher').classList.remove('open');
-  collapseOracleTriggers();
-  closeAllOraclePanels();
-  document.removeEventListener('click', outsideOracleLauncherHandler);
-}
-
-function collapseOracleTriggers() {
-  ['trigger-task','trigger-combat','trigger-clog'].forEach(function(id) {
-    document.getElementById(id).classList.remove('oracle-visible');
-  });
-}
-
-// ============================================================
-// CLOSE ALL ORACLES HELPER
-// ============================================================
-function closeAllOraclePanels() {
-  document.getElementById('floating-rand-panel').classList.remove('open');
-  document.getElementById('combat-oracle-panel').classList.remove('open');
-  document.getElementById('clog-oracle-panel').classList.remove('open');
-}
-
-// ============================================================
 // STATS PAGE
 // ============================================================
 function buildSkillsGrid() {
@@ -5938,7 +5873,14 @@ function updateCombatDisplay() {
   renderDashboard();
 }
 
+function renderDashboardWhenReady() {
+  setTimeout(function() {
+    if (typeof caCompleted !== 'undefined') renderDashboard();
+  }, 50);
+}
+
 function renderDashboard() {
+  if (typeof caCompleted === 'undefined') return renderDashboardWhenReady();
   const dash = document.getElementById('account-dashboard');
   if (!dash || typeof SPINE_DATA === 'undefined') return;
 
@@ -5961,6 +5903,11 @@ function renderDashboard() {
       .filter(i => i.name.startsWith(tier + ' '))
       .every(i => doneDiaryOrders.has(i.order));
 
+    // CA points for badge conditions
+    const _caPoints = (typeof CA_DATA !== 'undefined' && typeof caCompleted !== 'undefined')
+      ? CA_DATA.reduce((s, t) => s + (caCompleted[t.id] ? t.points : 0), 0)
+      : 0;
+
     // Static badge definitions (always shown — locked or earned)
     // Individual skill-99 badges are dynamically appended below
     const BADGE_DEFS = [
@@ -5977,6 +5924,13 @@ function renderDashboard() {
       { id: 'cb_126',       label: 'Max Combat',    desc: 'Combat level 126',                           icon: 'https://oldschool.runescape.wiki/images/Worn_Equipment.png',          earned: cb >= 126,  gold: true  },
       { id: 'fire_cape',    label: 'Fire Cape',     desc: 'Defeated TzTok-Jad',                         icon: 'https://oldschool.runescape.wiki/images/Fire_cape.png',               earned: completedSet.has(279),  gold: false },
       { id: 'infernal_cape',label: 'Infernal Cape', desc: 'Defeated TzKal-Zuk',                         icon: 'https://oldschool.runescape.wiki/images/Infernal_cape.png',           earned: completedSet.has(466),  gold: true  },
+      // ── Combat Achievements ──────────────────────────────────────────────────
+      { id: "ca_hilt1", label: "Hilt 1",     desc: "41 CA points — Ghommal's hilt 1",      icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_1.png",    earned: _caPoints >= 41,   gold: false },
+      { id: "ca_hilt2", label: "Hilt 2",     desc: "161 CA points — Ghommal's hilt 2",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_2.png",    earned: _caPoints >= 161,  gold: false },
+      { id: "ca_hilt3", label: "Hilt 3",     desc: "416 CA points — Ghommal's hilt 3",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_3.png",    earned: _caPoints >= 416,  gold: false },
+      { id: "ca_hilt4", label: "Hilt 4",     desc: "1,064 CA points — Ghommal's hilt 4",   icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_4.png",    earned: _caPoints >= 1064, gold: false },
+      { id: "ca_hilt5", label: "Hilt 5",     desc: "1,904 CA points — Ghommal's hilt 5",   icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_5.png",    earned: _caPoints >= 1904, gold: false },
+      { id: "ca_hilt6", label: "Hilt 6", desc: "2,630 CA points — Ghommal's hilt 6 + Tzkal slayer helm", icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_6.png", earned: _caPoints >= 2630, gold: true  },
     ];
 
     // Append one badge per skill 99 beyond the first (only earned ones — these don't have a locked state)
@@ -6057,12 +6011,18 @@ function renderDashboard() {
     return Object.keys(u).length;
   })() : 0;
 
+  const _ca = (typeof CA_DATA !== 'undefined' && typeof caCompleted !== 'undefined');
+  const caDoneCount = _ca ? CA_DATA.filter(t => caCompleted[t.id]).length : 0;
+  const caTotalCount = _ca ? CA_DATA.length : 637;
+  const caEarnedPts = _ca ? CA_DATA.reduce((s, t) => s + (caCompleted[t.id] ? t.points : 0), 0) : 0;
+
   const cards = [
     { label: 'Total Level', value: total.toLocaleString(), sub: fromMax + ' from max' },
     { label: '99s', value: nineties, sub: eighties + ' at 80+' },
     { label: 'Quests', value: doneQuests + '/' + totalQuests, sub: Math.round(doneQuests/totalQuests*100) + '%' },
     { label: 'Bosses', value: doneBosses + '/' + totalBosses, sub: Math.round(doneBosses/totalBosses*100) + '%' },
     { label: 'Diaries', value: doneDiaries + '/' + totalDiaries, sub: Math.round(doneDiaries/totalDiaries*100) + '%' },
+    { label: 'Combat Tasks', value: caDoneCount + '/' + caTotalCount, sub: caEarnedPts.toLocaleString() + ' pts' },
     { label: 'Collection Log', value: clogObtainedCount + '/1698', sub: Math.round(clogObtainedCount/1698*100) + '%' },
   ];
 
@@ -6155,7 +6115,15 @@ function clearStats() {
 // ============================================================
 // NAV
 // ============================================================
+function setCaBossFilter(bossName) {
+  var searchEl = document.getElementById('ca-search');
+  if (searchEl) { searchEl.value = bossName; }
+  // find which tier this boss has the most tasks in and switch to it
+  caActiveTier = 'All';
+}
+
 function showPage(name) {
+  if (name === 'combat') { loadCaStorage(); setTimeout(renderCaPage, 0); }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`page-${name}`).classList.add('active');
@@ -7435,7 +7403,7 @@ function renderCompare() {
       }).join('');
       return `<tr><td>${i.name}</td>${cells}</tr>`;
     }).join('');
-    return `<div style="overflow-x:auto"><table class="cmp-kc-table"><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
+    return `<div class="cmp-kc-wrap" style="overflow-x:auto"><table class="cmp-kc-table"><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
   }
 
   // ── Coming Soon section (plugin-gated) ────────────────────
@@ -7581,6 +7549,20 @@ function buildBossCardHtml(boss) {
       '</div>';
   }).join('');
 
+  // CA row
+  var caTasks = getCaTasksForBoss(boss.name);
+  var caTotal = caTasks.length;
+  var caDone = caTasks.filter(function(t) { return caCompleted[t.id]; }).length;
+  var caAllDone = caTotal > 0 && caDone === caTotal;
+  var caPct = caTotal > 0 ? Math.round(caDone / caTotal * 100) : 0;
+  var caRowHtml = caTotal > 0
+    ? '<div class="bc-ca-row">' +
+        '<span class="bc-ca-label">COMBAT TASKS</span>' +
+        '<div class="bc-ca-bar"><div class="bc-ca-fill" style="width:' + caPct + '%"></div></div>' +
+        '<span class="bc-ca-count' + (caAllDone ? ' done' : '') + '">' + caDone + '/' + caTotal + '</span>' +
+      '</div>'
+    : '';
+
   return '<div class="' + cardClass + '" id="bc-' + boss.order + '">' +
     '<div class="bc-header">' +
       '<span class="bc-name" onclick="openDetail(' + boss.order + ')" title="Open details">' +
@@ -7596,6 +7578,7 @@ function buildBossCardHtml(boss) {
     '</div>' +
     progressHtml +
     (dropsHtml ? '<div class="bc-drops">' + dropsHtml + '</div>' : '') +
+    caRowHtml +
     '</div>';
 }
 
@@ -7640,6 +7623,8 @@ function refreshBossCard(order) {
     window.addEventListener('load', function() { showPage('compare'); });
   } else if (hash === '#bosses') {
     window.addEventListener('load', function() { showPage('bosses'); });
+  } else if (hash === '#combat') {
+    window.addEventListener('load', function() { showPage('combat'); });
   }
 })();
 
@@ -8044,6 +8029,347 @@ function refreshBossCard(order) {
     spInit();
   }
 })();
+
+// ============================================================
+// COMBAT ACHIEVEMENTS
+// ============================================================
+var caCompleted = {};
+var caActiveTier = 'All';
+var caHideDone = false;
+var caOverviewCollapsed = false;
+
+var CA_REWARDS = [
+  { pts: 41,   label: "Hilt 1" },
+  { pts: 161,  label: "Hilt 2" },
+  { pts: 416,  label: "Hilt 3" },
+  { pts: 1064, label: "Hilt 4" },
+  { pts: 1904, label: "Hilt 5" },
+  { pts: 2630, label: "Hilt 6" }
+];
+
+var CA_TIERS = ['Easy','Medium','Hard','Elite','Master','Grandmaster'];
+var CA_TOTAL_PTS = 2630;
+
+function loadCaStorage() {
+  try {
+    var s = localStorage.getItem('osrs_ca_completed');
+    if (s) caCompleted = JSON.parse(s);
+  } catch(e) { caCompleted = {}; }
+  try {
+    var c = localStorage.getItem('osrs_ca_overview_collapsed');
+    if (c !== null) caOverviewCollapsed = JSON.parse(c);
+  } catch(e) {}
+  try {
+    var hd = localStorage.getItem('osrs_ca_hide_done');
+    if (hd !== null) caHideDone = JSON.parse(hd);
+  } catch(e) {}
+}
+
+function saveCaStorage() {
+  localStorage.setItem('osrs_ca_completed', JSON.stringify(caCompleted));
+}
+
+function getCaPoints() {
+  if (typeof CA_DATA === 'undefined') return 0;
+  return CA_DATA.reduce(function(sum, t) {
+    return sum + (caCompleted[t.id] ? t.points : 0);
+  }, 0);
+}
+
+function getCaTierStats() {
+  var stats = {};
+  CA_TIERS.forEach(function(tier) {
+    stats[tier] = { total: 0, done: 0, pts: 0, donePts: 0 };
+  });
+  if (typeof CA_DATA === 'undefined') return stats;
+  CA_DATA.forEach(function(t) {
+    if (!stats[t.tier]) return;
+    stats[t.tier].total++;
+    stats[t.tier].pts += t.points;
+    if (caCompleted[t.id]) { stats[t.tier].done++; stats[t.tier].donePts += t.points; }
+  });
+  return stats;
+}
+
+function toggleCaOverview() {
+  caOverviewCollapsed = !caOverviewCollapsed;
+  localStorage.setItem('osrs_ca_overview_collapsed', JSON.stringify(caOverviewCollapsed));
+  applyCAOverviewState();
+}
+
+function applyCAOverviewState() {
+  var panel = document.getElementById('ca-overview-panel');
+  var chevron = document.getElementById('ca-chevron');
+  if (!panel) return;
+  panel.style.display = caOverviewCollapsed ? 'none' : '';
+  if (chevron) chevron.classList.toggle('collapsed', caOverviewCollapsed);
+}
+
+function toggleCaHideDone() {
+  caHideDone = !caHideDone;
+  localStorage.setItem('osrs_ca_hide_done', JSON.stringify(caHideDone));
+  var btn = document.getElementById('ca-hide-done-btn');
+  if (btn) btn.classList.toggle('active', caHideDone);
+  renderCaTaskList();
+}
+
+function setCaTier(tier) {
+  caActiveTier = tier;
+  document.querySelectorAll('.ca-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tier === tier);
+  });
+  // sync tier card active state
+  document.querySelectorAll('.ca-tier-card').forEach(function(c) {
+    c.classList.toggle('active', c.dataset.tier === tier);
+  });
+  renderCaTaskList();
+  renderCaTierSummary();
+}
+
+function renderCaPage() {
+  if (typeof CA_DATA === 'undefined') return;
+  loadCaStorage();
+  applyCAOverviewState();
+  var btn = document.getElementById('ca-hide-done-btn');
+  if (btn) btn.classList.toggle('active', caHideDone);
+  renderCaOverview();
+  renderCaTabs();
+  renderCaTaskList();
+  renderCaTierSummary();
+}
+
+function renderCaOverview() {
+  var pts = getCaPoints();
+  var tierStats = getCaTierStats();
+
+  // Points summary in toggle header
+  var nextReward = CA_REWARDS.find(function(r) { return pts < r.pts; });
+  var summaryEl = document.getElementById('ca-pts-summary');
+  if (summaryEl) {
+    summaryEl.innerHTML = '<strong>' + pts.toLocaleString() + '</strong> / ' +
+      CA_TOTAL_PTS.toLocaleString() + ' pts' +
+      (nextReward ? ' &nbsp;·&nbsp; next unlock in <strong>' + (nextReward.pts - pts).toLocaleString() + ' pts</strong>' : '');
+  }
+
+  // Bar
+  // Segment-based fill: bar divided into equal segments between reward thresholds
+  // so dots (evenly spaced) and fill always align
+  var allPts = [0].concat(CA_REWARDS.map(function(r) { return r.pts; }));
+  var segCount = CA_REWARDS.length; // number of segments
+  var fillPct = 0;
+  for (var si = 0; si < segCount; si++) {
+    var segStart = allPts[si];
+    var segEnd   = allPts[si + 1];
+    if (pts >= segEnd) {
+      fillPct = (si + 1) / segCount * 100;
+    } else if (pts >= segStart) {
+      var segProgress = (pts - segStart) / (segEnd - segStart);
+      fillPct = (si + segProgress) / segCount * 100;
+      break;
+    }
+  }
+  fillPct = Math.min(100, Math.round(fillPct * 10) / 10);
+  var fillEl = document.getElementById('ca-reward-fill');
+  if (fillEl) fillEl.style.width = fillPct + '%';
+  var barLabel = document.getElementById('ca-bar-label');
+  if (barLabel) barLabel.textContent = pts.toLocaleString() + ' / ' + CA_TOTAL_PTS.toLocaleString();
+
+  // Milestones
+  var msEl = document.getElementById('ca-milestones');
+  if (msEl) {
+    var segCount = CA_REWARDS.length;
+    msEl.innerHTML = CA_REWARDS.map(function(r, idx) {
+      var reached = pts >= r.pts;
+      var isNext = !reached && nextReward && r.pts === nextReward.pts;
+      var leftPct = Math.round((idx + 1) / segCount * 1000) / 10; // e.g. 16.7%, 33.3%...100%
+      return '<div class="ca-milestone" style="left:' + leftPct + '%">' +
+        '<div class="ca-m-dot' + (reached ? ' reached' : isNext ? ' next' : '') + '"></div>' +
+        '<div class="ca-m-label' + (reached ? ' reached' : isNext ? ' next' : '') + '">' +
+          r.label + '<br>' + r.pts.toLocaleString() +
+        '</div></div>';
+    }).join('');
+  }
+
+  // Tier grid
+  var tierGrid = document.getElementById('ca-tier-grid');
+  if (tierGrid) {
+    tierGrid.innerHTML = CA_TIERS.map(function(tier) {
+      var s = tierStats[tier];
+      var pct = s.total > 0 ? Math.round(s.done / s.total * 100) : 0;
+      var tierKey = tier === 'Grandmaster' ? 'gm' : tier.toLowerCase();
+      var isActive = caActiveTier === tier;
+      return '<div class="ca-tier-card' + (isActive ? ' active' : '') + '" data-tier="' + tier + '" onclick="setCaTier(\'' + tier + '\')">' +
+        '<div class="ca-tier-card-header">' +
+          '<span class="ca-tier-name ' + tierKey + '">' + tier + '</span>' +
+          '<span class="ca-tier-pts">' + s.donePts + ' pts</span>' +
+        '</div>' +
+        '<div class="ca-tier-counts">' + s.done + '<span> / ' + s.total + '</span></div>' +
+        '<div class="ca-tier-bar-track"><div class="ca-tier-bar-fill fill-' + tierKey + '" style="width:' + pct + '%"></div></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Combat profile
+  var profileEl = document.getElementById('ca-profile-card');
+  if (profileEl) {
+    var totalTasks = CA_DATA.length;
+    var doneTasks = Object.keys(caCompleted).filter(function(k) { return caCompleted[k]; }).length;
+    var profileRows = [
+      ['Tasks completed', doneTasks.toLocaleString()],
+      ['Total possible', totalTasks.toLocaleString()],
+    ];
+    // Pull from hiscores data if available
+    if (typeof playerStats !== 'undefined' && Object.keys(playerStats).length > 0) {
+      var topBoss = null, topKC = 0;
+      SPINE_DATA.forEach(function(item) {
+        if ((item.type === 'Boss' || item.entryType === 'boss') && bossKC[item.order] > topKC) {
+          topKC = bossKC[item.order];
+          topBoss = item.name;
+        }
+      });
+      var totalKC = Object.values(bossKC).reduce(function(s, v) { return s + (v || 0); }, 0);
+      profileRows.push(['Boss kill count', totalKC.toLocaleString()]);
+      if (topBoss) profileRows.push(['Top boss', '<div class="ca-profile-val">' + topBoss + '</div><div class="ca-profile-sub">' + topKC.toLocaleString() + ' kc</div>']);
+    } else {
+      profileRows.push(['Boss kill count', '<span class="muted">— link RSN —</span>']);
+      profileRows.push(['Top boss', '<span class="muted">— link RSN —</span>']);
+    }
+    profileEl.innerHTML = profileRows.map(function(r) {
+      return '<div class="ca-profile-row">' +
+        '<span class="ca-profile-key">' + r[0] + '</span>' +
+        '<span class="ca-profile-val">' + r[1] + '</span>' +
+      '</div>';
+    }).join('');
+  }
+}
+
+function renderCaTabs() {
+  var tabBar = document.getElementById('ca-tab-bar');
+  if (!tabBar || typeof CA_DATA === 'undefined') return;
+  var tierStats = getCaTierStats();
+  var totalDone = CA_DATA.filter(function(t) { return caCompleted[t.id]; }).length;
+  var allTab = '<button class="ca-tab' + (caActiveTier === 'All' ? ' active' : '') + '" data-tier="All" onclick="setCaTier(\'All\')">' +
+    'All <span class="ca-tab-n">' + totalDone + '/' + CA_DATA.length + '</span>' +
+  '</button>';
+  tabBar.innerHTML = allTab + CA_TIERS.map(function(tier) {
+    var s = tierStats[tier];
+    var isActive = caActiveTier === tier;
+    return '<button class="ca-tab' + (isActive ? ' active' : '') + '" data-tier="' + tier + '" onclick="setCaTier(\'' + tier + '\')">' +
+      tier + ' <span class="ca-tab-n">' + s.done + '/' + s.total + '</span>' +
+    '</button>';
+  }).join('');
+}
+
+function renderCaTierSummary() {
+  var el = document.getElementById('ca-tier-summary');
+  if (!el || typeof CA_DATA === 'undefined') return;
+  var tierStats = getCaTierStats();
+  var summary;
+  if (caActiveTier === 'All') {
+    var allDone = CA_DATA.filter(function(t) { return caCompleted[t.id]; }).length;
+    var allPts = CA_DATA.reduce(function(s,t) { return s + (caCompleted[t.id] ? t.points : 0); }, 0);
+    summary = { done: allDone, total: CA_DATA.length, donePts: allPts, pts: 2630 };
+  } else {
+    summary = tierStats[caActiveTier];
+  }
+  if (!summary) return;
+  el.innerHTML =
+    '<span><strong>' + summary.done + '/' + summary.total + '</strong> tasks done</span>' +
+    '<span><strong>' + summary.donePts + '/' + summary.pts + '</strong> pts earned</span>' +
+    '<span style="color:var(--gold-dark)"><strong>' + (summary.total - summary.done) + '</strong> remaining</span>';
+}
+
+function renderCaTaskList() {
+  var container = document.getElementById('ca-task-list');
+  if (!container || typeof CA_DATA === 'undefined') return;
+
+  var search = (document.getElementById('ca-search') || {}).value || '';
+  search = search.toLowerCase().trim();
+  var typeFilter = (document.getElementById('ca-type-filter') || {}).value || '';
+
+  var tasks = CA_DATA.filter(function(t) {
+    if (caActiveTier !== 'All' && t.tier !== caActiveTier) return false;
+    if (typeFilter && t.type !== typeFilter) return false;
+    if (caHideDone && caCompleted[t.id]) return false;
+    if (search && t.name.toLowerCase().indexOf(search) === -1 &&
+        t.boss.toLowerCase().indexOf(search) === -1 &&
+        t.description.toLowerCase().indexOf(search) === -1) return false;
+    return true;
+  });
+
+  if (!tasks.length) {
+    container.innerHTML = '<div class="ca-empty">No tasks match your filters.</div>';
+    return;
+  }
+
+  // Group by boss
+  var groups = {};
+  var groupOrder = [];
+  tasks.forEach(function(t) {
+    var key = t.boss || 'Other';
+    if (!groups[key]) { groups[key] = []; groupOrder.push(key); }
+    groups[key].push(t);
+  });
+
+  container.innerHTML = groupOrder.map(function(boss) {
+    var bTasks = groups[boss];
+    var totalForBoss = CA_DATA.filter(function(t) { return t.boss === boss && (caActiveTier === 'All' || t.tier === caActiveTier); }).length;
+    var doneForBoss = CA_DATA.filter(function(t) { return t.boss === boss && (caActiveTier === 'All' || t.tier === caActiveTier) && caCompleted[t.id]; }).length;
+    var bPct = totalForBoss > 0 ? Math.round(doneForBoss / totalForBoss * 100) : 0;
+    var allBossDone = doneForBoss === totalForBoss && totalForBoss > 0;
+
+    var tasksHtml = bTasks.map(function(t) {
+      var done = !!caCompleted[t.id];
+      var typeKey = t.type.toLowerCase().replace(' ', '-').replace(' count','').replace('kill-','kc').replace('mechanical','mech').replace('restriction','restrict').replace('perfection','perf').replace('stamina','stam').replace('speed','speed');
+      // normalise type class
+      var typeClassMap = {
+        'Kill Count': 'kc', 'Mechanical': 'mech', 'Speed': 'speed',
+        'Restriction': 'restrict', 'Perfection': 'perf', 'Stamina': 'stam'
+      };
+      var typeClass = 'ca-type-' + (typeClassMap[t.type] || 'kc');
+      var tierKey = t.tier === 'Grandmaster' ? 'gm' : t.tier.toLowerCase();
+      return '<div class="ca-task-row' + (done ? ' done' : '') + '">' +
+        '<div class="ca-task-check' + (done ? ' done' : '') + '" onclick="toggleCaTask(\'' + t.id + '\')">' + (done ? '✓' : '') + '</div>' +
+        '<div class="ca-task-info">' +
+          '<div class="ca-task-name' + (done ? ' done' : '') + '">' + t.name + '</div>' +
+          '<div class="ca-task-desc">' + t.description + '</div>' +
+        '</div>' +
+        '<div class="ca-task-right">' +
+          '<span class="ca-type-badge ' + typeClass + '">' + t.type + '</span>' +
+          '<span class="ca-task-tier-badge ' + tierKey + '">' + t.tier + '</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="ca-boss-group">' +
+      '<div class="ca-boss-hdr">' +
+        '<span class="ca-boss-name">' + boss + '</span>' +
+        '<div class="ca-boss-right">' +
+          '<div class="ca-boss-mini-bar"><div class="ca-boss-mini-fill' + (allBossDone ? ' done' : '') + '" style="width:' + bPct + '%"></div></div>' +
+          '<span class="ca-boss-count' + (allBossDone ? ' done' : '') + '">' + doneForBoss + '/' + totalForBoss + '</span>' +
+        '</div>' +
+      '</div>' +
+      tasksHtml +
+    '</div>';
+  }).join('');
+}
+
+function toggleCaTask(id) {
+  if (caCompleted[id]) {
+    delete caCompleted[id];
+  } else {
+    caCompleted[id] = true;
+  }
+  saveCaStorage();
+  renderCaPage();
+}
+
+// Helper: get CA tasks for a given spineMatch name
+function getCaTasksForBoss(spineName) {
+  if (typeof CA_DATA === 'undefined') return [];
+  return CA_DATA.filter(function(t) { return t.spineMatch === spineName; });
+}
+
 </script>
 <!-- ===== END SPLASH ===== -->
 
