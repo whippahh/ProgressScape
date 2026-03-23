@@ -3307,7 +3307,7 @@
     transition: width 0.4s;
   }
   .ca-reward-milestones {
-    position: relative; height: 32px; margin-top: 4px;
+    position: relative; height: 36px; margin-top: 4px;
   }
   .ca-milestone {
     position: absolute; display: flex; flex-direction: column; align-items: center; gap: 3px;
@@ -4963,10 +4963,41 @@ function markTierDone(tierId, e) {
   var tier = TIERS.find(function(t) { return t.id === tierId; });
   if (!tier) return;
   var data = getActiveData();
+
+  // Start with all items in this tier
   var tierItems = data.filter(function(item) {
     var ord = ironmanMode ? (item.imOrder || item.order) : item.order;
     return ord >= tier.minOrder && ord <= tier.maxOrder;
   });
+
+  // Apply active type filters — only mark what's currently visible
+  var typeFilters = ['Quest','Boss','Activity/Goal','Unlock','Miniquest','Diary'].filter(function(t) { return activeFilters.has(t); });
+  var hasLocked = activeFilters.has('locked');
+  var hasAvailable = activeFilters.has('available');
+  if (!activeFilters.has('all')) {
+    tierItems = tierItems.filter(function(item) {
+      var pass = false;
+      if (typeFilters.length > 0 && typeFilters.includes(item.type)) pass = true;
+      if (hasLocked || hasAvailable) {
+        var m = meetsReqs(item);
+        if (hasLocked && m === false) pass = true;
+        if (hasAvailable && (m === true || m === null)) pass = true;
+      }
+      return pass;
+    });
+  }
+
+  // Apply search filter
+  var search = (document.getElementById('search-input') || {}).value || '';
+  search = search.toLowerCase().trim();
+  if (search) {
+    tierItems = tierItems.filter(function(item) {
+      return item.name.toLowerCase().includes(search) ||
+             item.location.toLowerCase().includes(search) ||
+             item.type.toLowerCase().includes(search);
+    });
+  }
+
   var allDone = tierItems.every(function(item) { return completedSet.has(item.order); });
   tierItems.forEach(function(item) {
     if (allDone) { completedSet.delete(item.order); }
@@ -5894,13 +5925,12 @@ function renderDashboard() {
       { id: 'fire_cape',    label: 'Fire Cape',     desc: 'Defeated TzTok-Jad',                         icon: 'https://oldschool.runescape.wiki/images/Fire_cape.png',               earned: completedSet.has(279),  gold: false },
       { id: 'infernal_cape',label: 'Infernal Cape', desc: 'Defeated TzKal-Zuk',                         icon: 'https://oldschool.runescape.wiki/images/Infernal_cape.png',           earned: completedSet.has(466),  gold: true  },
       // ── Combat Achievements ──────────────────────────────────────────────────
-      { id: "ca_hilt1", label: "Hilt 1",     desc: "33 CA points — Ghommal's hilt 1",      icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_1.png",    earned: _caPoints >= 33,   gold: false },
-      { id: "ca_hilt2", label: "Hilt 2",     desc: "115 CA points — Ghommal's hilt 2",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_2.png",    earned: _caPoints >= 115,  gold: false },
-      { id: "ca_hilt3", label: "Hilt 3",     desc: "270 CA points — Ghommal's hilt 3",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_3.png",    earned: _caPoints >= 270,  gold: false },
-      { id: "ca_hilt4", label: "Hilt 4",     desc: "535 CA points — Ghommal's hilt 4",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_4.png",    earned: _caPoints >= 535,  gold: false },
-      { id: "ca_hilt5", label: "Hilt 5",     desc: "1,005 CA points — Ghommal's hilt 5",   icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_5.png",    earned: _caPoints >= 1005, gold: false },
-      { id: "ca_hilt6", label: "Hilt 6",     desc: "1,560 CA points — Ghommal's hilt 6",   icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_6.png",    earned: _caPoints >= 1560, gold: true  },
-      { id: "ca_helm",  label: "Tzkal Helm", desc: "All 2,630 CA points — Tzkal slayer helm", icon: "https://oldschool.runescape.wiki/images/Tzkal_slayer_helmet.png", earned: _caPoints >= 2630, gold: true  },
+      { id: "ca_hilt1", label: "Hilt 1",     desc: "41 CA points — Ghommal's hilt 1",      icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_1.png",    earned: _caPoints >= 41,   gold: false },
+      { id: "ca_hilt2", label: "Hilt 2",     desc: "161 CA points — Ghommal's hilt 2",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_2.png",    earned: _caPoints >= 161,  gold: false },
+      { id: "ca_hilt3", label: "Hilt 3",     desc: "416 CA points — Ghommal's hilt 3",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_3.png",    earned: _caPoints >= 416,  gold: false },
+      { id: "ca_hilt4", label: "Hilt 4",     desc: "1,064 CA points — Ghommal's hilt 4",   icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_4.png",    earned: _caPoints >= 1064, gold: false },
+      { id: "ca_hilt5", label: "Hilt 5",     desc: "1,904 CA points — Ghommal's hilt 5",   icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_5.png",    earned: _caPoints >= 1904, gold: false },
+      { id: "ca_hilt6", label: "Hilt 6", desc: "2,630 CA points — Ghommal's hilt 6 + Tzkal slayer helm", icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_6.png", earned: _caPoints >= 2630, gold: true  },
     ];
 
     // Append one badge per skill 99 beyond the first (only earned ones — these don't have a locked state)
@@ -8009,13 +8039,12 @@ var caHideDone = false;
 var caOverviewCollapsed = false;
 
 var CA_REWARDS = [
-  { pts: 33,   label: "Hilt 1" },
-  { pts: 115,  label: "Hilt 2" },
-  { pts: 270,  label: "Hilt 3" },
-  { pts: 535,  label: "Hilt 4" },
-  { pts: 1005, label: "Hilt 5" },
-  { pts: 1560, label: "Hilt 6" },
-  { pts: 2630, label: "Tzkal helm" }
+  { pts: 41,   label: "Hilt 1" },
+  { pts: 161,  label: "Hilt 2" },
+  { pts: 416,  label: "Hilt 3" },
+  { pts: 1064, label: "Hilt 4" },
+  { pts: 1904, label: "Hilt 5" },
+  { pts: 2630, label: "Hilt 6" }
 ];
 
 var CA_TIERS = ['Easy','Medium','Hard','Elite','Master','Grandmaster'];
@@ -8123,19 +8152,36 @@ function renderCaOverview() {
   }
 
   // Bar
-  var pct = Math.min(100, Math.round(pts / CA_TOTAL_PTS * 100));
+  // Segment-based fill: bar divided into equal segments between reward thresholds
+  // so dots (evenly spaced) and fill always align
+  var allPts = [0].concat(CA_REWARDS.map(function(r) { return r.pts; }));
+  var segCount = CA_REWARDS.length; // number of segments
+  var fillPct = 0;
+  for (var si = 0; si < segCount; si++) {
+    var segStart = allPts[si];
+    var segEnd   = allPts[si + 1];
+    if (pts >= segEnd) {
+      fillPct = (si + 1) / segCount * 100;
+    } else if (pts >= segStart) {
+      var segProgress = (pts - segStart) / (segEnd - segStart);
+      fillPct = (si + segProgress) / segCount * 100;
+      break;
+    }
+  }
+  fillPct = Math.min(100, Math.round(fillPct * 10) / 10);
   var fillEl = document.getElementById('ca-reward-fill');
-  if (fillEl) fillEl.style.width = pct + '%';
+  if (fillEl) fillEl.style.width = fillPct + '%';
   var barLabel = document.getElementById('ca-bar-label');
   if (barLabel) barLabel.textContent = pts.toLocaleString() + ' / ' + CA_TOTAL_PTS.toLocaleString();
 
   // Milestones
   var msEl = document.getElementById('ca-milestones');
   if (msEl) {
-    msEl.innerHTML = CA_REWARDS.map(function(r) {
+    var segCount = CA_REWARDS.length;
+    msEl.innerHTML = CA_REWARDS.map(function(r, idx) {
       var reached = pts >= r.pts;
       var isNext = !reached && nextReward && r.pts === nextReward.pts;
-      var leftPct = Math.round(r.pts / CA_TOTAL_PTS * 100);
+      var leftPct = Math.round((idx + 1) / segCount * 1000) / 10; // e.g. 16.7%, 33.3%...100%
       return '<div class="ca-milestone" style="left:' + leftPct + '%">' +
         '<div class="ca-m-dot' + (reached ? ' reached' : isNext ? ' next' : '') + '"></div>' +
         '<div class="ca-m-label' + (reached ? ' reached' : isNext ? ' next' : '') + '">' +
