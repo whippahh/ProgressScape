@@ -5839,8 +5839,14 @@ function updateCombatDisplay() {
   renderDashboard();
 }
 
+function renderDashboardWhenReady() {
+  setTimeout(function() {
+    if (typeof caCompleted !== 'undefined') renderDashboard();
+  }, 50);
+}
+
 function renderDashboard() {
-  if (typeof caCompleted !== 'undefined' && Object.keys(caCompleted).length === 0) loadCaStorage();
+  if (typeof caCompleted === 'undefined') return renderDashboardWhenReady();
   const dash = document.getElementById('account-dashboard');
   if (!dash || typeof SPINE_DATA === 'undefined') return;
 
@@ -5959,11 +5965,10 @@ function renderDashboard() {
     return Object.keys(u).length;
   })() : 0;
 
-  const caDoneCount = typeof CA_DATA !== 'undefined'
-    ? CA_DATA.filter(t => caCompleted[t.id]).length : 0;
-  const caTotalCount = typeof CA_DATA !== 'undefined' ? CA_DATA.length : 637;
-  const caEarnedPts = typeof CA_DATA !== 'undefined'
-    ? CA_DATA.reduce((s, t) => s + (caCompleted[t.id] ? t.points : 0), 0) : 0;
+  const _ca = (typeof CA_DATA !== 'undefined' && typeof caCompleted !== 'undefined');
+  const caDoneCount = _ca ? CA_DATA.filter(t => caCompleted[t.id]).length : 0;
+  const caTotalCount = _ca ? CA_DATA.length : 637;
+  const caEarnedPts = _ca ? CA_DATA.reduce((s, t) => s + (caCompleted[t.id] ? t.points : 0), 0) : 0;
 
   const cards = [
     { label: 'Total Level', value: total.toLocaleString(), sub: fromMax + ' from max' },
