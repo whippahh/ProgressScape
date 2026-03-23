@@ -3307,9 +3307,12 @@
     transition: width 0.4s;
   }
   .ca-reward-milestones {
-    display: flex; justify-content: space-between;
+    position: relative; height: 32px; margin-top: 4px;
   }
-  .ca-milestone { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .ca-milestone {
+    position: absolute; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    transform: translateX(-50%);
+  }
   .ca-m-dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--stone-lighter); border: 1px solid var(--stone-lighter);
@@ -5869,6 +5872,11 @@ function renderDashboard() {
       .filter(i => i.name.startsWith(tier + ' '))
       .every(i => doneDiaryOrders.has(i.order));
 
+    // CA points for badge conditions
+    const _caPoints = (typeof CA_DATA !== 'undefined' && typeof caCompleted !== 'undefined')
+      ? CA_DATA.reduce((s, t) => s + (caCompleted[t.id] ? t.points : 0), 0)
+      : 0;
+
     // Static badge definitions (always shown — locked or earned)
     // Individual skill-99 badges are dynamically appended below
     const BADGE_DEFS = [
@@ -5885,6 +5893,14 @@ function renderDashboard() {
       { id: 'cb_126',       label: 'Max Combat',    desc: 'Combat level 126',                           icon: 'https://oldschool.runescape.wiki/images/Worn_Equipment.png',          earned: cb >= 126,  gold: true  },
       { id: 'fire_cape',    label: 'Fire Cape',     desc: 'Defeated TzTok-Jad',                         icon: 'https://oldschool.runescape.wiki/images/Fire_cape.png',               earned: completedSet.has(279),  gold: false },
       { id: 'infernal_cape',label: 'Infernal Cape', desc: 'Defeated TzKal-Zuk',                         icon: 'https://oldschool.runescape.wiki/images/Infernal_cape.png',           earned: completedSet.has(466),  gold: true  },
+      // ── Combat Achievements ──────────────────────────────────────────────────
+      { id: "ca_hilt1", label: "Hilt 1",     desc: "33 CA points — Ghommal's hilt 1",      icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_1.png",    earned: _caPoints >= 33,   gold: false },
+      { id: "ca_hilt2", label: "Hilt 2",     desc: "115 CA points — Ghommal's hilt 2",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_2.png",    earned: _caPoints >= 115,  gold: false },
+      { id: "ca_hilt3", label: "Hilt 3",     desc: "270 CA points — Ghommal's hilt 3",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_3.png",    earned: _caPoints >= 270,  gold: false },
+      { id: "ca_hilt4", label: "Hilt 4",     desc: "535 CA points — Ghommal's hilt 4",     icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_4.png",    earned: _caPoints >= 535,  gold: false },
+      { id: "ca_hilt5", label: "Hilt 5",     desc: "1,005 CA points — Ghommal's hilt 5",   icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_5.png",    earned: _caPoints >= 1005, gold: false },
+      { id: "ca_hilt6", label: "Hilt 6",     desc: "1,560 CA points — Ghommal's hilt 6",   icon: "https://oldschool.runescape.wiki/images/Ghommal%27s_hilt_6.png",    earned: _caPoints >= 1560, gold: true  },
+      { id: "ca_helm",  label: "Tzkal Helm", desc: "All 2,630 CA points — Tzkal slayer helm", icon: "https://oldschool.runescape.wiki/images/Tzkal_slayer_helmet.png", earned: _caPoints >= 2630, gold: true  },
     ];
 
     // Append one badge per skill 99 beyond the first (only earned ones — these don't have a locked state)
@@ -8119,7 +8135,8 @@ function renderCaOverview() {
     msEl.innerHTML = CA_REWARDS.map(function(r) {
       var reached = pts >= r.pts;
       var isNext = !reached && nextReward && r.pts === nextReward.pts;
-      return '<div class="ca-milestone">' +
+      var leftPct = Math.round(r.pts / CA_TOTAL_PTS * 100);
+      return '<div class="ca-milestone" style="left:' + leftPct + '%">' +
         '<div class="ca-m-dot' + (reached ? ' reached' : isNext ? ' next' : '') + '"></div>' +
         '<div class="ca-m-label' + (reached ? ' reached' : isNext ? ' next' : '') + '">' +
           r.label + '<br>' + r.pts.toLocaleString() +
