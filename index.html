@@ -1711,12 +1711,52 @@
     background: rgba(200,168,75,0.15);
   }
 
-  /* ===== FLOATING RANDOM PANEL ===== */
-  .floating-rand-trigger {
+  /* ===== ORACLE LAUNCHER ===== */
+  #oracle-launcher {
     position: fixed;
     bottom: 1.25rem;
     right: 1.25rem;
-    z-index: 300;
+    z-index: 302;
+    background: linear-gradient(135deg, #2a1f0a, var(--stone-mid));
+    border: 1px solid var(--gold-dark);
+    border-radius: 8px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.6);
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  #oracle-launcher:hover {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, #3a2a0e, #4a3c28);
+    box-shadow: 0 4px 24px rgba(200,168,75,0.25);
+  }
+
+  #oracle-launcher-icon {
+    font-size: 1rem;
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    display: inline-block;
+  }
+
+  #oracle-launcher.open #oracle-launcher-icon {
+    transform: rotate(135deg);
+  }
+
+  /* ===== ORACLE TRIGGER BUTTONS ===== */
+  .floating-rand-trigger {
+    position: fixed;
+    right: 1.25rem;
+    z-index: 301;
     background: linear-gradient(135deg, #2a1f0a, var(--stone-mid));
     border: 1px solid var(--gold-dark);
     border-radius: 8px;
@@ -1731,10 +1771,24 @@
     align-items: center;
     gap: 0.4rem;
     box-shadow: 0 4px 18px rgba(0,0,0,0.6);
-    transition: all 0.15s;
     user-select: none;
     white-space: nowrap;
+    bottom: 1.25rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(0) scale(0.9);
+    transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+                border-color 0.15s, background 0.15s, box-shadow 0.15s;
   }
+
+  .floating-rand-trigger.oracle-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #trigger-task.oracle-visible   { bottom: 4rem;   transform: translateY(0) scale(1); }
+  #trigger-combat.oracle-visible { bottom: 6.75rem; transform: translateY(0) scale(1); }
+  #trigger-clog.oracle-visible   { bottom: 9.5rem;  transform: translateY(0) scale(1); }
 
   .floating-rand-trigger:hover {
     border-color: var(--gold);
@@ -1746,7 +1800,7 @@
     position: fixed;
     bottom: 4.5rem;
     right: 1.25rem;
-    z-index: 299;
+    z-index: 310;
     width: 320px;
     max-width: calc(100vw - 2.5rem);
     max-height: calc(100vh - 6rem);
@@ -1942,14 +1996,77 @@
       bottom: 4.2rem;
       width: calc(100vw - 1.5rem);
     }
-    .floating-rand-trigger {
+    #oracle-launcher {
       right: 0.75rem;
       bottom: 0.75rem;
     }
+    .floating-rand-trigger {
+      right: 0.75rem;
+    }
+    #trigger-task.oracle-visible   { bottom: 3.75rem; }
+    #trigger-combat.oracle-visible { bottom: 6.5rem; }
+    #trigger-clog.oracle-visible   { bottom: 9.25rem; }
     .back-to-top {
       right: 0.75rem;
       bottom: 5rem;
     }
+  }
+
+  /* ===== CA TIER BADGES (oracle) ===== */
+  .ca-tier-badge {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .ca-tier-easy        { background: rgba(61,158,61,0.18);  color: #5abf5a; border: 1px solid rgba(61,158,61,0.4); }
+  .ca-tier-medium      { background: rgba(74,127,200,0.18); color: #7aacee; border: 1px solid rgba(74,127,200,0.4); }
+  .ca-tier-hard        { background: rgba(200,168,75,0.18); color: #e8c96a; border: 1px solid rgba(200,168,75,0.4); }
+  .ca-tier-elite       { background: rgba(160,80,200,0.18); color: #c87ae8; border: 1px solid rgba(160,80,200,0.4); }
+  .ca-tier-master      { background: rgba(200,80,80,0.18);  color: #e87a7a; border: 1px solid rgba(200,80,80,0.4); }
+  .ca-tier-grandmaster { background: rgba(200,140,40,0.25); color: #f0a040; border: 1px solid rgba(200,140,40,0.5); }
+
+  .ca-type-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    color: var(--text-muted);
+    border: 1px solid var(--stone-lighter);
+    margin-left: 0.3rem;
+  }
+
+  .frand-desc {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-top: 0.4rem;
+  }
+
+  .frand-source {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    color: var(--stone-lighter);
+    margin-top: 0.25rem;
+    letter-spacing: 0.03em;
+  }
+
+  .frand-clog-progress {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+
+  .frand-clog-progress span {
+    color: var(--gold);
+    font-weight: 600;
   }
 
 
@@ -3938,9 +4055,19 @@
   </div>
 </div>
 
-<!-- ===== FLOATING RANDOM TASK PANEL ===== -->
-<div class="floating-rand-trigger" onclick="toggleRandomPanel()" title="Random Task">
-  🎲 <span>Random</span>
+<!-- ===== ORACLE LAUNCHER ===== -->
+<div id="oracle-launcher" onclick="toggleOracleLauncher()" title="Oracles">
+  <span id="oracle-launcher-icon">🎲</span>
+  <span>Oracles</span>
+</div>
+<div id="trigger-task" class="floating-rand-trigger" onclick="toggleRandomPanel()" title="Task Oracle">
+  🎲 <span>Task Oracle</span>
+</div>
+<div id="trigger-combat" class="floating-rand-trigger" onclick="toggleCombatPanel()" title="Combat Oracle">
+  ⚔️ <span>Combat Oracle</span>
+</div>
+<div id="trigger-clog" class="floating-rand-trigger" onclick="toggleClogOraclePanel()" title="Collection Oracle">
+  📦 <span>Collection Oracle</span>
 </div>
 
 <div id="floating-rand-panel" class="floating-rand-panel">
@@ -3986,8 +4113,87 @@
   </div>
 </div>
 
+<!-- ===== COMBAT ORACLE PANEL ===== -->
+<div id="combat-oracle-panel" class="floating-rand-panel">
+  <div class="frand-header">
+    <span class="frand-title">⚔️ Combat Oracle</span>
+    <button class="frand-close" onclick="closeCombatPanel()">✕</button>
+  </div>
 
-<!-- ===== CUSTOM PATH PLANNER PAGE ===== -->
+  <div class="frand-filters">
+    <button class="chip active" data-cafilter="Easy"        onclick="toggleCAFilter('Easy')">Easy</button>
+    <button class="chip active" data-cafilter="Medium"      onclick="toggleCAFilter('Medium')">Medium</button>
+    <button class="chip active" data-cafilter="Hard"        onclick="toggleCAFilter('Hard')">Hard</button>
+    <button class="chip active" data-cafilter="Elite"       onclick="toggleCAFilter('Elite')">Elite</button>
+    <button class="chip active" data-cafilter="Master"      onclick="toggleCAFilter('Master')">Master</button>
+    <button class="chip active" data-cafilter="Grandmaster" onclick="toggleCAFilter('Grandmaster')">GM</button>
+    <button class="chip active" data-cafilter="ca-incomplete" onclick="toggleCAFilter('ca-incomplete')">Skip Done</button>
+  </div>
+
+  <div class="frand-result-area" style="flex-direction:column;align-items:flex-start">
+    <div id="combat-spin-idle" class="frand-idle" style="width:100%;text-align:center">Press a button to receive your task…</div>
+    <div id="combat-spin-result" style="display:none;width:100%">
+      <div id="combat-spin-name" class="frand-name"></div>
+      <div id="combat-spin-badges" style="margin:0.3rem 0 0.2rem"></div>
+      <div id="combat-spin-boss" class="frand-source"></div>
+      <div id="combat-spin-desc" class="frand-desc"></div>
+    </div>
+  </div>
+
+  <div class="frand-btns">
+    <button class="spin-btn frand-spin-btn" onclick="combatSpin(false)">🎲 Surprise Me</button>
+    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="combatSpin(true)" title="Suggests lowest incomplete tier first">💡 Suggest Task</button>
+  </div>
+  <div class="frand-subbtns">
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="combatMarkDone()">✓ Mark Done & Roll Again</button>
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearCombatHistory()">🗑 Clear</button>
+  </div>
+
+  <div id="combat-history-wrap" style="display:none">
+    <div class="frand-hist-title">Recent Rolls</div>
+    <div id="combat-history-list" class="frand-hist-list"></div>
+  </div>
+</div>
+
+<!-- ===== COLLECTION ORACLE PANEL ===== -->
+<div id="clog-oracle-panel" class="floating-rand-panel">
+  <div class="frand-header">
+    <span class="frand-title">📦 Collection Oracle</span>
+    <button class="frand-close" onclick="closeClogOraclePanel()">✕</button>
+  </div>
+
+  <div class="frand-filters">
+    <button class="chip active" data-clogfilter="Bosses"    onclick="toggleClogOracleFilter('Bosses')">Bosses</button>
+    <button class="chip active" data-clogfilter="Raids"     onclick="toggleClogOracleFilter('Raids')">Raids</button>
+    <button class="chip active" data-clogfilter="Clues"     onclick="toggleClogOracleFilter('Clues')">Clues</button>
+    <button class="chip active" data-clogfilter="Minigames" onclick="toggleClogOracleFilter('Minigames')">Minigames</button>
+    <button class="chip active" data-clogfilter="Other"     onclick="toggleClogOracleFilter('Other')">Other</button>
+    <button class="chip active" data-clogfilter="clog-missing" onclick="toggleClogOracleFilter('clog-missing')">Skip Obtained</button>
+  </div>
+
+  <div class="frand-result-area" style="flex-direction:column;align-items:flex-start">
+    <div id="clog-oracle-idle" class="frand-idle" style="width:100%;text-align:center">Press a button to receive your task…</div>
+    <div id="clog-oracle-result" style="display:none;width:100%">
+      <div id="clog-oracle-name" class="frand-name"></div>
+      <div id="clog-oracle-source" class="frand-source"></div>
+      <div id="clog-oracle-progress" class="frand-clog-progress"></div>
+    </div>
+  </div>
+
+  <div class="frand-btns">
+    <button class="spin-btn frand-spin-btn" onclick="clogOracleSpin(false)">🎲 Surprise Me</button>
+    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="clogOracleSpin(true)" title="Suggests the source closest to completion">💡 Suggest Item</button>
+  </div>
+  <div class="frand-subbtns">
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clogOracleMarkObtained()">✓ Mark Obtained & Roll Again</button>
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearClogOracleHistory()">🗑 Clear</button>
+  </div>
+
+  <div id="clog-oracle-history-wrap" style="display:none">
+    <div class="frand-hist-title">Recent Rolls</div>
+    <div id="clog-oracle-history-list" class="frand-hist-list"></div>
+  </div>
+</div>
 <div id="page-planner" class="page">
   <div class="planner-page">
 
@@ -4199,6 +4405,16 @@ let bossKC = {};
 let obtainedDrops = {};
 let spinHistory = [];
 let currentSpinItem = null;
+
+// Combat Oracle state
+var caFilters = new Set(['Easy','Medium','Hard','Elite','Master','Grandmaster','ca-incomplete']);
+var currentCombatItem = null;
+var combatHistory = [];
+
+// Collection Oracle state
+var clogOracleFilters = new Set(['Bosses','Raids','Clues','Minigames','Other','clog-missing']);
+var currentClogOracleItem = null;
+var clogOracleHistory = [];
 let userNotes = {};
 let ironmanMode = false;
 // Track which accordion tiers are open (by tier id)
@@ -5669,8 +5885,12 @@ function showDownstreamTree(order) {
 
 function toggleRandomPanel() {
   const panel = document.getElementById('floating-rand-panel');
-  panel.classList.toggle('open');
-  if (panel.classList.contains('open')) renderFloatingHistory();
+  const isOpening = !panel.classList.contains('open');
+  closeAllOraclePanels();
+  if (isOpening) {
+    panel.classList.add('open');
+    renderFloatingHistory();
+  }
 }
 
 function closeRandomPanel() {
@@ -5814,8 +6034,368 @@ function toggleRandFilter(f) {
 }
 
 // ============================================================
-// STATS PAGE
+// CLOSE ALL ORACLES HELPER
 // ============================================================
+function closeAllOraclePanels() {
+  document.getElementById('floating-rand-panel').classList.remove('open');
+  document.getElementById('combat-oracle-panel').classList.remove('open');
+  document.getElementById('clog-oracle-panel').classList.remove('open');
+}
+
+// ============================================================
+// ORACLE LAUNCHER
+// ============================================================
+var oracleLauncherOpen = false;
+
+function toggleOracleLauncher() {
+  oracleLauncherOpen = !oracleLauncherOpen;
+  var launcher = document.getElementById('oracle-launcher');
+  launcher.classList.toggle('open', oracleLauncherOpen);
+
+  if (!oracleLauncherOpen) {
+    collapseOracleTriggers();
+    closeAllOraclePanels();
+    return;
+  }
+
+  var ids = ['trigger-task', 'trigger-combat', 'trigger-clog'];
+  ids.forEach(function(id, i) {
+    var el = document.getElementById(id);
+    el.style.transition = 'none';
+    el.classList.remove('oracle-visible');
+    void el.offsetWidth;
+    el.style.transition = '';
+    setTimeout(function() {
+      el.classList.add('oracle-visible');
+    }, i * 60);
+  });
+
+  setTimeout(function() {
+    document.addEventListener('click', outsideOracleLauncherHandler);
+  }, 0);
+}
+
+function outsideOracleLauncherHandler(e) {
+  var launcher = document.getElementById('oracle-launcher');
+  var t = document.getElementById('trigger-task');
+  var c = document.getElementById('trigger-combat');
+  var g = document.getElementById('trigger-clog');
+  var panels = [
+    document.getElementById('floating-rand-panel'),
+    document.getElementById('combat-oracle-panel'),
+    document.getElementById('clog-oracle-panel')
+  ];
+  var clickedInside = [launcher, t, c, g].some(function(el) { return el && el.contains(e.target); }) ||
+    panels.some(function(p) { return p && p.contains(e.target); });
+  if (!clickedInside) {
+    collapseOracleLauncher();
+  }
+}
+
+function collapseOracleLauncher() {
+  oracleLauncherOpen = false;
+  document.getElementById('oracle-launcher').classList.remove('open');
+  collapseOracleTriggers();
+  closeAllOraclePanels();
+  document.removeEventListener('click', outsideOracleLauncherHandler);
+}
+
+function collapseOracleTriggers() {
+  ['trigger-task','trigger-combat','trigger-clog'].forEach(function(id) {
+    document.getElementById(id).classList.remove('oracle-visible');
+  });
+}
+
+// ============================================================
+// COMBAT ORACLE
+// ============================================================
+function toggleCombatPanel() {
+  var panel = document.getElementById('combat-oracle-panel');
+  var isOpening = !panel.classList.contains('open');
+  closeAllOraclePanels();
+  if (isOpening) {
+    panel.classList.add('open');
+    renderCombatHistory();
+  }
+}
+
+function closeCombatPanel() {
+  document.getElementById('combat-oracle-panel').classList.remove('open');
+}
+
+function toggleCAFilter(f) {
+  if (caFilters.has(f)) {
+    caFilters.delete(f);
+  } else {
+    caFilters.add(f);
+  }
+  document.querySelectorAll('[data-cafilter="' + f + '"]').forEach(function(el) {
+    el.classList.toggle('active', caFilters.has(f));
+  });
+}
+
+function getCAPool(suggest) {
+  if (typeof CA_DATA === 'undefined') return [];
+  return CA_DATA.filter(function(ca) {
+    if (!caFilters.has(ca.tier)) return false;
+    if (caFilters.has('ca-incomplete') && caCompleted[ca.id]) return false;
+    if (suggest && caCompleted[ca.id]) return false;
+    return true;
+  });
+}
+
+function getCAPoolSuggested() {
+  if (typeof CA_DATA === 'undefined') return [];
+  var tierOrder = ['Easy','Medium','Hard','Elite','Master','Grandmaster'];
+  for (var i = 0; i < tierOrder.length; i++) {
+    var tier = tierOrder[i];
+    if (!caFilters.has(tier)) continue;
+    var pool = CA_DATA.filter(function(ca) {
+      return ca.tier === tier && !caCompleted[ca.id];
+    });
+    if (pool.length) return pool;
+  }
+  return getCAPool(true);
+}
+
+function combatSpin(suggest) {
+  var pool = suggest ? getCAPoolSuggested() : getCAPool(false);
+  var resultEl = document.getElementById('combat-spin-result');
+  var idleEl   = document.getElementById('combat-spin-idle');
+
+  if (!pool.length) {
+    resultEl.style.display = 'none';
+    idleEl.style.display = 'block';
+    idleEl.textContent = suggest
+      ? 'No incomplete tasks found. Try a higher tier!'
+      : 'No tasks match your filters!';
+    return;
+  }
+
+  idleEl.style.display = 'none';
+  resultEl.style.display = 'block';
+  var nameEl = document.getElementById('combat-spin-name');
+  nameEl.classList.add('spinning');
+
+  var ticks = 0;
+  var interval = setInterval(function() {
+    nameEl.textContent = pool[Math.floor(Math.random() * pool.length)].name;
+    ticks++;
+    if (ticks > 15) {
+      clearInterval(interval);
+      nameEl.classList.remove('spinning');
+      var chosen = pool[Math.floor(Math.random() * pool.length)];
+      currentCombatItem = chosen;
+      showCombatResult(chosen);
+      addToCombatHistory(chosen);
+    }
+  }, 55);
+}
+
+function showCombatResult(ca) {
+  document.getElementById('combat-spin-name').textContent = ca.name;
+  var tierKey = ca.tier.toLowerCase().replace(' ','');
+  document.getElementById('combat-spin-badges').innerHTML =
+    '<span class="ca-tier-badge ca-tier-' + tierKey + '">' + ca.tier + '</span>' +
+    '<span class="ca-type-badge">' + ca.type + '</span>' +
+    (caCompleted[ca.id] ? ' <span style="color:var(--green-light);font-size:0.7rem">✓ Done</span>' : '');
+  document.getElementById('combat-spin-boss').textContent = '👹 ' + ca.boss;
+  document.getElementById('combat-spin-desc').textContent = ca.description;
+  document.getElementById('combat-spin-result').style.display = 'block';
+  document.getElementById('combat-spin-idle').style.display = 'none';
+}
+
+function combatMarkDone() {
+  if (currentCombatItem) {
+    caCompleted[currentCombatItem.id] = true;
+    localStorage.setItem('ps_ca_completed', JSON.stringify(caCompleted));
+  }
+  combatSpin(false);
+}
+
+function addToCombatHistory(ca) {
+  combatHistory = combatHistory.filter(function(h) { return h.id !== ca.id; });
+  combatHistory.unshift({ id: ca.id, name: ca.name, tier: ca.tier });
+  if (combatHistory.length > 10) combatHistory.pop();
+  renderCombatHistory();
+}
+
+function renderCombatHistory() {
+  var list = document.getElementById('combat-history-list');
+  var wrap = document.getElementById('combat-history-wrap');
+  if (!list) return;
+  if (!combatHistory.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = combatHistory.map(function(h, i) {
+    var tierKey = h.tier.toLowerCase().replace(' ','');
+    return '<div class="float-hist-item">' +
+      '<span class="float-hist-num">' + (i + 1) + '</span>' +
+      '<span class="float-hist-name">' + h.name + '</span>' +
+      '<span class="ca-tier-badge ca-tier-' + tierKey + '" style="font-size:0.6rem;padding:0.08rem 0.35rem">' + h.tier + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+function clearCombatHistory() {
+  combatHistory = [];
+  currentCombatItem = null;
+  document.getElementById('combat-spin-result').style.display = 'none';
+  document.getElementById('combat-spin-idle').style.display = 'block';
+  document.getElementById('combat-spin-idle').textContent = 'Press a button to receive your task…';
+  renderCombatHistory();
+}
+
+// ============================================================
+// COLLECTION ORACLE
+// ============================================================
+function toggleClogOraclePanel() {
+  var panel = document.getElementById('clog-oracle-panel');
+  var isOpening = !panel.classList.contains('open');
+  closeAllOraclePanels();
+  if (isOpening) {
+    panel.classList.add('open');
+    renderClogOracleHistory();
+  }
+}
+
+function closeClogOraclePanel() {
+  document.getElementById('clog-oracle-panel').classList.remove('open');
+}
+
+function toggleClogOracleFilter(f) {
+  if (clogOracleFilters.has(f)) {
+    clogOracleFilters.delete(f);
+  } else {
+    clogOracleFilters.add(f);
+  }
+  document.querySelectorAll('[data-clogfilter="' + f + '"]').forEach(function(el) {
+    el.classList.toggle('active', clogOracleFilters.has(f));
+  });
+}
+
+function getClogOraclePool(suggest) {
+  if (!window.CLOG_DATA) return [];
+  return CLOG_DATA.filter(function(item) {
+    if (!clogOracleFilters.has(item.category)) return false;
+    if (clogOracleFilters.has('clog-missing') && isObtained(item.name)) return false;
+    if (suggest && isObtained(item.name)) return false;
+    return true;
+  });
+}
+
+function getClogOraclePoolSuggested() {
+  if (!window.CLOG_DATA) return [];
+  var sourceTotals = {};
+  var sourceGot = {};
+  CLOG_DATA.forEach(function(item) {
+    if (!clogOracleFilters.has(item.category)) return;
+    if (!sourceTotals[item.source]) { sourceTotals[item.source] = 0; sourceGot[item.source] = 0; }
+    sourceTotals[item.source]++;
+    if (isObtained(item.name)) sourceGot[item.source]++;
+  });
+  var best = null, bestPct = -1;
+  Object.keys(sourceTotals).forEach(function(src) {
+    var pct = sourceTotals[src] > 0 ? sourceGot[src] / sourceTotals[src] : 0;
+    if (pct < 1 && pct > bestPct) { bestPct = pct; best = src; }
+  });
+  if (!best) return getClogOraclePool(true);
+  return CLOG_DATA.filter(function(item) {
+    return item.source === best && !isObtained(item.name);
+  });
+}
+
+function clogOracleSpin(suggest) {
+  var pool = suggest ? getClogOraclePoolSuggested() : getClogOraclePool(false);
+  var resultEl = document.getElementById('clog-oracle-result');
+  var idleEl   = document.getElementById('clog-oracle-idle');
+
+  if (!pool.length) {
+    resultEl.style.display = 'none';
+    idleEl.style.display = 'block';
+    idleEl.textContent = suggest
+      ? 'No missing items found — you might be done!'
+      : 'No items match your filters!';
+    return;
+  }
+
+  idleEl.style.display = 'none';
+  resultEl.style.display = 'block';
+  var nameEl = document.getElementById('clog-oracle-name');
+  nameEl.classList.add('spinning');
+
+  var ticks = 0;
+  var interval = setInterval(function() {
+    nameEl.textContent = pool[Math.floor(Math.random() * pool.length)].name;
+    ticks++;
+    if (ticks > 15) {
+      clearInterval(interval);
+      nameEl.classList.remove('spinning');
+      var chosen = pool[Math.floor(Math.random() * pool.length)];
+      currentClogOracleItem = chosen;
+      showClogOracleResult(chosen);
+      addToClogOracleHistory(chosen);
+    }
+  }, 55);
+}
+
+function showClogOracleResult(item) {
+  document.getElementById('clog-oracle-name').textContent = item.name;
+  document.getElementById('clog-oracle-source').textContent = '📍 ' + item.source;
+  var srcItems = CLOG_DATA.filter(function(i) { return i.source === item.source; });
+  var got = srcItems.filter(function(i) { return isObtained(i.name); }).length;
+  var total = srcItems.length;
+  var pct = total > 0 ? Math.round(got / total * 100) : 0;
+  document.getElementById('clog-oracle-progress').innerHTML =
+    '<span>' + got + '</span>/' + total + ' obtained from this source (' + pct + '%)' +
+    (isObtained(item.name) ? ' <span style="color:var(--green-light)">✓ Already obtained</span>' : '');
+  document.getElementById('clog-oracle-result').style.display = 'block';
+  document.getElementById('clog-oracle-idle').style.display = 'none';
+}
+
+function clogOracleMarkObtained() {
+  if (currentClogOracleItem) {
+    var key = currentClogOracleItem.name.toLowerCase();
+    clogObtained[key] = true;
+    saveClogObtained();
+    if (document.getElementById('page-clog') && document.getElementById('page-clog').classList.contains('active')) {
+      renderClogMain();
+      renderClogSidebar();
+      updateClogSummary();
+    }
+  }
+  clogOracleSpin(false);
+}
+
+function addToClogOracleHistory(item) {
+  clogOracleHistory = clogOracleHistory.filter(function(h) { return h.name !== item.name; });
+  clogOracleHistory.unshift({ name: item.name, source: item.source });
+  if (clogOracleHistory.length > 10) clogOracleHistory.pop();
+  renderClogOracleHistory();
+}
+
+function renderClogOracleHistory() {
+  var list = document.getElementById('clog-oracle-history-list');
+  var wrap = document.getElementById('clog-oracle-history-wrap');
+  if (!list) return;
+  if (!clogOracleHistory.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = clogOracleHistory.map(function(h, i) {
+    return '<div class="float-hist-item">' +
+      '<span class="float-hist-num">' + (i + 1) + '</span>' +
+      '<span class="float-hist-name">' + h.name + '</span>' +
+      '<span style="font-size:0.65rem;color:var(--stone-lighter);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">' + h.source + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+function clearClogOracleHistory() {
+  clogOracleHistory = [];
+  currentClogOracleItem = null;
+  document.getElementById('clog-oracle-result').style.display = 'none';
+  document.getElementById('clog-oracle-idle').style.display = 'block';
+  document.getElementById('clog-oracle-idle').textContent = 'Press a button to receive your task…';
+  renderClogOracleHistory();
+}
 function buildSkillsGrid() {
   const grid = document.getElementById('skills-grid');
   grid.innerHTML = SKILLS.map(s =>
