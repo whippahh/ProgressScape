@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Combat Achievements — ProgressScape</title>
+<meta name="description" content="Track your Old School RuneScape Combat Achievement tasks and points on ProgressScape.">
+<link rel="canonical" href="https://progressscape.net/combat.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8YXGC1W0GW');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
+    <nav>
+      <a href="index.html"   class="nav-btn">Progression</a>
+      <a href="stats.html"   class="nav-btn">My Stats</a>
+      <a href="bosses.html"  class="nav-btn">Bosses</a>
+      <a href="combat.html"  class="nav-btn active">Combat Tasks</a>
+      <a href="clog.html"    class="nav-btn">Collection Log</a>
+      <a href="planner.html" class="nav-btn">Custom Path</a>
+      <a href="compare.html" class="nav-btn">Compare</a>
+      <a href="gear.html"    class="nav-btn">Gear</a>
+    </nav>
+    <div class="header-right">
+      <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
+        <img class="im-icon" src="https://oldschool.runescape.wiki/images/Ironman_chat_badge.png" alt="Ironman" style="width:16px;height:16px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin-right:2px;"> Ironman
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="page-combat" class="page active">
+  <div class="ca-page">
+
+    <!-- Overview toggle header -->
+    <div class="ca-overview-toggle" onclick="toggleCaOverview()" id="ca-overview-toggle">
+      <h2>Combat Achievements</h2>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span class="ca-pts-summary" id="ca-pts-summary"></span>
+        <span class="ca-chevron" id="ca-chevron">▼</span>
+      </div>
+    </div>
+
+    <!-- Collapsible overview panel -->
+    <div class="ca-overview-panel" id="ca-overview-panel">
+
+      <!-- Reward bar -->
+      <div class="ca-reward-bar-wrap">
+        <div class="ca-reward-bar-labels">
+          <span>Points progress</span>
+          <span id="ca-bar-label"></span>
+        </div>
+        <div class="ca-reward-bar-track">
+          <div class="ca-reward-bar-fill" id="ca-reward-fill" style="width:0%"></div>
+        </div>
+        <div class="ca-reward-milestones" id="ca-milestones"></div>
+      </div>
+
+      <!-- Two-col: tier grid + combat profile -->
+      <div class="ca-overview-cols">
+        <div>
+          <div class="ca-tier-grid-title">Difficulty Tiers</div>
+          <div class="ca-tier-grid" id="ca-tier-grid"></div>
+        </div>
+        <div>
+          <div class="ca-profile-title">Combat Profile</div>
+          <div class="ca-profile-card" id="ca-profile-card"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tier tabs -->
+    <div class="ca-tab-bar" id="ca-tab-bar"></div>
+
+    <!-- Filters -->
+    <div class="ca-filters-row">
+      <input type="text" class="ca-search" id="ca-search" placeholder="Search tasks or boss…" oninput="renderCaTaskList()">
+      <select class="ca-filter-select" id="ca-type-filter" onchange="renderCaTaskList()">
+        <option value="">All types</option>
+        <option value="Kill Count">Kill Count</option>
+        <option value="Mechanical">Mechanical</option>
+        <option value="Speed">Speed</option>
+        <option value="Restriction">Restriction</option>
+        <option value="Perfection">Perfection</option>
+        <option value="Stamina">Stamina</option>
+      </select>
+      <button class="ca-hide-done-btn" id="ca-hide-done-btn" onclick="toggleCaHideDone()">Hide Completed</button>
+    </div>
+
+    <!-- Tier summary stats -->
+    <div class="ca-tier-summary" id="ca-tier-summary"></div>
+
+    <!-- Task list -->
+    <div id="ca-task-list"></div>
+
+  </div>
+</div>
+
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">&#9650;</button>
+
+<script src="data.js"></script>
+<script src="clog_data.js"></script>
+<script src="ca_data.js"></script>
+<script src="shared.js"></script>
+<script>
+// Combat Achievements page init
+(function() {
+  function init() {
+    loadCaStorage();
+    renderCaPage();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>

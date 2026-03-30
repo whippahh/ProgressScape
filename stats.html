@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Stats — ProgressScape</title>
+<meta name="description" content="Enter your Old School RuneScape skill levels and track your account progress on ProgressScape.">
+<link rel="canonical" href="https://progressscape.net/stats.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8YXGC1W0GW');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
+    <nav>
+      <a href="index.html"   class="nav-btn">Progression</a>
+      <a href="stats.html"   class="nav-btn active">My Stats</a>
+      <a href="bosses.html"  class="nav-btn">Bosses</a>
+      <a href="combat.html"  class="nav-btn">Combat Tasks</a>
+      <a href="clog.html"    class="nav-btn">Collection Log</a>
+      <a href="planner.html" class="nav-btn">Custom Path</a>
+      <a href="compare.html" class="nav-btn">Compare</a>
+      <a href="gear.html"    class="nav-btn">Gear</a>
+    </nav>
+    <div class="header-right">
+      <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
+        <img class="im-icon" src="https://oldschool.runescape.wiki/images/Ironman_chat_badge.png" alt="Ironman" style="width:16px;height:16px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin-right:2px;"> Ironman
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="page-stats" class="page active">
+  <div class="stats-page">
+    <h2>My Stats</h2>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.25rem;font-family:'IM Fell English',serif;font-style:italic">
+      Enter your skill levels manually, or look up your RSN to auto-fill from the hiscores.
+    </p>
+    <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;">
+      <input type="text" id="rsn-input-stats" placeholder="Enter username…"
+        style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:3px;color:var(--text-light);font-family:'Source Sans 3',sans-serif;font-size:0.95rem;padding:0.5rem 0.85rem;width:240px;outline:none;"
+        onkeydown="if(event.key==='Enter') lookupRSNFromStats()">
+      <button class="btn" onclick="lookupRSNFromStats()">Lookup</button>
+      <div id="lookup-status-stats" style="display:none;margin-left:0.5rem;">
+        <span id="lookup-status-stats-inner" class="status-inner"></span>
+      </div>
+    </div>
+    <div class="skills-grid" id="skills-grid"></div>
+    <div class="stats-actions">
+      <button class="btn" onclick="saveStats()">Save Stats</button>
+      <button class="btn btn-ghost" onclick="clearStats()">Reset</button>
+      <span id="stats-saved-msg" style="color:var(--green-light);font-size:0.85rem;align-self:center;display:none">✓ Saved</span>
+    </div>
+    <div style="display:flex;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap">
+      <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase">Combat Level</span>
+        <span id="combat-level-display" style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">—</span>
+      </div>
+      <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase">Total Level</span>
+        <span id="total-level-display" style="font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">—</span>
+      </div>
+    </div>
+    <div style="background:var(--stone-mid);border:1px solid var(--stone-lighter);border-radius:4px;padding:1rem 1.25rem;margin-top:1rem;">
+      <p style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem">Quest Points</p>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <input type="number" id="qp-input" min="0" max="300" placeholder="0"
+          style="background:var(--stone);border:1px solid var(--stone-lighter);border-radius:3px;color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;padding:0.4rem 0.75rem;width:80px;outline:none;text-align:center">
+        <span style="font-size:0.85rem;color:var(--text-muted)">Current quest points (used to check QP requirements)</span>
+      </div>
+    </div>
+
+    <!-- ===== ACCOUNT DASHBOARD ===== -->
+    <div id="account-dashboard" style="margin-top:2rem;display:block">
+
+      <div style="font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--stone-lighter)">Account Overview</div>
+
+      <!-- Milestone badges -->
+      <div id="dash-milestones-wrap" style="display:none;margin-bottom:1.5rem;">
+        <div style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Milestones</div>
+        <div id="dash-milestones" style="display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+      </div>
+
+      <!-- Stat cards row -->
+      <div id="dash-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.6rem;margin-bottom:1.5rem;"></div>
+
+      <!-- Skill heatmap -->
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Skill Levels</div>
+      <div id="dash-heatmap" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:1.5rem;"></div>
+
+      <!-- Progression breakdown -->
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Progression Breakdown</div>
+      <div id="dash-progression" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;"></div>
+
+      <!-- Collection log summary -->
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Collection Log</div>
+      <div id="dash-clog" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">&#9650;</button>
+
+<script src="data.js"></script>
+<script src="clog_data.js"></script>
+<script src="ca_data.js"></script>
+<script src="shared.js"></script>
+<script>
+// Stats page init
+(function() {
+  function init() {
+    buildSkillsGrid();
+    updateCombatDisplay();
+    renderDashboard();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>

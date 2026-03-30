@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gear Progression — ProgressScape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+:root {
+  --gold: #c8a84b; --gold-light: #e8c96a; --gold-dark: #8a6e2a;
+  --stone: #2a2518; --stone-mid: #3d3526; --stone-light: #524839;
+  --stone-lighter: #6b5f48;
+  --text-light: #f0e8d0; --text-muted: #b8a87a;
+  --melee:  #c8602a; --melee-bg: #1a0a00;
+  --ranged: #2a8c4a; --ranged-bg: #001a08;
+  --magic:  #5a3acc; --magic-bg: #05001a;
+  --skill:  #a08020; --skill-bg: #1a1200;
+  --prayer: #2a8a9a; --prayer-bg: #001215;
+  --all:    #6080a0; --all-bg:   #0a0a10;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; overflow-x: hidden; }
+body {
+  background-color: var(--stone);
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(200,168,75,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(200,168,75,0.06) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%232a2518'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%2330291d' opacity='0.5'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%2330291d' opacity='0.5'/%3E%3C/svg%3E");
+  color: var(--text-light);
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+/* ── HEADER ── */
+header {
+  background: linear-gradient(180deg, #1a1408 0%, var(--stone) 100%);
+  border-bottom: 2px solid var(--gold-dark);
+  padding: 0 2rem;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+.header-inner {
+  max-width: 1600px; margin: 0 auto;
+  display: flex; align-items: center; gap: 2rem; height: 64px;
+}
+.site-title-img { height: 58px; width: auto; display: block; object-fit: contain; flex-shrink: 0; }
+nav { display: flex; gap: 0.25rem; flex: 1; }
+.nav-btn {
+  background: none; border: 1px solid transparent;
+  color: var(--text-muted); font-family: 'Cinzel', serif;
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
+  padding: 0.45rem 1.1rem; cursor: pointer; border-radius: 3px; transition: all 0.2s;
+  text-decoration: none; display: inline-block;
+}
+.nav-btn:hover { color: var(--gold-light); border-color: var(--gold-dark); background: rgba(200,168,75,0.08); }
+.nav-btn.active { color: var(--gold); border-color: var(--gold); background: rgba(200,168,75,0.12); }
+
+/* ── MAIN LAYOUT ── */
+.gear-layout {
+  display: flex;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+/* ── FLOWCHART PANEL ── */
+.flowchart-panel {
+  flex: 1;
+  overflow: auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── GIM PANEL ── */
+.gim-panel {
+  width: 360px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--stone-lighter);
+  background: #1e1a10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.25s ease;
+}
+.gim-panel.collapsed { width: 40px; }
+
+/* ── MOBILE: stack vertically ── */
+@media (max-width: 768px) {
+  .gear-layout {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+  .flowchart-panel {
+    height: 60vh;
+    overflow: auto;
+    flex: none;
+  }
+  .gim-panel {
+    width: 100% !important;
+    height: auto;
+    min-height: 300px;
+    border-left: none;
+    border-top: 1px solid var(--stone-lighter);
+    flex-shrink: 0;
+  }
+  .gim-panel.collapsed {
+    width: 100% !important;
+    height: 40px;
+    min-height: unset;
+  }
+  .gim-collapsed-label {
+    writing-mode: horizontal-tb !important;
+    padding: 10px 16px !important;
+  }
+  header nav {
+    overflow-x: auto;
+    gap: 0;
+  }
+  .nav-btn {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+}
+
+.gim-header {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--stone-lighter);
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+  cursor: pointer;
+  background: linear-gradient(180deg, #26201200 0%, #1e1a10 100%);
+}
+.gim-title {
+  font-family: 'Cinzel', serif; font-size: 0.85rem; font-weight: 700;
+  color: var(--gold); letter-spacing: 0.08em; white-space: nowrap;
+  flex: 1;
+}
+.gim-toggle {
+  color: var(--gold-dark); font-size: 0.75rem; cursor: pointer; flex-shrink: 0;
+}
+.gim-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+.gim-panel.collapsed .gim-body { display: none; }
+.gim-panel.collapsed .gim-title { display: none; }
+
+/* Member row */
+.member-row {
+  display: flex; gap: 6px; align-items: center;
+}
+.member-color {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.member-input {
+  flex: 1; background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+  color: var(--text-light); font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.8rem; padding: 5px 9px; border-radius: 3px; outline: none;
+}
+.member-input:focus { border-color: var(--gold-dark); }
+.member-input::placeholder { color: var(--stone-lighter); }
+.member-lookup-btn {
+  background: none; border: 1px solid var(--stone-lighter); color: var(--text-muted);
+  font-size: 0.7rem; padding: 4px 8px; border-radius: 3px; cursor: pointer;
+  font-family: 'Cinzel', serif; letter-spacing: 0.04em; white-space: nowrap;
+}
+.member-lookup-btn:hover { border-color: var(--gold-dark); color: var(--gold); }
+.member-lookup-btn.loading { opacity: 0.5; pointer-events: none; }
+.member-status { font-size: 0.7rem; color: var(--text-muted); margin-left: 2px; }
+.member-status.ok { color: #4a9e4a; }
+.member-status.err { color: #c43030; }
+
+.gim-section-title {
+  font-family: 'Cinzel', serif; font-size: 0.7rem; font-weight: 600;
+  color: var(--gold-dark); letter-spacing: 0.08em; text-transform: uppercase;
+  padding-bottom: 6px; border-bottom: 1px solid var(--stone-light);
+}
+.gim-analyse-btn {
+  width: 100%; padding: 8px; cursor: pointer;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+  border: 1px solid var(--gold-dark); border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: 0.8rem; font-weight: 700;
+  color: var(--stone); letter-spacing: 0.05em;
+  transition: all 0.15s;
+}
+.gim-analyse-btn:hover { filter: brightness(1.1); }
+.gim-analyse-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Results */
+.gim-results { display: flex; flex-direction: column; gap: 8px; }
+.gim-item-card {
+  background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+  border-radius: 5px; overflow: hidden;
+}
+.gim-item-header {
+  padding: 7px 10px; display: flex; align-items: center; gap: 5px;
+  border-bottom: 1px solid var(--stone-light);
+  cursor: pointer; user-select: none;
+}
+.gim-item-name {
+  font-family: 'Cinzel', serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--text-light); flex: 1;
+}
+.gim-tag {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em;
+  padding: 2px 5px; border-radius: 2px; white-space: nowrap;
+}
+.gim-tag-div   { background: #0a1a2a; border: 1px solid #2a6aaa; color: #6aabea; }
+.gim-tag-pool  { background: #1a2a0a; border: 1px solid #4a8a2a; color: #7abb4a; }
+.gim-tag-mem   { background: #2a1a0a; border: 1px solid #8a5a1a; color: #e8a060; }
+.gim-item-steps { padding: 6px 10px; display: flex; flex-direction: column; gap: 4px; }
+.gim-step {
+  display: flex; align-items: flex-start; gap: 6px; font-size: 0.72rem;
+}
+.gim-step-status { flex-shrink: 0; width: 14px; margin-top: 1px; }
+.gim-step-desc { color: var(--text-muted); flex: 1; line-height: 1.35; }
+.gim-step-member {
+  font-weight: 600; padding: 1px 5px; border-radius: 2px;
+  font-size: 0.65rem; white-space: nowrap; flex-shrink: 0;
+}
+.gim-blocked { border-left: 3px solid #c43030; }
+.gim-ready   { border-left: 3px solid #4a9e4a; }
+.gim-partial { border-left: 3px solid var(--gold-dark); }
+
+.gim-filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.gim-filter-btn {
+  background: none; border: 1px solid var(--stone-lighter);
+  color: var(--text-muted); font-size: 0.7rem; font-family: 'Cinzel', serif;
+  padding: 3px 8px; border-radius: 3px; cursor: pointer; letter-spacing: 0.04em;
+}
+.gim-filter-btn.active { border-color: var(--gold-dark); color: var(--gold); background: rgba(200,168,75,0.08); }
+
+.gim-empty { text-align: center; color: var(--stone-lighter); font-size: 0.78rem; padding: 20px 0; }
+
+/* ── Secondary filter bar ── */
+.gim-filter-bar {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  padding: 6px 0 2px;
+  border-bottom: 1px solid var(--stone-light);
+  margin-bottom: 4px;
+}
+.gim-search {
+  width: 100%; background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+  color: var(--text-light); font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.75rem; padding: 5px 9px; border-radius: 3px; outline: none;
+}
+.gim-search:focus { border-color: var(--gold-dark); }
+.gim-search::placeholder { color: var(--stone-lighter); }
+.gim-select {
+  background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+  color: var(--text-muted); font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.68rem; padding: 3px 6px; border-radius: 3px;
+  outline: none; cursor: pointer; flex: 1; min-width: 0;
+}
+.gim-select:focus { border-color: var(--gold-dark); color: var(--text-light); }
+.gim-toggle-label {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.68rem; color: var(--text-muted); cursor: pointer;
+  white-space: nowrap; padding: 2px 4px;
+}
+.gim-toggle-label input { accent-color: var(--gold-dark); }
+.gim-result-count {
+  font-size: 0.65rem; color: var(--stone-lighter);
+  padding: 2px 0 4px; text-align: right;
+}
+
+/* ── Slot / tier pills on cards ── */
+.gim-slot-pill {
+  font-size: 0.58rem; color: var(--text-muted); background: var(--stone-light);
+  padding: 1px 5px; border-radius: 2px; white-space: nowrap; flex-shrink: 0;
+}
+.gim-tier-pill {
+  font-size: 0.58rem; font-family: monospace; color: var(--gold-dark);
+  background: rgba(200,168,75,0.1); border: 1px solid rgba(200,168,75,0.25);
+  padding: 1px 5px; border-radius: 2px; white-space: nowrap; flex-shrink: 0;
+}
+
+/* ── Tick button + expand icon ── */
+.gim-tick-btn {
+  background: none; border: 1px solid var(--stone-lighter);
+  color: var(--stone-lighter); font-size: 0.85rem;
+  padding: 1px 4px; border-radius: 3px; cursor: pointer;
+  line-height: 1; flex-shrink: 0; transition: all 0.15s;
+}
+.gim-tick-btn:hover { border-color: #4a9e4a; color: #4a9e4a; }
+.gim-tick-btn.ticked { border-color: #4a9e4a; color: #4a9e4a; background: #4a9e4a18; }
+.gim-expand-icon {
+  font-size: 0.6rem; color: var(--stone-lighter); flex-shrink: 0; margin-left: 1px;
+}
+
+/* ── Expanded detail panel ── */
+.gim-item-detail {
+  padding: 8px 10px 10px;
+  display: flex; flex-direction: column; gap: 7px;
+  border-top: 1px solid var(--stone-light);
+  background: #0e0c08;
+}
+.gim-detail-wield {
+  font-size: 0.7rem; color: #e8c870;
+  background: #ffffff08; border-radius: 3px; padding: 3px 8px;
+}
+.gim-detail-step {
+  background: #161410; border: 1px solid #2a2620;
+  border-radius: 5px; padding: 7px 9px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.gim-detail-step-header {
+  display: flex; align-items: flex-start; gap: 6px;
+}
+.gim-detail-meta {
+  font-size: 0.68rem; color: #666; padding-left: 20px;
+}
+.gim-detail-notes {
+  font-size: 0.68rem; color: #777; font-style: italic;
+  line-height: 1.4; padding-left: 20px;
+}
+.gim-detail-reqs {
+  padding-left: 20px; display: flex; flex-direction: column; gap: 3px; margin-top: 2px;
+}
+.gim-req-row {
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+}
+.gim-req-skill {
+  font-size: 0.68rem; font-family: monospace; color: #e8c870;
+  background: #ffffff08; padding: 1px 6px; border-radius: 3px;
+  flex-shrink: 0; min-width: 80px;
+}
+.gim-req-member {
+  font-size: 0.65rem; font-weight: 600;
+  padding: 1px 5px; border-radius: 2px; white-space: nowrap;
+}
+.gim-detail-gimnote {
+  font-size: 0.7rem; color: #90c860; line-height: 1.5;
+  padding: 5px 8px; background: #0a1a05;
+  border: 1px solid #3a6a1a; border-radius: 4px;
+}
+
+/* vertical collapsed tab */
+.gim-collapsed-label {
+  writing-mode: vertical-rl; text-orientation: mixed;
+  font-family: 'Cinzel', serif; font-size: 0.7rem; color: var(--gold-dark);
+  letter-spacing: 0.1em; padding: 16px 10px; cursor: pointer;
+  display: none; text-transform: uppercase;
+}
+.gim-panel.collapsed .gim-collapsed-label { display: block; }
+
+/* ── SCROLL THIN ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--stone); }
+::-webkit-scrollbar-thumb { background: var(--stone-lighter); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
+    <nav>
+      <a href="index.html"   class="nav-btn">Progression</a>
+      <a href="stats.html"   class="nav-btn">My Stats</a>
+      <a href="bosses.html"  class="nav-btn">Bosses</a>
+      <a href="combat.html"  class="nav-btn">Combat Tasks</a>
+      <a href="clog.html"    class="nav-btn">Collection Log</a>
+      <a href="planner.html" class="nav-btn">Custom Path</a>
+      <a href="compare.html" class="nav-btn">Compare</a>
+      <a href="gear.html"    class="nav-btn active">Gear</a>
+    </nav>
+  </div>
+</header>
+
+<div class="gear-layout">
+  <!-- Flowchart fills the left -->
+  <div class="flowchart-panel" id="flowchart-root"></div>
+
+  <!-- GIM panel on the right -->
+  <div class="gim-panel" id="gim-panel">
+    <div class="gim-header" id="gim-header-btn">
+      <div class="gim-title">⚔ Group Unlock Planner</div>
+      <div class="gim-toggle" id="gim-toggle-icon">◀</div>
+    </div>
+    <div class="gim-collapsed-label" id="gim-collapsed-label">Group Planner</div>
+    <div class="gim-body" id="gim-body"></div>
+  </div>
+</div>
+
+<script src="gear_data.js"></script>
+
+<!-- React Flowchart -->
+<script type="text/babel">
+const { useState, useMemo } = React;
+const RAW = GEAR_DATA;
+
+// ─── CONSTANTS ─────────────────────────────────────────────────────────────────
+const STYLE_COLORS = {
+  melee:  { bg: "#1a0a00", border: "#c8602a", accent: "#e8884a", badge: "#c8602a" },
+  ranged: { bg: "#001a08", border: "#2a8c4a", accent: "#4ab870", badge: "#2a8c4a" },
+  magic:  { bg: "#05001a", border: "#5a3acc", accent: "#8060f0", badge: "#5a3acc" },
+  skilling:{ bg: "#1a1200", border: "#a08020", accent: "#d4b040", badge: "#a08020" },
+  prayer: { bg: "#001215", border: "#2a8a9a", accent: "#50c0d0", badge: "#2a8a9a" },
+  all:    { bg: "#0a0a10", border: "#6080a0", accent: "#90b0d0", badge: "#6080a0" },
+};
+
+const TIER_COLORS = [
+  "#555","#667","#779","#88a","#a96","#b87","#aa4","#c80","#e60","#fa0"
+];
+
+const OBTAIN_ICONS = {
+  buy_ge: "🏪", drop: "⚔️", slayer_drop: "💀", quest_reward: "📜",
+  minigame: "🎮", craft: "🔨", construction: "🏗️", diary_reward: "📋"
+};
+
+const SLOT_ORDER = ["weapon","head","body","legs","hands","feet","shield","neck","cape","ring","skilling_tool","utility","consumable"];
+const SLOT_LABELS = {
+  weapon:"Weapons", head:"Helmets", body:"Body Armour", legs:"Leg Armour",
+  hands:"Gloves", feet:"Boots", shield:"Shields", neck:"Amulets",
+  cape:"Capes", ring:"Rings", skilling_tool:"Skilling Tools", utility:"QoL & Utility", consumable:"Poolable Resources"
+};
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────────
+function buildChains(data) {
+  const byId = Object.fromEntries(data.map(g => [g.id, g]));
+  // Collect all IDs that appear as branch targets — these should not become chain roots
+  const branchTargetIds = new Set();
+  data.forEach(g => {
+    if (g.branches) g.branches.forEach(b => branchTargetIds.add(b.id));
+  });
+  // Also mark all supersededBy descendants of branch targets as seen
+  // so they don't become orphan roots either
+  const branchDescendants = new Set(branchTargetIds);
+  branchTargetIds.forEach(id => {
+    let cur = byId[id];
+    while (cur && cur.supersededBy) {
+      branchDescendants.add(cur.supersededBy);
+      cur = byId[cur.supersededBy];
+    }
+  });
+  const roots = data.filter(g =>
+    (!g.supersedes || !byId[g.supersedes]) && !branchDescendants.has(g.id)
+  );
+  const chains = [];
+  const seen = new Set();
+  for (const root of roots) {
+    const chain = [];
+    let cur = root;
+    while (cur && !seen.has(cur.id)) {
+      seen.add(cur.id);
+      chain.push(cur);
+      cur = cur.supersededBy ? byId[cur.supersededBy] : null;
+    }
+    chains.push(chain);
+  }
+  return chains;
+}
+
+function groupBySlot(chains) {
+  const groups = {};
+  for (const chain of chains) {
+    const slot = chain[0].slot;
+    if (!groups[slot]) groups[slot] = [];
+    groups[slot].push(chain);
+  }
+  return groups;
+}
+
+function reqsString(reqs) {
+  if (!reqs || Object.keys(reqs).length === 0) return null;
+  return Object.entries(reqs).map(([k,v]) => `${k[0].toUpperCase()}${k.slice(1)} ${v}`).join(" · ");
+}
+
+// ─── COMPONENTS ─────────────────────────────────────────────────────────────────
+function TierBadge({ tier }) {
+  const col = TIER_COLORS[Math.min(tier - 1, 9)] || "#888";
+  return (
+    <span style={{
+      display:"inline-block", padding:"1px 6px", borderRadius:3,
+      background: col + "33", border:`1px solid ${col}`, color: col,
+      fontSize:10, fontWeight:700, letterSpacing:1, fontFamily:"monospace"
+    }}>T{tier}</span>
+  );
+}
+
+function ObtainBadge({ method }) {
+  const labels = {
+    buy_ge:"GE Buy", drop:"Drop", slayer_drop:"Slayer Drop",
+    quest_reward:"Quest", minigame:"Minigame", craft:"Crafted",
+    construction:"Construction", diary_reward:"Diary Reward"
+  };
+  return (
+    <span style={{
+      fontSize:10, opacity:0.7, fontFamily:"monospace",
+      letterSpacing:.5
+    }}>{OBTAIN_ICONS[method]} {labels[method]||method}</span>
+  );
+}
+
+function CraftChainModal({ item, onClose, colors }) {
+  if (!item.craftChain) return null;
+  return (
+    <div style={{
+      position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:1000,
+      display:"flex", alignItems:"center", justifyContent:"center", padding:16
+    }} onClick={onClose}>
+      <div style={{
+        background:"#0e0e14", border:`2px solid ${colors.border}`,
+        borderRadius:10, maxWidth:560, width:"100%", maxHeight:"80vh",
+        overflow:"auto", padding:24,
+        boxShadow:`0 0 40px ${colors.border}44`
+      }} onClick={e => e.stopPropagation()}>
+        <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:16}}>
+          <div>
+            <div style={{color:colors.accent, fontFamily:"'Cinzel',serif", fontSize:17, fontWeight:700}}>{item.name}</div>
+            <div style={{color:"#888", fontSize:11, marginTop:3}}>
+              {item.craftSteps}-step production chain
+              {item.gimTag === "division_labour" && (
+                <span style={{
+                  marginLeft:8, background:"#0a1a2a", border:"1px solid #2a6aaa",
+                  color:"#6aabea", padding:"1px 6px", borderRadius:3, fontSize:10
+                }}>⚔ DIVISION OF LABOUR</span>
+              )}
+              {item.gimTag === "poolable" && (
+                <span style={{
+                  marginLeft:8, background:"#1a2a0a", border:"1px solid #4a8a2a",
+                  color:"#7abb4a", padding:"1px 6px", borderRadius:3, fontSize:10
+                }}>📦 POOLABLE</span>
+              )}
+              {item.gimTag === "per_member" && (
+                <span style={{
+                  marginLeft:8, background:"#2a1a0a", border:"1px solid #8a5a1a",
+                  color:"#e8a060", padding:"1px 6px", borderRadius:3, fontSize:10
+                }}>👤 PER MEMBER</span>
+              )}
+            </div>
+          </div>
+          <button onClick={onClose} style={{
+            background:"none", border:"none", color:"#888", fontSize:20,
+            cursor:"pointer", lineHeight:1
+          }}>✕</button>
+        </div>
+
+        {/* Wield reqs */}
+        {item.wieldReqs && Object.keys(item.wieldReqs).length > 0 && (
+          <div style={{
+            background:"#ffffff08", border:"1px solid #ffffff15",
+            borderRadius:6, padding:"8px 12px", marginBottom:16, fontSize:12
+          }}>
+            <span style={{color:"#aaa"}}>Wield: </span>
+            <span style={{color:"#e8c870"}}>{reqsString(item.wieldReqs)}</span>
+          </div>
+        )}
+
+        {/* Steps */}
+        <div style={{display:"flex", flexDirection:"column", gap:10}}>
+          {item.craftChain.map((step, i) => {
+            const hasReqs = step.memberReqs && Object.keys(step.memberReqs).length > 0;
+            const isGIM = hasReqs && Object.keys(step.memberReqs).length > 0;
+            return (
+              <div key={i} style={{
+                background: step.action === "combine" ? "#0a1a0a" :
+                            step.action === "obtain_drop" ? "#0a0a1a" : "#1a0a00",
+                border:`1px solid ${step.action==="combine"?"#2a5a2a":step.action==="obtain_drop"?"#2a2a6a":"#5a2a0a"}`,
+                borderRadius:7, padding:"10px 14px"
+              }}>
+                <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:5}}>
+                  <span style={{
+                    background: step.action==="combine"?"#2a5a2a40":step.action==="obtain_drop"?"#2a2a6a40":"#5a2a0a40",
+                    border:`1px solid ${step.action==="combine"?"#2a5a2a":step.action==="obtain_drop"?"#4a4aaa":"#8a4a1a"}`,
+                    color: step.action==="combine"?"#70c870":step.action==="obtain_drop"?"#7090e8":"#e8a060",
+                    fontSize:10, padding:"1px 7px", borderRadius:3, fontFamily:"monospace", fontWeight:700
+                  }}>{String(i+1).padStart(2,"0")} {step.action.replace(/_/g," ").toUpperCase()}</span>
+                </div>
+                <div style={{color:"#ddd", fontSize:13, marginBottom:5, lineHeight:1.4}}>{step.step}</div>
+                <div style={{color:"#888", fontSize:11, marginBottom: hasReqs ? 6 : 0}}>
+                  📍 {step.source}
+                </div>
+                {hasReqs && (
+                  <div style={{
+                    background:"#ffffff08", borderRadius:4, padding:"4px 8px",
+                    fontSize:11, color:"#e8c870"
+                  }}>
+                    👤 <strong>Member needs:</strong> {reqsString(step.memberReqs)}
+                  </div>
+                )}
+                {step.questReqs && step.questReqs.length > 0 && (
+                  <div style={{
+                    marginTop:4, fontSize:10, color:"#a0c8ff"
+                  }}>📜 {step.questReqs.join(", ")}</div>
+                )}
+                {step.notes && (
+                  <div style={{marginTop:5, fontSize:11, color:"#777", fontStyle:"italic", lineHeight:1.4}}>
+                    {step.notes}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Supersession note */}
+        {item.supersessionNote && (
+          <div style={{
+            marginTop:14, padding:"8px 12px",
+            background:"#ffffff06", borderRadius:6,
+            fontSize:11, color:"#aaa", borderLeft:`3px solid ${colors.border}`
+          }}>
+            ↗️ {item.supersessionNote}
+          </div>
+        )}
+
+        {/* GIM notes */}
+        {item.ironmanNotes && (
+          <div style={{
+            marginTop:10, padding:"8px 12px",
+            background:"#0a1a05", border:"1px solid #3a6a1a",
+            borderRadius:6, fontSize:11, color:"#90c860", lineHeight:1.5
+          }}>
+            ⚔ <strong>GIM Note:</strong> {item.ironmanNotes}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function GearNode({ item, isLast, colors, onClick, obtained, onToggle }) {
+  const [hov, setHov] = useState(false);
+  const isDone = obtained && obtained[item.id];
+  const hasChain = item.craftChain && item.craftChain.length >= 1;
+  const gimTag = item.gimTag || null;
+
+  return (
+    <div style={{display:"flex", alignItems:"stretch", gap:0}}>
+      {/* Node */}
+      <div
+        onClick={() => hasChain && onClick(item)}
+        onMouseEnter={() => setHov(true)}
+        onMouseLeave={() => setHov(false)}
+        style={{
+          background: hov ? colors.bg.replace("0e","18") : "#0e0e14",
+          border:`1.5px solid ${hov && hasChain ? colors.accent : colors.border}`,
+          borderRadius:8, padding:"9px 13px", cursor: hasChain ? "pointer" : "default",
+          transition:"all .15s", minWidth:170, maxWidth:210,
+          boxShadow: hov && hasChain ? `0 0 12px ${colors.border}55` : "none",
+          position:"relative"
+        }}
+      >
+        {/* GIM badge — three tiers */}
+        {gimTag === "division_labour" && (
+          <div style={{
+            position:"absolute", top:-7, right:8,
+            background:"#0a1a2a", border:"1px solid #2a6aaa",
+            color:"#6aabea", fontSize:9, padding:"1px 5px", borderRadius:3,
+            fontWeight:700, letterSpacing:.5
+          }}>⚔ DIV</div>
+        )}
+        {gimTag === "poolable" && (
+          <div style={{
+            position:"absolute", top:-7, right:8,
+            background:"#1a2a0a", border:"1px solid #4a8a2a",
+            color:"#7abb4a", fontSize:9, padding:"1px 5px", borderRadius:3,
+            fontWeight:700, letterSpacing:.5
+          }}>📦 POOL</div>
+        )}
+        {gimTag === "per_member" && (
+          <div style={{
+            position:"absolute", top:-7, right:8,
+            background:"#2a1a0a", border:"1px solid #8a5a1a",
+            color:"#e8a060", fontSize:9, padding:"1px 5px", borderRadius:3,
+            fontWeight:700, letterSpacing:.5
+          }}>👤 /MEMBER</div>
+        )}
+        <div style={{
+          color: hov ? colors.accent : "#ddd",
+          fontFamily:"'Cinzel',serif", fontSize:12.5, fontWeight:600,
+          lineHeight:1.3, marginBottom:5, transition:"color .15s"
+        }}>{item.name}</div>
+        <div style={{display:"flex", gap:6, alignItems:"center", flexWrap:"wrap"}}>
+          <TierBadge tier={item.tier} />
+          <ObtainBadge method={item.obtainMethod} />
+        </div>
+        {item.wieldReqs && Object.keys(item.wieldReqs).length > 0 && (
+          <div style={{
+            marginTop:5, fontSize:10, color:"#a0908a",
+            fontFamily:"monospace"
+          }}>{reqsString(item.wieldReqs)}</div>
+        )}
+        {hasChain && (
+          <div style={{
+            marginTop:6, fontSize:10, color: hov ? colors.accent : "#666",
+            transition:"color .15s"
+          }}>
+            🔗 {item.craftSteps} steps · click to expand
+          </div>
+        )}
+      </div>
+
+      {/* Arrow */}
+      {!isLast && (
+        <div style={{
+          display:"flex", alignItems:"center", padding:"0 6px",
+          color: colors.border, fontSize:16, userSelect:"none"
+        }}>→</div>
+      )}
+    </div>
+  );
+}
+
+function BranchNode({ item, note, colors, onClick }) {
+  // A branch alternative node — rendered below the node it forks from
+  const [hov, setHov] = useState(false);
+  const branchColors = STYLE_COLORS[item.style] || STYLE_COLORS.melee;
+  return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:0 }}>
+      {/* the branch node itself */}
+      <div
+        onClick={() => onClick(item)}
+        onMouseEnter={() => {}}
+        style={{
+          background: hov ? branchColors.bg : "#0a0a12",
+          border:`1.5px dashed ${branchColors.border}`,
+          borderRadius:8, padding:"7px 11px",
+          cursor: (item.craftChain && item.craftChain.length > 1) ? "pointer" : "default",
+          minWidth:150, maxWidth:200,
+          opacity: 0.85,
+          transition:"all .15s"
+        }}
+        onMouseEnter={() => {}}
+      >
+        {item.gimTag === "division_labour" && (
+          <div style={{
+            position:"absolute", top:-7, right:8,
+            background:"#0a1a2a", border:"1px solid #2a6aaa",
+            color:"#6aabea", fontSize:9, padding:"1px 5px", borderRadius:3,
+            fontWeight:700, letterSpacing:.5
+          }}>⚔ DIV</div>
+        )}
+        {item.gimTag === "poolable" && (
+          <div style={{
+            position:"absolute", top:-7, right:8,
+            background:"#1a2a0a", border:"1px solid #4a8a2a",
+            color:"#7abb4a", fontSize:9, padding:"1px 5px", borderRadius:3,
+            fontWeight:700, letterSpacing:.5
+          }}>📦 POOL</div>
+        )}
+        {item.gimTag === "per_member" && (
+          <div style={{
+            position:"absolute", top:-7, right:8,
+            background:"#2a1a0a", border:"1px solid #8a5a1a",
+            color:"#e8a060", fontSize:9, padding:"1px 5px", borderRadius:3,
+            fontWeight:700, letterSpacing:.5
+          }}>👤 /MEMBER</div>
+        )}
+        <div style={{
+          color: branchColors.accent, fontFamily:"'Cinzel',serif",
+          fontSize:11.5, fontWeight:600, lineHeight:1.3, marginBottom:4
+        }}>{item.name}</div>
+        <div style={{display:"flex", gap:5, flexWrap:"wrap"}}>
+          <TierBadge tier={item.tier} />
+          <ObtainBadge method={item.obtainMethod} />
+        </div>
+        {note && (
+          <div style={{
+            marginTop:5, fontSize:9, color:"#556", lineHeight:1.4,
+            fontStyle:"italic"
+          }}>{note.length > 80 ? note.slice(0,80)+"…" : note}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ChainRow({ chain, colors, onNodeClick, obtained, onToggle }) {
+  const byId = Object.fromEntries(RAW.map(g => [g.id, g]));
+
+  return (
+    <div style={{
+      display:"flex", alignItems:"flex-start", flexWrap:"nowrap",
+      gap:0, padding:"10px 0", overflowX:"auto"
+    }}>
+      {chain.map((item, i) => {
+        const isLast = i === chain.length - 1;
+        // Gather branch alternatives for this specific node
+        const nodeBranches = (item.branches || [])
+          .map(b => ({ target: byId[b.id], note: b.note }))
+          .filter(b => b.target);
+
+        return (
+          <div key={item.id} style={{ display:"flex", flexDirection:"column", alignItems:"flex-start" }}>
+            {/* Top row: main node + arrow to next (only these two affect arrow alignment) */}
+            <div style={{ display:"flex", alignItems:"flex-start", flexShrink:0 }}>
+              <GearNode
+                item={item}
+                isLast={isLast}
+                colors={colors}
+                onClick={onNodeClick}
+                obtained={obtained}
+                onToggle={onToggle}
+              />
+              {/* Arrow sits here — only affected by GearNode height, not branch sub-rows */}
+              {!isLast && (
+                <div style={{ display:"flex", alignItems:"center", height:"100%", paddingTop:32, flexShrink:0 }}>
+                  <div style={{
+                    width:24, height:2,
+                    background:`linear-gradient(90deg, ${colors.border}88, ${colors.border})`,
+                    position:"relative"
+                  }}>
+                    <div style={{
+                      position:"absolute", right:-4, top:-3,
+                      borderTop:"4px solid transparent",
+                      borderBottom:"4px solid transparent",
+                      borderLeft:`6px solid ${colors.border}`
+                    }}/>
+                  </div>
+                </div>
+              )}
+              {isLast && item.supersededBy === null && (
+                <div style={{
+                  display:"flex", alignItems:"flex-start",
+                  paddingTop:28, paddingLeft:8, flexShrink:0,
+                  color:"#f0c040", fontSize:11, fontWeight:700,
+                  letterSpacing:.5, whiteSpace:"nowrap"
+                }}>★ BiS</div>
+              )}
+            </div>
+            {/* Branch sub-rows sit below the main node row — don't affect arrow alignment */}
+            {nodeBranches.map((b, bi) => {
+              const branchChain = [];
+              let cur = b.target;
+              const seen = new Set();
+              while (cur && !seen.has(cur.id)) {
+                seen.add(cur.id);
+                branchChain.push(cur);
+                cur = cur.supersededBy ? byId[cur.supersededBy] : null;
+              }
+              const branchColors = STYLE_COLORS[b.target.style] || colors;
+              return (
+                <div key={bi} style={{ display:"flex", flexDirection:"column", alignItems:"flex-start" }}>
+                  <div style={{ width:1, height:14, borderLeft:"1px dashed #3a3a5a", marginLeft:80 }}/>
+                  <div style={{ fontSize:9, color:"#4a5080", fontWeight:700, letterSpacing:.5, marginBottom:2, marginLeft:60 }}>↕ ALT</div>
+                  <div style={{ display:"flex", alignItems:"flex-start", flexWrap:"nowrap" }}>
+                    {branchChain.map((bItem, bIdx) => (
+                      <div key={bItem.id} style={{ display:"flex", alignItems:"flex-start" }}>
+                        <BranchNode
+                          item={bItem}
+                          note={bIdx === 0 ? b.note : null}
+                          colors={STYLE_COLORS[bItem.style] || branchColors}
+                          onClick={onNodeClick}
+                        />
+                        {bIdx < branchChain.length - 1 && (
+                          <div style={{ display:"flex", alignItems:"flex-start", paddingTop:32, flexShrink:0 }}>
+                            <div style={{ width:24, height:2, background:`linear-gradient(90deg, ${branchColors.border}88, ${branchColors.border})`, position:"relative" }}>
+                              <div style={{ position:"absolute", right:-4, top:-3, borderTop:"4px solid transparent", borderBottom:"4px solid transparent", borderLeft:`6px solid ${branchColors.border}` }}/>
+                            </div>
+                          </div>
+                        )}
+                        {bIdx === branchChain.length - 1 && bItem.supersededBy === null && (
+                          <div style={{ display:"flex", alignItems:"flex-start", paddingTop:28, paddingLeft:8, color:"#f0c040", fontSize:11, fontWeight:700, whiteSpace:"nowrap" }}>★ BiS</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── MAIN APP ───────────────────────────────────────────────────────────────────
+function GearFlowchart() {
+  const [activeSlot, setActiveSlot] = useState("weapon");
+  const [styleFilter, setStyleFilter] = useState("all_styles");
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [searchQ, setSearchQ] = useState("");
+  const [obtained, setObtained] = React.useState(() => {
+    try { return JSON.parse(localStorage.getItem('ps_gear_obtained') || '{}'); } catch { return {}; }
+  });
+  const toggleObtained = (id) => {
+    setObtained(prev => {
+      const next = {...prev, [id]: !prev[id]};
+      try { localStorage.setItem('ps_gear_obtained', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
+  const chains = useMemo(() => buildChains(RAW), []);
+  const grouped = useMemo(() => {
+    const g = groupBySlot(chains);
+    // Sort chains within each slot by the first item's progressionOrder
+    Object.keys(g).forEach(slot => {
+      g[slot].sort((a,b) => (a[0].progressionOrder||0) - (b[0].progressionOrder||0));
+    });
+    return g;
+  }, [chains]);
+
+  const filteredChains = useMemo(() => {
+    let chs = grouped[activeSlot] || [];
+    if (styleFilter !== "all_styles") {
+      chs = chs.filter(ch => ch.some(item => item.style === styleFilter || item.style === "all"));
+    }
+    if (searchQ.trim()) {
+      const q = searchQ.toLowerCase();
+      chs = chs.filter(ch => ch.some(item =>
+        item.name.toLowerCase().includes(q) ||
+        (item.ironmanNotes||"").toLowerCase().includes(q) ||
+        (item.supersessionNote||"").toLowerCase().includes(q)
+      ));
+    }
+    return chs;
+  }, [grouped, activeSlot, styleFilter, searchQ]);
+
+  // Dominant style for current slot
+  const slotStyles = useMemo(() => {
+    const chs = grouped[activeSlot] || [];
+    const seen = new Set();
+    chs.forEach(ch => ch.forEach(item => seen.add(item.style)));
+    return [...seen];
+  }, [grouped, activeSlot]);
+
+  const dominantStyle = slotStyles.length === 1 ? slotStyles[0] :
+    (styleFilter !== "all_styles" ? styleFilter : slotStyles[0] || "melee");
+  const colors = STYLE_COLORS[dominantStyle] || STYLE_COLORS.melee;
+
+  const totalItems = useMemo(() =>
+    (grouped[activeSlot] || []).reduce((a,ch) => a + ch.length, 0),
+    [grouped, activeSlot]
+  );
+
+  return (
+    <div style={{
+      minHeight:"100%",
+      background:"transparent",
+      color:"var(--text-light)",
+      fontFamily:"'Source Sans 3', sans-serif"
+    }}>
+      {/* Header */}
+      <div style={{
+        borderBottom:"1px solid #222",
+        padding:"14px 16px 10px",
+        background:"#0b0b12"
+      }}>
+        <div style={{
+          fontFamily:"'Cinzel',serif",
+          fontSize:22, fontWeight:700, color:"#e8c870",
+          letterSpacing:2, marginBottom:3
+        }}>GEAR PROGRESSION CHAINS</div>
+        <div style={{color:"#666", fontSize:12, letterSpacing:1}}>
+          ProgressScape · {RAW.length} items · {Object.values(grouped).reduce((a,chs)=>a+chs.length,0)} chains
+        </div>
+      </div>
+
+      {/* Slot tabs */}
+      <div style={{
+        display:"flex", gap:0, overflowX:"auto",
+        borderBottom:"1px solid #1a1a22",
+        background:"#0b0b12"
+      }}>
+        {SLOT_ORDER.filter(s => grouped[s]?.length).map(slot => {
+          const active = slot === activeSlot;
+          const slotDomStyle = (grouped[slot]||[]).flatMap(c=>c).map(i=>i.style)
+            .filter(s=>s!=="all").reduce((acc,s) => {
+              acc[s] = (acc[s]||0)+1; return acc;
+            }, {});
+          const topStyle = Object.entries(slotDomStyle).sort((a,b)=>b[1]-a[1])[0]?.[0] || "melee";
+          const sc = STYLE_COLORS[topStyle];
+          return (
+            <button
+              key={slot}
+              onClick={() => { setActiveSlot(slot); setStyleFilter("all_styles"); }}
+              style={{
+                background: active ? sc.bg : "transparent",
+                border:"none",
+                borderBottom: active ? `2px solid ${sc.accent}` : "2px solid transparent",
+                color: active ? sc.accent : "#666",
+                padding:"10px 16px", cursor:"pointer",
+                fontSize:12, fontWeight: active ? 700 : 400,
+                letterSpacing:.5, whiteSpace:"nowrap",
+                transition:"all .15s"
+              }}
+            >
+              {SLOT_LABELS[slot]}
+              <span style={{
+                marginLeft:6, background:"#ffffff10",
+                borderRadius:10, padding:"1px 6px", fontSize:10
+              }}>{(grouped[slot]||[]).reduce((a,c)=>a+c.length,0)}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Controls */}
+      <div style={{
+        display:"flex", gap:8, padding:"10px 16px",
+        alignItems:"center", flexWrap:"wrap",
+        borderBottom:"1px solid #1a1a22"
+      }}>
+        {/* Style filter */}
+        {slotStyles.length > 1 && (
+          <div style={{display:"flex", gap:6}}>
+            {["all_styles", ...slotStyles].map(s => {
+              const sc = s === "all_styles" ? null : STYLE_COLORS[s];
+              const active = styleFilter === s;
+              return (
+                <button key={s} onClick={() => setStyleFilter(s)} style={{
+                  background: active && sc ? sc.bg : active ? "#1a1a22" : "transparent",
+                  border: active && sc ? `1px solid ${sc.border}` : "1px solid #333",
+                  color: active && sc ? sc.accent : active ? "#aaa" : "#555",
+                  borderRadius:5, padding:"4px 11px", cursor:"pointer",
+                  fontSize:11, fontWeight: active ? 700 : 400,
+                  textTransform:"capitalize", transition:"all .1s"
+                }}>{s === "all_styles" ? "All" : s}</button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Search */}
+        <input
+          placeholder="Search items, notes…"
+          value={searchQ}
+          onChange={e => setSearchQ(e.target.value)}
+          style={{
+            background:"#0e0e18", border:"1px solid #2a2a3a",
+            borderRadius:5, padding:"4px 12px", color:"#ccc",
+            fontSize:12, outline:"none", width:200
+          }}
+        />
+
+        <div style={{marginLeft:"auto", fontSize:11, color:"#555"}}>
+          Showing {filteredChains.length} chains · {filteredChains.reduce((a,c)=>a+c.length,0)} items
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div style={{
+        display:"flex", gap:12, padding:"6px 16px",
+        borderBottom:"1px solid #111", fontSize:10, color:"#555"
+      }}>
+        <span>🏪 GE buyable</span>
+        <span>⚔️ Drop</span>
+        <span>💀 Slayer drop</span>
+        <span>📜 Quest reward</span>
+        <span>📋 Diary reward</span>
+        <span>🎮 Minigame</span>
+        <span>🔨 Crafted</span>
+        <span style={{color:"#6aabea"}}>⚔ DIV = Division of Labour (members cover different steps)</span>
+        <span style={{color:"#7abb4a"}}>📦 POOL = Poolable (tradeable, one farmer supplies all)</span>
+        <span style={{color:"#e8a060"}}>👤 /PLAYER = Per Player (untradeable, each must earn own)</span>
+        <span>🔗 Click nodes with chains for full breakdown</span>
+      </div>
+
+      {/* Chains */}
+      <div style={{padding:"10px 16px", display:"flex", flexDirection:"column", gap:4}}>
+        {filteredChains.length === 0 && (
+          <div style={{color:"#444", padding:"40px", textAlign:"center", fontSize:14}}>
+            No chains found for current filters.
+          </div>
+        )}
+        {filteredChains.map((chain, ci) => {
+          const chainStyle = chain.find(i => i.style !== "all")?.style || "all";
+          const cc = STYLE_COLORS[chainStyle] || STYLE_COLORS.melee;
+          return (
+            <div key={ci} style={{
+              background:"#0c0c12",
+              border:`1px solid ${cc.border}22`,
+              borderLeft:`3px solid ${cc.border}`,
+              borderRadius:8, padding:"8px 14px",
+              marginBottom:2
+            }}>
+              <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:4}}>
+                <span style={{
+                  fontSize:10, color: cc.border, fontFamily:"monospace",
+                  letterSpacing:.5, textTransform:"uppercase"
+                }}>{chainStyle}</span>
+                <span style={{
+                  fontSize:10, color:"#555"
+                }}>{chain.length} items in chain</span>
+                {chain.some(i => i.gimTag === "division_labour") && (
+                  <span style={{
+                    fontSize:9, background:"#0a1a2a", border:"1px solid #2a6aaa",
+                    color:"#6aabea", padding:"1px 6px", borderRadius:3, fontWeight:700
+                  }}>⚔ Division of Labour</span>
+                )}
+                {!chain.some(i => i.gimTag === "division_labour") && chain.some(i => i.gimTag === "poolable") && (
+                  <span style={{
+                    fontSize:9, background:"#1a2a0a", border:"1px solid #4a8a2a",
+                    color:"#7abb4a", padding:"1px 6px", borderRadius:3, fontWeight:700
+                  }}>📦 Poolable</span>
+                )}
+                {!chain.some(i => i.gimTag === "division_labour" || i.gimTag === "poolable") && chain.some(i => i.gimTag === "per_member") && (
+                  <span style={{
+                    fontSize:9, background:"#2a1a0a", border:"1px solid #8a5a1a",
+                    color:"#e8a060", padding:"1px 6px", borderRadius:3, fontWeight:700
+                  }}>👤 Per Player</span>
+                )}
+              </div>
+              <ChainRow chain={chain} colors={cc} onNodeClick={setSelectedItem} obtained={obtained} onToggle={toggleObtained} />
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Modal */}
+      {selectedItem && (
+        <CraftChainModal
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          colors={STYLE_COLORS[selectedItem.style] || STYLE_COLORS.melee}
+        />
+      )}
+    </div>
+  );
+}
+
+
+// Mount into the flowchart panel div
+const flowchartRoot = ReactDOM.createRoot(document.getElementById('flowchart-root'));
+flowchartRoot.render(<GearFlowchart />);
+</script>
+
+<!-- GIM Planner -->
+<script>
+const MEMBER_COLORS = ['#e85a5a','#5a9ee8','#5ae87a','#e8c05a','#c05ae8'];
+
+let gimCollapsed = false;
+let members = [
+  { rsn: '', stats: null, status: '' },
+  { rsn: '', stats: null, status: '' },
+  { rsn: '', stats: null, status: '' },
+];
+
+// ── Filter state ──────────────────────────────────────────────────────────────
+let gimFilter    = 'all';     // ready / partial / blocked / all
+let gimSlot      = 'all';     // weapon / head / body / … / all
+let gimStyle     = 'all';     // melee / ranged / magic / skilling / prayer / all
+let gimTag       = 'all';     // division_labour / poolable / per_member / all
+let gimSort      = 'status';  // status (ready-first) | tier | name
+let gimHideDone  = true;      // hide ticked-off items
+let gimSearch    = '';        // free-text search against item name
+
+let gimResults  = [];
+let gimObtained = {};   // itemId -> true
+let gimExpanded = {};   // itemId -> true
+
+// ── Panel collapse ────────────────────────────────────────────────────────────
+function toggleGimPanel() {
+  gimCollapsed = !gimCollapsed;
+  document.getElementById('gim-panel').classList.toggle('collapsed', gimCollapsed);
+  document.getElementById('gim-toggle-icon').textContent = gimCollapsed ? '\u25b6' : '\u25c0';
+}
+
+// ── Input snapshot / restore (prevents re-render clobbering in-progress typing) ─
+function snapshotInputs() {
+  var snap = {};
+  members.forEach(function(m, i) {
+    var el = document.getElementById('gim-rsn-' + i);
+    if (el) snap[i] = el.value;
+  });
+  return snap;
+}
+function restoreInputs(snap) {
+  Object.keys(snap).forEach(function(i) {
+    var el = document.getElementById('gim-rsn-' + i);
+    if (el && document.activeElement !== el) el.value = snap[i];
+  });
+}
+
+// ── Hiscores fetch ────────────────────────────────────────────────────────────
+async function fetchMemberStats(idx) {
+  var input = document.getElementById('gim-rsn-' + idx);
+  if (input) members[idx].rsn = input.value.trim();
+  var rsn = members[idx].rsn;
+  if (!rsn) return;
+  members[idx].status = 'loading';
+  renderMembersSection();
+
+  var hiscoresUrl = 'https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=' + encodeURIComponent(rsn);
+  var proxies = [
+    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(hiscoresUrl),
+    'https://corsproxy.io/?url='                + encodeURIComponent(hiscoresUrl),
+    'https://api.allorigins.win/raw?url='        + encodeURIComponent(hiscoresUrl)
+  ];
+  var skillMap = {
+    'Attack':'attack','Defence':'defence','Strength':'strength','Hitpoints':'hitpoints',
+    'Ranged':'ranged','Prayer':'prayer','Magic':'magic','Cooking':'cooking',
+    'Woodcutting':'woodcutting','Fletching':'fletching','Fishing':'fishing',
+    'Firemaking':'firemaking','Crafting':'crafting','Smithing':'smithing',
+    'Mining':'mining','Herblore':'herblore','Agility':'agility','Thieving':'thieving',
+    'Slayer':'slayer','Farming':'farming','Runecraft':'runecraft','Hunter':'hunter',
+    'Construction':'construction'
+  };
+  for (var pi = 0; pi < proxies.length; pi++) {
+    try {
+      var resp = await fetch(proxies[pi]);
+      if (!resp.ok) continue;
+      var data = await resp.json();
+      if (!data || !data.skills) continue;
+      var stats = {};
+      data.skills.forEach(function(s) {
+        var k = skillMap[s.name];
+        if (k && s.level > 0) stats[k] = s.level;
+      });
+      members[idx].stats  = stats;
+      members[idx].status = 'ok';
+      renderMembersSection();
+      return;
+    } catch(e) {}
+  }
+  members[idx].status = 'err';
+  renderMembersSection();
+}
+
+// ── Analysis ──────────────────────────────────────────────────────────────────
+function analyseGroup() {
+  var active = members.filter(function(m) { return m.stats; });
+  if (!active.length) return;
+
+  gimResults = GEAR_DATA
+    .filter(function(g) { return g.craftChain && g.craftChain.length > 0; })
+    .map(function(item) {
+      var steps = (item.craftChain || []).map(function(step) {
+        var reqs = step.memberReqs || {};
+        if (!Object.keys(reqs).length) {
+          return { step: step, status: 'ok', capable: [] };
+        }
+        // All members who can fully cover this step
+        var capable = [];
+        active.forEach(function(m, i) {
+          var ok = Object.entries(reqs).every(function(kv) {
+            return (m.stats[kv[0]] || 1) >= kv[1];
+          });
+          if (ok) capable.push({ member: m, idx: i });
+        });
+        if (capable.length) return { step: step, status: 'ok', capable: capable };
+        var partial = active.some(function(m) {
+          return Object.entries(reqs).some(function(kv) {
+            return (m.stats[kv[0]] || 1) >= kv[1];
+          });
+        });
+        return { step: step, status: partial ? 'partial' : 'blocked', capable: [] };
+      });
+      var allOk      = steps.every(function(s) { return s.status === 'ok'; });
+      var anyBlocked = steps.some(function(s)  { return s.status === 'blocked'; });
+      return {
+        item: item,
+        steps: steps,
+        overallStatus: anyBlocked ? 'blocked' : allOk ? 'ready' : 'partial'
+      };
+    });
+
+  renderResultsSection();
+}
+
+// ── Inline action callbacks ───────────────────────────────────────────────────
+function gimToggleObtained(id) { gimObtained[id] = !gimObtained[id]; renderResultsSection(); }
+function gimToggleExpand(id)   { gimExpanded[id]  = !gimExpanded[id];  renderResultsSection(); }
+
+function gimSetStatus(v)   { gimFilter   = v; renderResultsSection(); }
+function gimSetSlot(v)     { gimSlot     = v; renderResultsSection(); }
+function gimSetStyle(v)    { gimStyle    = v; renderResultsSection(); }
+function gimSetTag(v)      { gimTag      = v; renderResultsSection(); }
+function gimSetSort(v)     { gimSort     = v; renderResultsSection(); }
+function gimSetHideDone(v) { gimHideDone = v; renderResultsSection(); }
+function gimSetSearch(v)   { gimSearch   = v; renderResultsSection(); }
+
+// ── Render helpers ────────────────────────────────────────────────────────────
+function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
+
+function reqsStr(reqs) {
+  return Object.entries(reqs).map(function(kv) {
+    return cap(kv[0]) + ' ' + kv[1];
+  }).join(' · ');
+}
+
+// ── Members section (isolated — never touches results) ────────────────────────
+function renderMembersSection() {
+  var snap = snapshotInputs();
+  var sec  = document.getElementById('gim-members-section');
+  if (!sec) return;
+
+  var activeMembers = members.filter(function(m) { return m.stats; });
+  var html = '<div class="gim-section-title">Group Members</div>';
+
+  members.forEach(function(m, i) {
+    var color = MEMBER_COLORS[i];
+    html +=
+      '<div class="member-row">' +
+        '<div class="member-color" style="background:' + color + '"></div>' +
+        '<input class="member-input" id="gim-rsn-' + i + '"' +
+          ' placeholder="RSN ' + (i+1) + '\u2026"' +
+          ' value="' + (m.rsn||'').replace(/"/g,'&quot;') + '"' +
+          ' oninput="members[' + i + '].rsn=this.value"' +
+          ' onkeydown="if(event.key===\'Enter\'){fetchMemberStats(' + i + ')}">' +
+        '<button class="member-lookup-btn' + (m.status==='loading'?' loading':'') + '"' +
+          ' onclick="fetchMemberStats(' + i + ')">' +
+          (m.status==='loading' ? '\u2026' : 'Lookup') +
+        '</button>' +
+      '</div>';
+    if (m.status==='ok' && m.stats) {
+      html += '<div class="member-status ok" style="margin-left:16px;margin-top:-8px">' +
+        '\u2713 ' + m.rsn + ' \u2014 ' + Object.keys(m.stats).length + ' skills</div>';
+    } else if (m.status==='err') {
+      html += '<div class="member-status err" style="margin-left:16px;margin-top:-8px">' +
+        '\u2717 Player not found</div>';
+    }
+  });
+
+  if (members.length < 5) {
+    html += '<button class="member-lookup-btn" style="width:100%;margin-top:-4px"' +
+      ' onclick="members.push({rsn:\'\',stats:null,status:\'\'});renderMembersSection()">+ Add Member</button>';
+  }
+
+  html += '<button class="gim-analyse-btn"' + (activeMembers.length ? '' : ' disabled') +
+    ' onclick="analyseGroup()">Analyse Group Unlocks</button>';
+
+  sec.innerHTML = html;
+  restoreInputs(snap);
+}
+
+// ── Results section ───────────────────────────────────────────────────────────
+function renderResultsSection() {
+  var sec = document.getElementById('gim-results-section');
+  if (!sec) return;
+
+  if (!gimResults.length) {
+    var activeM = members.filter(function(m) { return m.stats; });
+    sec.innerHTML = '<div class="gim-empty">' +
+      (activeM.length
+        ? 'Click Analyse to see what your group can unlock together.'
+        : 'Enter RSNs and click Lookup, then Analyse.') +
+      '</div>';
+    return;
+  }
+
+  // ── Apply all filters in sequence ─────────────────────────────────────────
+  var pool = gimResults.slice();
+
+  // 1. Status tab
+  if (gimFilter !== 'all') {
+    pool = pool.filter(function(r) { return r.overallStatus === gimFilter; });
+  }
+  // 2. Slot
+  if (gimSlot !== 'all') {
+    pool = pool.filter(function(r) { return r.item.slot === gimSlot; });
+  }
+  // 3. Style
+  if (gimStyle !== 'all') {
+    pool = pool.filter(function(r) { return r.item.style === gimStyle || r.item.style === 'all'; });
+  }
+  // 4. GIM tag
+  if (gimTag !== 'all') {
+    pool = pool.filter(function(r) {
+      return gimTag === 'none' ? !r.item.gimTag : r.item.gimTag === gimTag;
+    });
+  }
+  // 5. Hide ticked
+  if (gimHideDone) {
+    pool = pool.filter(function(r) { return !gimObtained[r.item.id]; });
+  }
+  // 6. Text search
+  if (gimSearch.trim()) {
+    var q = gimSearch.trim().toLowerCase();
+    pool = pool.filter(function(r) {
+      return r.item.name.toLowerCase().includes(q);
+    });
+  }
+
+  // ── Sort ──────────────────────────────────────────────────────────────────
+  var statusOrder = { ready: 0, partial: 1, blocked: 2 };
+  pool.sort(function(a, b) {
+    if (gimSort === 'tier') {
+      return (a.item.tier || 0) - (b.item.tier || 0);
+    }
+    if (gimSort === 'name') {
+      return a.item.name.localeCompare(b.item.name);
+    }
+    // default: status-first (ready → partial → blocked), then tier
+    var sd = (statusOrder[a.overallStatus] || 0) - (statusOrder[b.overallStatus] || 0);
+    return sd !== 0 ? sd : (a.item.tier || 0) - (b.item.tier || 0);
+  });
+
+  // ── Count badges for status tabs (pre-filter counts, minus slot/style/tag) ─
+  var prefilteredForCounts = gimResults.filter(function(r) {
+    var slotOk  = gimSlot  === 'all' || r.item.slot  === gimSlot;
+    var styleOk = gimStyle === 'all' || r.item.style === gimStyle || r.item.style === 'all';
+    var tagOk   = gimTag   === 'all' || (gimTag === 'none' ? !r.item.gimTag : r.item.gimTag === gimTag);
+    var doneOk  = !gimHideDone || !gimObtained[r.item.id];
+    return slotOk && styleOk && tagOk && doneOk;
+  });
+  var counts = { all: prefilteredForCounts.length, ready: 0, partial: 0, blocked: 0 };
+  prefilteredForCounts.forEach(function(r) { counts[r.overallStatus]++; });
+
+  var html = '<div class="gim-section-title">Results</div>';
+
+  // ── Status tabs ───────────────────────────────────────────────────────────
+  html += '<div class="gim-filter-row">';
+  [['all','All'],['ready','\u2713 Ready'],['partial','\u26a0 Partial'],['blocked','\u2717 Blocked']].forEach(function(kl) {
+    html += '<button class="gim-filter-btn' + (gimFilter===kl[0]?' active':'') + '"' +
+      ' onclick="gimSetStatus(\'' + kl[0] + '\')">' + kl[1] +
+      ' <span style="opacity:0.6">' + counts[kl[0]] + '</span></button>';
+  });
+  html += '</div>';
+
+  // ── Secondary filter bar ──────────────────────────────────────────────────
+  html += '<div class="gim-filter-bar">';
+
+  // Search
+  html += '<input class="gim-search" placeholder="\uD83D\uDD0D Search items\u2026"' +
+    ' value="' + gimSearch.replace(/"/g,'&quot;') + '"' +
+    ' oninput="gimSetSearch(this.value)">';
+
+  // Slot dropdown
+  var slotLabels = {
+    all:'All Slots', weapon:'Weapons', head:'Helmets', body:'Body',
+    legs:'Legs', hands:'Gloves', feet:'Boots', shield:'Shields',
+    neck:'Amulets', cape:'Capes', ring:'Rings',
+    skilling_tool:'Skilling', utility:'Utility', consumable:'Consumables'
+  };
+  // Only show slots that have results
+  var presentSlots = ['all'].concat(
+    Object.keys(slotLabels).filter(function(s) {
+      return s !== 'all' && gimResults.some(function(r) { return r.item.slot === s; });
+    })
+  );
+  html += '<select class="gim-select" onchange="gimSetSlot(this.value)">';
+  presentSlots.forEach(function(s) {
+    html += '<option value="' + s + '"' + (gimSlot===s?' selected':'') + '>' + (slotLabels[s]||s) + '</option>';
+  });
+  html += '</select>';
+
+  // Style dropdown
+  var styleLabels = { all:'All Styles', melee:'Melee', ranged:'Ranged', magic:'Magic', skilling:'Skilling', prayer:'Prayer' };
+  var presentStyles = ['all'].concat(
+    Object.keys(styleLabels).filter(function(s) {
+      return s !== 'all' && gimResults.some(function(r) { return r.item.style === s; });
+    })
+  );
+  html += '<select class="gim-select" onchange="gimSetStyle(this.value)">';
+  presentStyles.forEach(function(s) {
+    html += '<option value="' + s + '"' + (gimStyle===s?' selected':'') + '>' + (styleLabels[s]||s) + '</option>';
+  });
+  html += '</select>';
+
+  // GIM tag dropdown
+  html += '<select class="gim-select" onchange="gimSetTag(this.value)">';
+  [['all','Any GIM tag'],['division_labour','DIV Labour'],['poolable','Poolable'],['per_member','Per Member'],['none','Untagged']].forEach(function(kl) {
+    html += '<option value="' + kl[0] + '"' + (gimTag===kl[0]?' selected':'') + '>' + kl[1] + '</option>';
+  });
+  html += '</select>';
+
+  // Sort dropdown
+  html += '<select class="gim-select" onchange="gimSetSort(this.value)">';
+  [['status','Sort: Status'],['tier','Sort: Tier'],['name','Sort: A–Z']].forEach(function(kl) {
+    html += '<option value="' + kl[0] + '"' + (gimSort===kl[0]?' selected':'') + '>' + kl[1] + '</option>';
+  });
+  html += '</select>';
+
+  // Hide-done toggle
+  html += '<label class="gim-toggle-label" title="Hide ticked-off items">' +
+    '<input type="checkbox"' + (gimHideDone?' checked':'') +
+    ' onchange="gimSetHideDone(this.checked)"> Hide done' +
+    '</label>';
+
+  html += '</div>'; // gim-filter-bar
+
+  // ── Result count line ─────────────────────────────────────────────────────
+  var totalAfterFilters = pool.length;
+  html += '<div class="gim-result-count">' + totalAfterFilters + ' item' +
+    (totalAfterFilters===1?'':'s') +
+    (gimObtained && Object.values(gimObtained).filter(Boolean).length
+      ? ' · ' + Object.values(gimObtained).filter(Boolean).length + ' ticked off' : '') +
+    '</div>';
+
+  if (!pool.length) {
+    html += '<div class="gim-empty">No items match these filters.</div>';
+    sec.innerHTML = html;
+    return;
+  }
+
+  // ── Cards ─────────────────────────────────────────────────────────────────
+  html += '<div class="gim-results">';
+  pool.slice(0, 60).forEach(function(result) {
+    var item          = result.item;
+    var steps         = result.steps;
+    var overallStatus = result.overallStatus;
+    var isObtained    = !!gimObtained[item.id];
+    var isExpanded    = !!gimExpanded[item.id];
+
+    var borderClass = overallStatus==='ready'   ? 'gim-ready'
+                    : overallStatus==='blocked'  ? 'gim-blocked'
+                    : 'gim-partial';
+
+    var gimTagHtml = item.gimTag==='division_labour'
+      ? '<span class="gim-tag gim-tag-div">DIV</span>'
+      : item.gimTag==='poolable'
+      ? '<span class="gim-tag gim-tag-pool">POOL</span>'
+      : item.gimTag==='per_member'
+      ? '<span class="gim-tag gim-tag-mem">/MEMBER</span>'
+      : '';
+
+    // Slot + style pill
+    var slotPill = '<span class="gim-slot-pill">' + (slotLabels[item.slot]||item.slot) + '</span>';
+    var tierPill = '<span class="gim-tier-pill">T' + item.tier + '</span>';
+
+    html +=
+      '<div class="gim-item-card ' + borderClass + '"' +
+        (isObtained ? ' style="opacity:0.4"' : '') + '>' +
+
+        // Header (always visible, click to expand)
+        '<div class="gim-item-header" onclick="gimToggleExpand(\'' + item.id + '\')">' +
+          '<div class="gim-item-name">' + item.name + '</div>' +
+          tierPill + slotPill + gimTagHtml +
+          '<button class="gim-tick-btn' + (isObtained?' ticked':'') + '"' +
+            ' title="' + (isObtained?'Unmark':'Mark as planned') + '"' +
+            ' onclick="event.stopPropagation();gimToggleObtained(\'' + item.id + '\')">' +
+            (isObtained ? '\u2611' : '\u2610') +
+          '</button>' +
+          '<span class="gim-expand-icon">' + (isExpanded?'\u25b2':'\u25bc') + '</span>' +
+        '</div>';
+
+    if (!isExpanded) {
+      // ── Collapsed: compact step summary with all capable badges ───────────
+      html += '<div class="gim-item-steps">';
+      steps.forEach(function(s) {
+        var icon      = s.status==='ok'?'\u2713':s.status==='partial'?'\u26a0':'\u2717';
+        var iconColor = s.status==='ok'?'#4a9e4a':s.status==='partial'?'#c8a030':'#c43030';
+        var stepText  = s.step.step.length>55 ? s.step.step.slice(0,55)+'\u2026' : s.step.step;
+        var badges    = '';
+        (s.capable||[]).forEach(function(c) {
+          badges += '<span class="gim-step-member" style="' +
+            'background:' + MEMBER_COLORS[c.idx] + '22;color:' + MEMBER_COLORS[c.idx] +
+            ';border:1px solid ' + MEMBER_COLORS[c.idx] + '44">' +
+            (c.member.rsn||'M'+(c.idx+1)) + '</span>';
+        });
+        html += '<div class="gim-step">' +
+          '<span class="gim-step-status" style="color:' + iconColor + '">' + icon + '</span>' +
+          '<span class="gim-step-desc">' + stepText + '</span>' +
+          badges + '</div>';
+      });
+      html += '</div>';
+    } else {
+      // ── Expanded: full detail ─────────────────────────────────────────────
+      html += '<div class="gim-item-detail">';
+
+      // Wield reqs
+      if (item.wieldReqs && Object.keys(item.wieldReqs).length) {
+        html += '<div class="gim-detail-wield">Equip: ' + reqsStr(item.wieldReqs) + '</div>';
+      }
+
+      steps.forEach(function(s, si) {
+        var icon      = s.status==='ok'?'\u2713':s.status==='partial'?'\u26a0':'\u2717';
+        var iconColor = s.status==='ok'?'#4a9e4a':s.status==='partial'?'#c8a030':'#c43030';
+        var reqs      = s.step.memberReqs || {};
+
+        html += '<div class="gim-detail-step">' +
+          '<div class="gim-detail-step-header">' +
+            '<span style="color:' + iconColor + ';flex-shrink:0">' + icon + '</span>' +
+            '<span style="color:#888;font-size:0.68rem;font-family:monospace;flex-shrink:0">STEP ' + (si+1) + '</span>' +
+            '<span style="color:#ddd;font-size:0.78rem;flex:1;line-height:1.3">' + s.step.step + '</span>' +
+          '</div>';
+
+        if (s.step.source) {
+          html += '<div class="gim-detail-meta">\uD83D\uDCCD ' + s.step.source + '</div>';
+        }
+        if (s.step.notes) {
+          html += '<div class="gim-detail-notes">' + s.step.notes + '</div>';
+        }
+        if (s.step.questReqs && s.step.questReqs.length) {
+          html += '<div class="gim-detail-meta" style="color:#a0c8ff">\uD83D\uDCDC ' + s.step.questReqs.join(', ') + '</div>';
+        }
+
+        // Per-skill who-can breakdown
+        if (Object.keys(reqs).length) {
+          html += '<div class="gim-detail-reqs">';
+          Object.entries(reqs).forEach(function(kv) {
+            var needed = kv[1];
+            html += '<div class="gim-req-row"><span class="gim-req-skill">' + cap(kv[0]) + ' ' + needed + '</span>';
+            var qualified = members.filter(function(m) {
+              return m.stats && (m.stats[kv[0]] || 1) >= needed;
+            });
+            if (qualified.length) {
+              qualified.forEach(function(m) {
+                var mi = members.indexOf(m);
+                html += '<span class="gim-req-member" style="background:' + MEMBER_COLORS[mi] + '22;color:' +
+                  MEMBER_COLORS[mi] + ';border:1px solid ' + MEMBER_COLORS[mi] + '55">' +
+                  (m.rsn||'M'+(mi+1)) + ' (' + (m.stats[kv[0]]||1) + ')</span>';
+              });
+            } else {
+              html += '<span style="color:#c43030;font-size:0.68rem">\u2717 No one qualifies</span>';
+            }
+            html += '</div>';
+          });
+          html += '</div>';
+        }
+        html += '</div>'; // gim-detail-step
+      });
+
+      if (item.ironmanNotes) {
+        html += '<div class="gim-detail-gimnote">\u2694 <strong>GIM:</strong> ' + item.ironmanNotes + '</div>';
+      }
+      if (item.mainNotes) {
+        html += '<div class="gim-detail-gimnote" style="color:#b8a87a;border-color:#5a4a20">\uD83C\uDFEA <strong>Mains:</strong> ' + item.mainNotes + '</div>';
+      }
+      html += '</div>'; // gim-item-detail
+    }
+
+    html += '</div>'; // gim-item-card
+  });
+
+  if (pool.length > 60) {
+    html += '<div class="gim-empty" style="font-size:0.7rem">Showing 60 of ' + pool.length + ' \u2014 refine filters to narrow down</div>';
+  }
+  html += '</div>'; // gim-results
+  sec.innerHTML = html;
+}
+
+function renderGimPanel() {
+  renderMembersSection();
+  renderResultsSection();
+}
+
+// Init on load
+window.addEventListener('load', function() {
+  var body = document.getElementById('gim-body');
+  if (body) {
+    body.innerHTML =
+      '<div id="gim-members-section"></div>' +
+      '<div id="gim-results-section"></div>';
+  }
+  renderGimPanel();
+  document.getElementById('gim-header-btn').addEventListener('click', toggleGimPanel);
+  document.getElementById('gim-collapsed-label').addEventListener('click', toggleGimPanel);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collection Log — ProgressScape</title>
+<meta name="description" content="Track your Old School RuneScape collection log progress on ProgressScape.">
+<link rel="canonical" href="https://progressscape.net/clog.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8YXGC1W0GW');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
+    <nav>
+      <a href="index.html"   class="nav-btn">Progression</a>
+      <a href="stats.html"   class="nav-btn">My Stats</a>
+      <a href="bosses.html"  class="nav-btn">Bosses</a>
+      <a href="combat.html"  class="nav-btn">Combat Tasks</a>
+      <a href="clog.html"    class="nav-btn active">Collection Log</a>
+      <a href="planner.html" class="nav-btn">Custom Path</a>
+      <a href="compare.html" class="nav-btn">Compare</a>
+      <a href="gear.html"    class="nav-btn">Gear</a>
+    </nav>
+    <div class="header-right">
+      <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
+        <img class="im-icon" src="https://oldschool.runescape.wiki/images/Ironman_chat_badge.png" alt="Ironman" style="width:16px;height:16px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin-right:2px;"> Ironman
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="page-clog" class="page active">
+  <div class="clog-page">
+
+    <!-- Category tabs -->
+    <div class="clog-cat-tabs" id="clog-cat-tabs">
+      <div class="clog-cat-tab active" data-cat="All" onclick="setClogCat('All',this)">All</div>
+      <div class="clog-cat-tab" data-cat="Bosses" onclick="setClogCat('Bosses',this)">Bosses</div>
+      <div class="clog-cat-tab" data-cat="Raids" onclick="setClogCat('Raids',this)">Raids</div>
+      <div class="clog-cat-tab" data-cat="Clues" onclick="setClogCat('Clues',this)">Clues</div>
+      <div class="clog-cat-tab" data-cat="Minigames" onclick="setClogCat('Minigames',this)">Minigames</div>
+      <div class="clog-cat-tab" data-cat="Other" onclick="setClogCat('Other',this)">Other</div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="clog-toolbar">
+      <input class="clog-search" id="clog-search" type="text" placeholder="Search items..." oninput="renderClogMain()" />
+      <button class="clog-filter-chip f-obtained" id="clog-f-obtained" onclick="toggleClogFilter('obtained')">Obtained</button>
+      <button class="clog-filter-chip f-missing" id="clog-f-missing" onclick="toggleClogFilter('missing')">Missing</button>
+      <span class="clog-summary-txt" id="clog-summary">— / — obtained</span>
+    </div>
+
+    <!-- Mobile source toggle -->
+    <button class="clog-mob-source-toggle" id="clog-mob-toggle" onclick="toggleClogSidebar()">▼ Browse sources</button>
+
+    <div class="clog-body">
+      <!-- Sidebar -->
+      <div class="clog-sidebar" id="clog-sidebar"></div>
+
+      <!-- Main content -->
+      <div class="clog-main" id="clog-main">
+        <div class="clog-empty">Select a source from the left to view its items.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">&#9650;</button>
+
+<script src="data.js"></script>
+<script src="clog_data.js"></script>
+<script src="ca_data.js"></script>
+<script src="shared.js"></script>
+<script>
+// Collection Log page init
+(function() {
+  function init() {
+    initClog();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>

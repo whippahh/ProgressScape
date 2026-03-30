@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bosses — ProgressScape</title>
+<meta name="description" content="Track your Old School RuneScape boss kill counts and notable drops on ProgressScape.">
+<link rel="canonical" href="https://progressscape.net/bosses.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8YXGC1W0GW');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
+    <nav>
+      <a href="index.html"   class="nav-btn">Progression</a>
+      <a href="stats.html"   class="nav-btn">My Stats</a>
+      <a href="bosses.html"  class="nav-btn active">Bosses</a>
+      <a href="combat.html"  class="nav-btn">Combat Tasks</a>
+      <a href="clog.html"    class="nav-btn">Collection Log</a>
+      <a href="planner.html" class="nav-btn">Custom Path</a>
+      <a href="compare.html" class="nav-btn">Compare</a>
+      <a href="gear.html"    class="nav-btn">Gear</a>
+    </nav>
+    <div class="header-right">
+      <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
+        <img class="im-icon" src="https://oldschool.runescape.wiki/images/Ironman_chat_badge.png" alt="Ironman" style="width:16px;height:16px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin-right:2px;"> Ironman
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="page-bosses" class="page active">
+  <div class="boss-tracker-page">
+
+    <div class="boss-tracker-toolbar">
+      <input type="text" class="boss-tracker-search" id="bt-search"
+        placeholder="Search bosses…" oninput="renderBossTracker()">
+      <button class="chip active" data-btfilter="all"    onclick="setBtFilter('all',this)">All</button>
+      <button class="chip" data-btfilter="easy"          onclick="setBtFilter('easy',this)">Easy</button>
+      <button class="chip" data-btfilter="medium"        onclick="setBtFilter('medium',this)">Medium</button>
+      <button class="chip" data-btfilter="hard"          onclick="setBtFilter('hard',this)">Hard</button>
+      <button class="chip" data-btfilter="elite"         onclick="setBtFilter('elite',this)">Elite</button>
+      <button class="chip" data-btfilter="master"        onclick="setBtFilter('master',this)">Master</button>
+      <button class="chip" data-btfilter="grandmaster"   onclick="setBtFilter('grandmaster',this)">GM</button>
+      <span class="bt-summary" id="bt-summary"></span>
+    </div>
+
+    <div class="boss-cards-grid" id="bt-grid"></div>
+
+  </div>
+</div>
+
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+      <div>
+        <div class="detail-title" id="detail-title"></div>
+        <div id="detail-subtitle" style="margin-top:0.3rem"></div>
+      </div>
+      <button class="detail-close" onclick="closeDetailBtn()">&#x2715;</button>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+    <div class="detail-actions" id="detail-actions"></div>
+  </div>
+</div>
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">&#9650;</button>
+
+<script src="data.js"></script>
+<script src="clog_data.js"></script>
+<script src="ca_data.js"></script>
+<script src="shared.js"></script>
+<script>
+// Bosses page init
+(function() {
+  function init() {
+    renderBossTracker();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>

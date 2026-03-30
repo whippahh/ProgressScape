@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Path Planner — ProgressScape</title>
+<meta name="description" content="Build your own OSRS goal list with tasks, custom entries and notes on ProgressScape.">
+<link rel="canonical" href="https://progressscape.net/planner.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8YXGC1W0GW');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
+    <nav>
+      <a href="index.html"   class="nav-btn">Progression</a>
+      <a href="stats.html"   class="nav-btn">My Stats</a>
+      <a href="bosses.html"  class="nav-btn">Bosses</a>
+      <a href="combat.html"  class="nav-btn">Combat Tasks</a>
+      <a href="clog.html"    class="nav-btn">Collection Log</a>
+      <a href="planner.html" class="nav-btn active">Custom Path</a>
+      <a href="compare.html" class="nav-btn">Compare</a>
+      <a href="gear.html"    class="nav-btn">Gear</a>
+    </nav>
+    <div class="header-right">
+      <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
+        <img class="im-icon" src="https://oldschool.runescape.wiki/images/Ironman_chat_badge.png" alt="Ironman" style="width:16px;height:16px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin-right:2px;"> Ironman
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="page-planner" class="page active">
+  <div class="planner-page">
+
+    <div class="planner-toolbar">
+      <span class="planner-toolbar-title">Custom Path Planner</span>
+      <button class="planner-add-btn add-existing" onclick="openPlannerModal('existing')">+ Add Existing Task</button>
+      <button class="planner-add-btn add-custom" onclick="openPlannerModal('custom')">+ Add Custom Task</button>
+      <button class="planner-add-btn add-note" onclick="openPlannerModal('note')">+ Add Note</button>
+      <div class="planner-io-btns">
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="openShareModal()">📤 Share</button>
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem" onclick="openImportModal()">📥 Import</button>
+        <input type="file" id="plan-import-input" accept=".json" style="display:none" onchange="importPlan(event)">
+        <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.75rem;color:#e06060" onclick="clearPlan()">Clear</button>
+      </div>
+    </div>
+
+    <div id="planner-progress-wrap" class="planner-progress-wrap" style="display:none">
+      <span class="planner-progress-label"><strong id="planner-done-count">0</strong> / <span id="planner-total-count">0</span></span>
+      <div class="planner-progress-track"><div class="planner-progress-fill" id="planner-prog-fill" style="width:0%"></div></div>
+      <span class="planner-progress-label"><strong id="planner-prog-pct">0%</strong></span>
+    </div>
+
+    <div class="planner-table-wrap" id="planner-table-wrap" style="display:none">
+      <table class="planner-table">
+        <thead>
+          <tr>
+            <th class="pt-drag"></th>
+            <th class="pt-check"></th>
+            <th>Name</th>
+            <th class="pt-type">Type</th>
+            <th class="pt-reqs">Skill Req.</th>
+            <th class="pt-loc">Location</th>
+            <th class="pt-info">Notes / Info</th>
+            <th class="pt-act"></th>
+          </tr>
+        </thead>
+        <tbody id="planner-list"></tbody>
+      </table>
+    </div>
+
+    <div id="planner-empty" class="planner-empty">
+      <span>🗺</span>
+      <strong style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold-dark);font-style:normal;letter-spacing:1px;display:block;margin-bottom:0.5rem;">No Path Charted Yet</strong>
+      Build your own goal list with tasks, custom entries &amp; notes.<br>
+      Add items from the Progression list, or create your own below.
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem;">
+        <button class="btn" onclick="location.href='index.html'" style="font-size:0.8rem">Browse Progression List</button>
+        <button class="btn btn-ghost" onclick="openPlannerModal('custom')" style="font-size:0.8rem">+ Add Custom Entry</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ===== SHARE PLAN MODAL ===== -->
+<div id="share-plan-overlay" class="planner-modal-overlay" onclick="shareOverlayClick(event)">
+  <div class="planner-modal" style="max-width:520px">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title">📤 Share Your Path</span>
+      <button class="planner-modal-close" onclick="closeShareModal()">✕</button>
+    </div>
+    <div class="planner-modal-body">
+      <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">
+        Send your path to a friend. They paste the code into Import → Paste Code.
+      </p>
+
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+        <button id="share-tab-code" class="btn" style="flex:1;font-size:0.8rem" onclick="setShareTab('code')">Share Code</button>
+        <button id="share-tab-file" class="btn btn-ghost" style="flex:1;font-size:0.8rem" onclick="setShareTab('file')">Download File</button>
+      </div>
+
+      <div id="share-code-panel">
+        <div style="position:relative">
+          <textarea id="share-code-text" readonly
+            style="width:100%;height:120px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:0.6rem;font-family:monospace;font-size:0.72rem;color:var(--text-muted);resize:none;box-sizing:border-box;word-break:break-all"
+          ></textarea>
+        </div>
+        <button id="share-copy-btn" class="btn" style="width:100%;margin-top:0.5rem;font-size:0.85rem" onclick="copyShareCode()">
+          📋 Copy to Clipboard
+        </button>
+        <p style="color:var(--text-muted);font-size:0.75rem;margin:0.6rem 0 0;text-align:center">
+          Paste this anywhere — Discord, Reddit, a notes app — your friend imports it on their end.
+        </p>
+      </div>
+
+      <div id="share-file-panel" style="display:none;text-align:center;padding:0.5rem 0">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">Downloads a <code>.json</code> file you can send directly.</p>
+        <button class="btn" style="font-size:0.9rem;padding:0.5rem 1.5rem" onclick="downloadPlanFile()">⬇ Download .json</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== IMPORT PLAN MODAL ===== -->
+<div id="import-plan-overlay" class="planner-modal-overlay" onclick="importOverlayClick(event)">
+  <div class="planner-modal" style="max-width:520px">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title">📥 Import Path</span>
+      <button class="planner-modal-close" onclick="closeImportModal()">✕</button>
+    </div>
+    <div class="planner-modal-body">
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+        <button id="import-tab-code" class="btn" style="flex:1;font-size:0.8rem" onclick="setImportTab('code')">Paste Code</button>
+        <button id="import-tab-file" class="btn btn-ghost" style="flex:1;font-size:0.8rem" onclick="setImportTab('file')">Upload File</button>
+      </div>
+
+      <div id="import-code-panel">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 0.6rem">Paste a share code from a friend:</p>
+        <textarea id="import-code-input" placeholder="Paste share code here…"
+          style="width:100%;height:110px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:0.6rem;font-family:monospace;font-size:0.72rem;color:var(--text-light);resize:none;box-sizing:border-box;word-break:break-all"
+        ></textarea>
+        <div style="display:flex;gap:0.5rem;margin-top:0.6rem">
+          <button class="btn" style="flex:1;font-size:0.85rem" onclick="importFromCode('replace')">⬅ Replace My Plan</button>
+          <button class="btn btn-ghost" style="flex:1;font-size:0.85rem" onclick="importFromCode('append')">+ Append to My Plan</button>
+        </div>
+      </div>
+
+      <div id="import-file-panel" style="display:none;text-align:center;padding:0.5rem 0">
+        <p style="color:var(--text-muted);font-size:0.85rem;margin:0 0 1rem">Upload a <code>.json</code> exported from ProgressScape.</p>
+        <button class="btn" style="font-size:0.9rem;padding:0.5rem 1.5rem" onclick="document.getElementById('plan-import-input').click()">📂 Choose File</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PATH PREVIEW MODAL ===== -->
+<div id="path-preview-overlay" class="planner-modal-overlay" onclick="pathPreviewOverlayClick(event)">
+  <div class="planner-modal path-preview-modal" id="path-preview-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="path-preview-title">Path to Goal</span>
+      <div style="display:flex;gap:0.4rem;align-items:center">
+        <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.25rem 0.65rem;border-color:rgba(160,140,100,0.35);color:var(--text-muted)" onclick="openTreeViewFromPreview()" title="View dependency tree">&#x1F333; Tree View</button>
+        <button class="planner-modal-close" onclick="closePathPreview()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="path-preview-summary" id="path-preview-summary"></div>
+    <div class="path-preview-list" id="path-preview-list"></div>
+    <div class="path-preview-footer" id="path-preview-footer"></div>
+  </div>
+</div>
+
+<!-- ===== TREE VIEW MODAL ===== -->
+<div id="tree-view-overlay" class="planner-modal-overlay" onclick="treeViewOverlayClick(event)">
+  <div class="planner-modal tree-view-modal">
+    <div class="planner-modal-header">
+      <div>
+        <span class="planner-modal-title" id="tree-view-title">Dependency Tree</span>
+        <div id="tree-view-subtitle" style="font-size:0.72rem;color:var(--text-muted);margin-top:0.15rem;font-family:'Source Sans 3',sans-serif"></div>
+      </div>
+      <div class="tree-view-toolbar">
+        <button class="btn btn-ghost" onclick="treeExpandAll()">Expand All</button>
+        <button class="btn btn-ghost" onclick="treeCollapseAll()">Collapse All</button>
+        <button class="planner-modal-close" onclick="closeTreeView()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="tree-view-body" id="tree-view-body"></div>
+    <div class="tree-view-legend" id="tree-view-legend">
+      <span><span style="color:#5aae5a">&#x2713;</span> Completed</span>
+      <span><span style="color:#ae5a5a">&#x2717;</span> Incomplete</span>
+      <span style="opacity:0.55">Completed nodes collapsed by default &mdash; click &#x25B6; to expand</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PLANNER MODAL ===== -->
+<div id="planner-modal-overlay" class="planner-modal-overlay" onclick="plannerOverlayClick(event)">
+  <div class="planner-modal" id="planner-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="planner-modal-title">Add Task</span>
+      <button class="planner-modal-close" onclick="closePlannerModal()">&#x2715;</button>
+    </div>
+    <div class="planner-modal-body" id="planner-modal-body"></div>
+    <div class="planner-modal-footer" id="planner-modal-footer"></div>
+  </div>
+</div>
+
+
+<!-- ===== PATH PREVIEW MODAL ===== -->
+<div id="path-preview-overlay" class="planner-modal-overlay" onclick="pathPreviewOverlayClick(event)">
+  <div class="planner-modal path-preview-modal" id="path-preview-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="path-preview-title">Path to Goal</span>
+      <div style="display:flex;gap:0.4rem;align-items:center">
+        <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.25rem 0.65rem;border-color:rgba(160,140,100,0.35);color:var(--text-muted)" onclick="openTreeViewFromPreview()" title="View dependency tree">&#x1F333; Tree View</button>
+        <button class="planner-modal-close" onclick="closePathPreview()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="path-preview-summary" id="path-preview-summary"></div>
+    <div class="path-preview-list" id="path-preview-list"></div>
+    <div class="path-preview-footer" id="path-preview-footer"></div>
+  </div>
+</div>
+
+<!-- ===== TREE VIEW MODAL ===== -->
+<div id="tree-view-overlay" class="planner-modal-overlay" onclick="treeViewOverlayClick(event)">
+  <div class="planner-modal tree-view-modal">
+    <div class="planner-modal-header">
+      <div>
+        <span class="planner-modal-title" id="tree-view-title">Dependency Tree</span>
+        <div id="tree-view-subtitle" style="font-size:0.72rem;color:var(--text-muted);margin-top:0.15rem;font-family:'Source Sans 3',sans-serif"></div>
+      </div>
+      <div class="tree-view-toolbar">
+        <button class="btn btn-ghost" onclick="treeExpandAll()">Expand All</button>
+        <button class="btn btn-ghost" onclick="treeCollapseAll()">Collapse All</button>
+        <button class="planner-modal-close" onclick="closeTreeView()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="tree-view-body" id="tree-view-body"></div>
+    <div class="tree-view-legend" id="tree-view-legend">
+      <span><span style="color:#5aae5a">&#x2713;</span> Completed</span>
+      <span><span style="color:#ae5a5a">&#x2717;</span> Incomplete</span>
+      <span style="opacity:0.55">Completed nodes collapsed by default &mdash; click &#x25B6; to expand</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">&#9650;</button>
+
+<script src="data.js"></script>
+<script src="clog_data.js"></script>
+<script src="ca_data.js"></script>
+<script src="shared.js"></script>
+<script>
+// Planner page init
+(function() {
+  function init() {
+    renderPlanner();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
