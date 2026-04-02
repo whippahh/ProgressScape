@@ -830,6 +830,38 @@ const SPINE_DATA = [
       [
         "Ahrim's staff",
         "~1/17 per run"
+      ],
+      [
+        "Torag's helm",
+        "~1/17 per run"
+      ],
+      [
+        "Torag's platebody",
+        "~1/17 per run"
+      ],
+      [
+        "Torag's platelegs",
+        "~1/17 per run"
+      ],
+      [
+        "Torag's hammers",
+        "~1/17 per run"
+      ],
+      [
+        "Verac's helm",
+        "~1/17 per run"
+      ],
+      [
+        "Verac's brassard",
+        "~1/17 per run"
+      ],
+      [
+        "Verac's plateskirt",
+        "~1/17 per run"
+      ],
+      [
+        "Verac's flail",
+        "~1/17 per run"
       ]
     ],
     "kc": 0
@@ -1740,7 +1772,7 @@ const SPINE_DATA = [
     "order": 125,
     "name": "Zogre Flesh Eaters",
     "type": "Quest",
-    "questPrereqs": "",
+    "questPrereqs": "Big Chompy Bird Hunting",
     "skillReqs": "Herblore 8 (unboostable); Ranged 30 (unboostable); Smithing 4 (unboostable)",
     "qp": 1,
     "info": "Required for Big Chompy Bird Hunting. Crumble Undead spell recommended.",

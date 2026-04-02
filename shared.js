@@ -280,7 +280,7 @@ function getActiveData() {
     const key = `${imEntry.name}-${imEntry.type}`;
     if (seen.has(key)) return;
     seen.add(key);
-    result.push({ ...spine, imOrder: imEntry.imOrder, imType: imEntry.type, order: idx + 1 });
+    result.push({ ...spine, imOrder: imEntry.imOrder, imType: imEntry.type, _spineOrder: spine.order, order: idx + 1 });
   });
   return result;
 }
@@ -763,7 +763,8 @@ function buildRowHtml(item) {
 
   const displayOrder = ironmanMode ? (item.imOrder || item.order) : item.order;
 
-  return `<tr class="${rowClass}" data-order="${item.order}" onclick="openDetail(${item.order})">
+  const detailOrder = item._spineOrder || item.order;
+  return `<tr class="${rowClass}" data-order="${detailOrder}" onclick="openDetail(${detailOrder})">
     <td>
       <div class="check-cell" onclick="event.stopPropagation(); toggleDone(${item.order})">
         <div class="check-box ${done ? 'checked' : ''}"></div>
