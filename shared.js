@@ -3877,11 +3877,15 @@ function renderClogMain() {
       var obtained = isObtained(item.name);
       var iconName = item.name.replace(/ /g, '_').replace(/'/g, '%27');
       var iconUrl = 'https://oldschool.runescape.wiki/images/' + iconName + '.png';
+      var rateHtml = '';
+      if (item.rate && !obtained) {
+        rateHtml = '<span class="clog-item-rate">' + item.rate + '</span>';
+      }
       html += '<div class="clog-item-tile' + (obtained ? ' obtained' : '') + '" ' +
         'onclick="toggleClogItem(\'' + item.name.replace(/'/g, "\\'") + '\')" title="Click to toggle obtained">' +
         '<img class="clog-item-icon" src="' + iconUrl + '" alt="" onerror="this.style.display=\'none\'">' +
         '<span class="clog-item-name">' + item.name + '</span>' +
-        '<span class="clog-item-hint">' + (obtained ? '✓ obtained' : '') + '</span>' +
+        (obtained ? '<span class="clog-item-hint">✓ obtained</span>' : rateHtml) +
         '</div>';
     });
     html += '</div>';

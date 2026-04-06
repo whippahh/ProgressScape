@@ -4276,6 +4276,7 @@
   .clog-item-tile .clog-item-name { flex:1; }
   .clog-item-tile .clog-item-hint { font-size:0.72rem; color:var(--stone-lighter); margin-left:auto; white-space:nowrap; }
   .clog-item-tile.obtained .clog-item-hint { color:var(--green-light); }
+  .clog-item-tile .clog-item-rate { font-size:0.70rem; color:rgba(200,168,75,0.6); margin-left:auto; white-space:nowrap; font-family:monospace; }
 
   .clog-section-divider {
     display:flex; align-items:center; gap:8px; margin:12px 0 8px;
