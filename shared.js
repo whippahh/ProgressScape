@@ -280,16 +280,21 @@ function parseDropRate(rateStr) {
   // Guaranteed drops — count as 1/1
   if (s === 'guaranteed' || s === 'always' || s === 'always (wave 12)' || s === '1/1') return 1;
 
-  // Explicitly unquantifiable — skip these from GP/hr
-  var skip = ['guaranteed', 'via unsired', 'invocation-weighted unique',
-              'rare', 'reward tier', 'kill all four awakened bosses',
-              'kill all 4 awakened', 'bought with spirit flakes',
-              '150 pts (each role)', '375 pts (each role)'];
+  // Explicitly unquantifiable — skip these entirely (no dry tracking, no GP/hr)
+  // Covers: raids point-weighted, BA/BA pts shops, Wintertodt/Colosseum mechanics,
+  // Unsired conversions (now use effective rates), invocation-scaled ToA, etc.
+  var skip = [
+    'via unsired', 'invocation-weighted', 'rare', 'reward tier',
+    'kill all four awakened bosses', 'kill all 4 awakened',
+    'bought with spirit flakes', '150 pts (each role)', '375 pts (each role)',
+    ' pts', 'gamble', 'wave 12', 'of unique', 'common',
+    'untradeable', 'take pages', 'per run'
+  ];
   for (var i = 0; i < skip.length; i++) {
     if (s.indexOf(skip[i]) !== -1) return null;
   }
 
-  // Strip leading ~ and trailing qualifiers like " per kill", " each", " per jad", " per run",
+  // Strip leading ~ and trailing qualifiers like " per kill", " each", " per jad",
   // " per blood moon kill", " unique", " eclipse moon" etc.
   s = s.replace(/^~/, '').replace(/\s+(per\b.*|each.*|unique.*|eclipse.*|blood.*|blue.*)$/, '').trim();
 
@@ -298,6 +303,14 @@ function parseDropRate(rateStr) {
   if (match) {
     var denom = parseFloat(match[1]);
     return denom > 0 ? 1 / denom : null;
+  }
+
+  // General N/M fraction (e.g. 7/2448, 2/128, 75/100, 3/512)
+  var matchNM = s.match(/^([\d.]+)\s*\/\s*([\d.]+)$/);
+  if (matchNM) {
+    var num = parseFloat(matchNM[1]);
+    var den = parseFloat(matchNM[2]);
+    return (num > 0 && den > 0) ? num / den : null;
   }
 
   return null;
