@@ -823,7 +823,7 @@
   .randomizer-header p {
     color: var(--text-muted);
     font-size: 0.95rem;
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
   }
 
@@ -922,7 +922,7 @@
   }
 
   .spin-info {
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
     font-size: 0.9rem;
     color: var(--text-muted);
@@ -932,7 +932,7 @@
   }
 
   .spin-idle {
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
     font-size: 1.1rem;
     color: var(--stone-lighter);
@@ -1479,7 +1479,7 @@
     border: 1px solid var(--stone-lighter);
     border-radius: 3px;
     color: var(--text-light);
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-size: 0.88rem;
     line-height: 1.5;
     padding: 0.5rem 0.6rem;
@@ -1921,7 +1921,7 @@
 
   .frand-idle {
     color: var(--text-muted);
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
     font-size: 0.85rem;
     text-align: center;
@@ -2087,7 +2087,7 @@
   }
 
   .frand-desc {
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
     font-size: 0.78rem;
     color: var(--text-muted);
@@ -2179,7 +2179,7 @@
     text-align: center;
     padding: 4rem 2rem;
     color: var(--text-muted);
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
     font-size: 1rem;
     border: 1px dashed var(--stone-lighter);
@@ -2296,7 +2296,7 @@
   .pt-reqs-cell .req-unmet { color: #e06060; }
 
   .pt-note-cell {
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
     font-size: 0.85rem;
     color: #d4b84a;
@@ -2693,7 +2693,7 @@
   .tn-also-label {
     font-size: 0.68rem;
     color: var(--stone-lighter);
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
     white-space: nowrap;
     margin-right: 0.2rem;
@@ -3504,7 +3504,7 @@
     text-align: center;
     padding: 3rem 1rem;
     color: var(--text-muted);
-    font-family: 'IM Fell English', serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-style: italic;
     font-size: 1rem;
   }
@@ -3969,7 +3969,7 @@
 
   .ca-empty {
     text-align: center; padding: 3rem 1rem;
-    color: var(--text-muted); font-family: 'IM Fell English', serif;
+    color: var(--text-muted); font-family: 'Source Sans 3', sans-serif;
     font-style: italic; font-size: 1rem;
   }
 
@@ -4060,7 +4060,7 @@
     .sp-divrow { display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px; }
     .sp-divline { flex:1;height:1px;background:linear-gradient(90deg,transparent,#6b5020,transparent);max-width:100px; }
     .sp-gem { width:8px;height:8px;background:#c9a84c;transform:rotate(45deg);box-shadow:0 0 8px rgba(201,168,76,0.5); }
-    .sp-sub { font-family:'IM Fell English',serif;font-style:italic;font-size:15px;color:#9a8050;letter-spacing:0.5px;margin-top:4px; }
+    .sp-sub { font-family:'Source Sans 3',sans-serif;font-style:italic;font-size:15px;color:#9a8050;letter-spacing:0.5px;margin-top:4px; }
 
     /* TABS */
     .sp-tabs {
@@ -4284,7 +4284,7 @@
   }
   .clog-section-divider::before, .clog-section-divider::after { content:''; flex:1; height:1px; background:var(--stone-mid); }
 
-  .clog-empty { text-align:center; padding:3rem 1rem; color:var(--stone-lighter); font-family:'IM Fell English',serif; font-style:italic; font-size:0.95rem; }
+  .clog-empty { text-align:center; padding:3rem 1rem; color:var(--stone-lighter); font-family:'Source Sans 3',sans-serif; font-style:italic; font-size:0.95rem; }
 
   /* OVERVIEW GRID */
   .clog-overview-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:10px; margin-bottom:8px; }
