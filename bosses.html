@@ -54,10 +54,45 @@
       <button class="chip" data-btfilter="elite"         onclick="setBtFilter('elite',this)">Elite</button>
       <button class="chip" data-btfilter="master"        onclick="setBtFilter('master',this)">Master</button>
       <button class="chip" data-btfilter="grandmaster"   onclick="setBtFilter('grandmaster',this)">GM</button>
+      <button class="chip chip-cankill" id="bt-cankill" onclick="toggleBtCanKill(this)" title="Only show bosses you currently meet the requirements for">⚔ Can Kill</button>
+      <select class="bt-sort-select" onchange="setBtSort(this.value)" title="Sort bosses">
+        <option value="az">A → Z</option>
+        <option value="za">Z → A</option>
+        <option value="difficulty-asc">Easiest first</option>
+        <option value="difficulty-desc">Hardest first</option>
+        <option value="kc-desc">Most KC</option>
+        <option value="kc-asc">Least KC</option>
+      </select>
       <span class="bt-summary" id="bt-summary"></span>
+      <button class="bt-rotation-btn" id="bt-rotation-btn" onclick="toggleRotationPanel(this)" title="Open boss rotation suggester">⚙ Rotation</button>
     </div>
 
-    <div class="boss-cards-grid" id="bt-grid"></div>
+    <div class="bt-main-layout" id="bt-main-layout">
+      <div class="boss-cards-grid" id="bt-grid"></div>
+
+      <!-- Boss Rotation Sidebar — floats over the grid -->
+      <div class="bt-rotation-sidebar" id="bt-rotation-sidebar" style="display:none">
+        <div class="bt-rotation-sidebar-header">
+          <span>⚔ Rotation Suggester</span>
+          <button class="bt-rotation-close" onclick="toggleRotationPanel(document.getElementById('bt-rotation-btn'))">✕</button>
+        </div>
+        <div class="bt-rotation-controls">
+          <label class="bt-rotation-label">
+            <input type="checkbox" id="rot-cankill-only" onchange="renderRotation()" checked>
+            Can kill
+          </label>
+          <label class="bt-rotation-label">
+            <input type="checkbox" id="rot-missing-only" onchange="renderRotation()" checked>
+            Missing drops
+          </label>
+          <label class="bt-rotation-label">
+            <input type="checkbox" id="rot-started-only" onchange="renderRotation()">
+            Started only
+          </label>
+        </div>
+        <div id="bt-rotation-body" class="bt-rotation-body-scroll"></div>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -82,6 +117,7 @@
 <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">&#9650;</button>
 
 <script src="data.js"></script>
+<script src="boss_data.js"></script>
 <script src="clog_data.js"></script>
 <script src="ca_data.js"></script>
 <script src="shared.js"></script>

@@ -6,7 +6,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "",
     "qp": 1,
-    "info": "Tutorial Island — mandatory for all new accounts. Grants access to the mainland.",
+    "info": "Tutorial Island \u2014 mandatory for all new accounts. Grants access to the mainland.",
     "location": "Tutorial Island",
     "entryType": "quest",
     "bossTier": ""
@@ -114,7 +114,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "",
     "qp": 1,
-    "info": "No requirements. Very short — use onion, cooked meat, eye of newt, and rat tail on the cauldron. Quick 1 QP.",
+    "info": "No requirements. Very short \u2014 use onion, cooked meat, eye of newt, and rat tail on the cauldron. Quick 1 QP.",
     "location": "Rimmington",
     "entryType": "quest",
     "bossTier": ""
@@ -199,7 +199,7 @@ const SPINE_DATA = [
     "skillReqs": "",
     "qp": 2,
     "info": "Grants the ability to use spirit trees.",
-    "location": "Tree Gnome Village‎",
+    "location": "Tree Gnome Village\u200e",
     "entryType": "quest",
     "bossTier": ""
   },
@@ -247,7 +247,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Mining 10",
     "qp": 1,
-    "info": "Quick quest — smuggle a blurite sword recipe. Brings Smithing from 10 to 29 with lamp. Great early XP.",
+    "info": "Quick quest \u2014 smuggle a blurite sword recipe. Brings Smithing from 10 to 29 with lamp. Great early XP.",
     "location": "Falador",
     "entryType": "quest",
     "bossTier": ""
@@ -332,7 +332,7 @@ const SPINE_DATA = [
     "skillReqs": "",
     "qp": 2,
     "info": "All enemies can be safespotted. No requirements. Quick 2 QP.",
-    "location": "Fight Arena‎",
+    "location": "Fight Arena\u200e",
     "entryType": "quest",
     "bossTier": ""
   },
@@ -355,7 +355,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "",
     "qp": 1,
-    "info": "No requirements, 1 QP. Trivially short — no combat.",
+    "info": "No requirements, 1 QP. Trivially short \u2014 no combat.",
     "location": "Ardougne",
     "entryType": "quest",
     "bossTier": ""
@@ -523,7 +523,7 @@ const SPINE_DATA = [
     "questPrereqs": "Priest in Peril",
     "skillReqs": "",
     "qp": 2,
-    "info": "Needed for Morytania Diary. Fairy ring required later — not yet. Use druid pouch to fight ghasts.",
+    "info": "Needed for Morytania Diary. Fairy ring required later \u2014 not yet. Use druid pouch to fight ghasts.",
     "location": "Paterdomus",
     "entryType": "quest",
     "bossTier": ""
@@ -547,7 +547,7 @@ const SPINE_DATA = [
     "questPrereqs": "Ghosts Ahoy",
     "skillReqs": "Various via Ghosts Ahoy (Agility 25, Cooking 40, Crafting 35, Prayer 31, Firemaking 30)",
     "qp": 0,
-    "info": "Reward from Ghosts Ahoy quest. Teleports to Ectofuntus near Port Phasmatys. Refills itself on use — unlimited free charges. | Unlimited free teleport to the Ectofuntus and Port Phasmatys. Key for Morytania access, Nature Grotto farming runs, and Bonecrusher charging. One of the best teleport rewards per quest completed in the entire game.",
+    "info": "Reward from Ghosts Ahoy quest. Teleports to Ectofuntus near Port Phasmatys. Refills itself on use \u2014 unlimited free charges. | Unlimited free teleport to the Ectofuntus and Port Phasmatys. Key for Morytania access, Nature Grotto farming runs, and Bonecrusher charging. One of the best teleport rewards per quest completed in the entire game.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -830,38 +830,6 @@ const SPINE_DATA = [
       [
         "Ahrim's staff",
         "~1/17 per run"
-      ],
-      [
-        "Torag's helm",
-        "~1/17 per run"
-      ],
-      [
-        "Torag's platebody",
-        "~1/17 per run"
-      ],
-      [
-        "Torag's platelegs",
-        "~1/17 per run"
-      ],
-      [
-        "Torag's hammers",
-        "~1/17 per run"
-      ],
-      [
-        "Verac's helm",
-        "~1/17 per run"
-      ],
-      [
-        "Verac's brassard",
-        "~1/17 per run"
-      ],
-      [
-        "Verac's plateskirt",
-        "~1/17 per run"
-      ],
-      [
-        "Verac's flail",
-        "~1/17 per run"
       ]
     ],
     "kc": 0
@@ -1040,7 +1008,7 @@ const SPINE_DATA = [
     "questPrereqs": "Fairytale I - Growing Pains",
     "skillReqs": "No combat req",
     "qp": 0,
-    "info": "Reward from Fairytale I: Growing Pains. Obtained by completing the quest. | +10% herb yield when worn during harvest. Significant long-term Herblore supply boost. Get this the moment you complete Fairy Tale I — zero downside to wearing them during farming runs.",
+    "info": "Reward from Fairytale I: Growing Pains. Obtained by completing the quest. | +10% herb yield when worn during harvest. Significant long-term Herblore supply boost. Get this the moment you complete Fairy Tale I \u2014 zero downside to wearing them during farming runs.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -1101,7 +1069,7 @@ const SPINE_DATA = [
     "questPrereqs": "Pandemonium",
     "skillReqs": "Sailing 12 (unboostable); Smithing 30 (boostable)",
     "qp": 1,
-    "info": "Second Sailing quest. Help Squawking Steve Beanie recover pirate treasure at The Pandemonium. Rewards crowbar — essential tool for sea charting tasks. 800 Sailing XP.",
+    "info": "Second Sailing quest. Help Squawking Steve Beanie recover pirate treasure at The Pandemonium. Rewards crowbar \u2014 essential tool for sea charting tasks. 800 Sailing XP.",
     "location": "The Pandemonium",
     "entryType": "quest",
     "bossTier": ""
@@ -1113,7 +1081,7 @@ const SPINE_DATA = [
     "questPrereqs": "Pandemonium",
     "skillReqs": "Sailing 22 (unboostable); Fishing 10 (boostable)",
     "qp": 1,
-    "info": "Third Sailing quest. Help Arhein sort disputes in Catherby. Rewards current duck — required for tracking ocean currents in sea charting. 1,400 Sailing XP.",
+    "info": "Third Sailing quest. Help Arhein sort disputes in Catherby. Rewards current duck \u2014 required for tracking ocean currents in sea charting. 1,400 Sailing XP.",
     "location": "Catherby",
     "entryType": "quest",
     "bossTier": ""
@@ -1331,7 +1299,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Farming 58; Herblore varies",
     "qp": 0,
-    "info": "Unlock from Slayer reward shop (750 points) or Tithe Farm (Hosidius). Stores up to 30 of each herb. | Huge QoL for Slayer herb drops. Stores grimy herbs automatically. Saves dozens of bank trips per session. Get this early — it pays for itself immediately.",
+    "info": "Unlock from Slayer reward shop (750 points) or Tithe Farm (Hosidius). Stores up to 30 of each herb. | Huge QoL for Slayer herb drops. Stores grimy herbs automatically. Saves dozens of bank trips per session. Get this early \u2014 it pays for itself immediately.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -1440,7 +1408,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Mining 10 minimum (higher level = better stars)",
     "qp": 0,
-    "info": "Crashed stars spawn across the surface world. Mine for Stardust — exchange for Celestial ring, Coal bag, or uncut gems. Join 'Star Miners' friend chat to track landing sites.",
+    "info": "Crashed stars spawn across the surface world. Mine for Stardust \u2014 exchange for Celestial ring, Coal bag, or uncut gems. Join 'Star Miners' friend chat to track landing sites.",
     "location": "Various (check FC: Star Miners)",
     "entryType": "activity",
     "bossTier": "",
@@ -1605,7 +1573,7 @@ const SPINE_DATA = [
     "questPrereqs": "Death to the Dorgeshuun",
     "skillReqs": "Attack 15 (unboostable); Prayer 25 (unboostable)",
     "qp": 1,
-    "info": "Unlocks the Dorgesh-Kaan–Keldagrim train system.",
+    "info": "Unlocks the Dorgesh-Kaan\u2013Keldagrim train system.",
     "location": "Dorgesh-Kaan",
     "entryType": "quest",
     "bossTier": ""
@@ -1702,7 +1670,7 @@ const SPINE_DATA = [
     "questPrereqs": "Animal Magnetism",
     "skillReqs": "Ranged 50",
     "qp": 0,
-    "info": "Reward from Animal Magnetism quest (if 50+ Ranged on completion). Upgrade attractor at Ava for 75 steel arrows. | Picks up fired ammunition — saves significant cost over time. Best-in-slot ranged cape until Assembler. Non-negotiable for any ranged training.",
+    "info": "Reward from Animal Magnetism quest (if 50+ Ranged on completion). Upgrade attractor at Ava for 75 steel arrows. | Picks up fired ammunition \u2014 saves significant cost over time. Best-in-slot ranged cape until Assembler. Non-negotiable for any ranged training.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -1772,7 +1740,7 @@ const SPINE_DATA = [
     "order": 125,
     "name": "Zogre Flesh Eaters",
     "type": "Quest",
-    "questPrereqs": "Big Chompy Bird Hunting",
+    "questPrereqs": "",
     "skillReqs": "Herblore 8 (unboostable); Ranged 30 (unboostable); Smithing 4 (unboostable)",
     "qp": 1,
     "info": "Required for Big Chompy Bird Hunting. Crumble Undead spell recommended.",
@@ -1932,7 +1900,7 @@ const SPINE_DATA = [
     "skillReqs": "Agility 15 (boostable)",
     "qp": 1,
     "info": "Grants the ability to make law runes.",
-    "location": "Troll Stronghold‎",
+    "location": "Troll Stronghold\u200e",
     "entryType": "quest",
     "bossTier": ""
   },
@@ -1944,7 +1912,7 @@ const SPINE_DATA = [
     "skillReqs": "Agility 28 (unboostable)",
     "qp": 2,
     "info": "Required for Making Friends with My Arm. Agility 28 is the tricky req.",
-    "location": "Troll Stronghold‎",
+    "location": "Troll Stronghold\u200e",
     "entryType": "quest",
     "bossTier": ""
   },
@@ -1979,7 +1947,7 @@ const SPINE_DATA = [
     "questPrereqs": "Underground Pass",
     "skillReqs": "Magic 50; Attack 50",
     "qp": 0,
-    "info": "Reward from Underground Pass quest. Upgrade to (u) version with 200k GP at Dark Mage in West Ardougne. | Iban Blast: 25 max hit on standard spellbook — huge early mage upgrade. Upgraded version has more charges. Used for Fire Giants, Mage Training Arena, and early PvM.",
+    "info": "Reward from Underground Pass quest. Upgrade to (u) version with 200k GP at Dark Mage in West Ardougne. | Iban Blast: 25 max hit on standard spellbook \u2014 huge early mage upgrade. Upgraded version has more charges. Used for Fire Giants, Mage Training Arena, and early PvM.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -2118,7 +2086,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "",
     "qp": 3,
-    "info": "Lengthy quest — unlocks Fremennik region including Rellekka, Jatizso/Neitiznot, Miscellania.",
+    "info": "Lengthy quest \u2014 unlocks Fremennik region including Rellekka, Jatizso/Neitiznot, Miscellania.",
     "location": "Fremennik Province",
     "entryType": "quest",
     "bossTier": ""
@@ -2333,7 +2301,7 @@ const SPINE_DATA = [
     "questPrereqs": "Client of Kourend + individual Kourend quests for each destination",
     "skillReqs": "No hard combat req",
     "qp": 0,
-    "info": "Reward from Client of Kourend. Teleport pages added by completing Kourend quest series: Depths of Despair (Hosidius), Forsaken Tower (Lovakengj), Queen of Thieves (Piscarilius), Ascent of Arceuus (Arceuus), The Depths of Despair (Shayzien). Charged with Law + Body + Mind + Soul runes per use. | Direct teleports to each of the 5 Kourend cities — particularly Piscarilius and Arceuus which have few other direct teleport options. Pairs with Xeric's Talisman for full Kourend coverage. Very useful throughout all Zeah content.",
+    "info": "Reward from Client of Kourend. Teleport pages added by completing Kourend quest series: Depths of Despair (Hosidius), Forsaken Tower (Lovakengj), Queen of Thieves (Piscarilius), Ascent of Arceuus (Arceuus), The Depths of Despair (Shayzien). Charged with Law + Body + Mind + Soul runes per use. | Direct teleports to each of the 5 Kourend cities \u2014 particularly Piscarilius and Arceuus which have few other direct teleport options. Pairs with Xeric's Talisman for full Kourend coverage. Very useful throughout all Zeah content.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -2491,7 +2459,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Ranged 61; Slayer 55 (to use); Fletching 52 for making",
     "qp": 0,
-    "info": "Unlock from Slayer reward shop: Broad Bolts (35 pts), Amethyst Broad (45 pts). Fletched with 52 Fletching (broad). | Cheap ranged ammo for Slayer (Turoth, Kurask, etc.) where broad ammo is required. Amethyst version is significantly stronger — unlock ASAP.",
+    "info": "Unlock from Slayer reward shop: Broad Bolts (35 pts), Amethyst Broad (45 pts). Fletched with 52 Fletching (broad). | Cheap ranged ammo for Slayer (Turoth, Kurask, etc.) where broad ammo is required. Amethyst version is significantly stronger \u2014 unlock ASAP.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -2565,7 +2533,7 @@ const SPINE_DATA = [
     "skillReqs": "Herblore 31 (boostable)",
     "qp": 1,
     "info": "Boost to  31 Herblore  using a botanical pie, or train up to level 31 herblore before starting the quest. Collect and keep two extra goutweed herbs from the storage for use in later quests.",
-    "location": "Troll Stronghold‎",
+    "location": "Troll Stronghold\u200e",
     "entryType": "quest",
     "bossTier": ""
   },
@@ -2576,7 +2544,7 @@ const SPINE_DATA = [
     "questPrereqs": "Fairy Tale II - Cure a Queen (partial completion)",
     "skillReqs": "No hard combat req; Fairy Tale II has Agility 40, Herblore 49, Farming 57 reqs",
     "qp": 0,
-    "info": "Begin Fairy Tale II - Cure a Queen. Network access granted partway through — doesn't need to be completed. Rings coded with 3-letter combinations (e.g. AKS = Feldip Hills, BJS = Etceteria). | 46+ destinations across the entire game world. One of the most critical transport networks in OSRS. Pairs with POH Fairy Ring for instant global access from your house. Absolutely essential — unlock this as early as your stats allow.",
+    "info": "Begin Fairy Tale II - Cure a Queen. Network access granted partway through \u2014 doesn't need to be completed. Rings coded with 3-letter combinations (e.g. AKS = Feldip Hills, BJS = Etceteria). | 46+ destinations across the entire game world. One of the most critical transport networks in OSRS. Pairs with POH Fairy Ring for instant global access from your house. Absolutely essential \u2014 unlock this as early as your stats allow.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -2590,7 +2558,7 @@ const SPINE_DATA = [
     "skillReqs": "Farming 29 (boostable); Woodcutting 10 (unboostable)",
     "qp": 1,
     "info": "Requires 60% Tai Bwo favour to start. It is recommended to get 100% for the medium Karamja Diary task before losing 60% favour during this quest.",
-    "location": "Troll Stronghold‎",
+    "location": "Troll Stronghold\u200e",
     "entryType": "quest",
     "bossTier": ""
   },
@@ -2639,7 +2607,7 @@ const SPINE_DATA = [
     "questPrereqs": "Rag and Bone Man I",
     "skillReqs": "Defence 20 (unboostable); Slayer 40 (unboostable)",
     "qp": 1,
-    "info": "Boosts Slayer XP. Long collection quest — gather bones from specific monsters.",
+    "info": "Boosts Slayer XP. Long collection quest \u2014 gather bones from specific monsters.",
     "location": "Paterdomus",
     "entryType": "quest",
     "bossTier": ""
@@ -2806,10 +2774,10 @@ const SPINE_DATA = [
     "order": 205,
     "name": "Dragon Defender",
     "type": "Unlock",
-    "questPrereqs": "None (Warrior's Guild access requires Att+Str ≥ 130)",
+    "questPrereqs": "None (Warrior's Guild access requires Att+Str \u2265 130)",
     "skillReqs": "Attack 60; Defence 60 (to equip)",
     "qp": 0,
-    "info": "Kill Cyclopes in Warrior's Guild basement after obtaining Rune Defender. 1/100 drop rate. Need Attack+Strength ≥ 130 to enter guild. | Best-in-slot off-hand for melee training until Avernic. +6 Str, superior accuracy over DFS. Non-negotiable upgrade for any melee account. Grind ~450 kills average.",
+    "info": "Kill Cyclopes in Warrior's Guild basement after obtaining Rune Defender. 1/100 drop rate. Need Attack+Strength \u2265 130 to enter guild. | Best-in-slot off-hand for melee training until Avernic. +6 Str, superior accuracy over DFS. Non-negotiable upgrade for any melee account. Grind ~450 kills average.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -2991,11 +2959,11 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Construction 55",
     "qp": 0,
-    "info": "Built in Workshop room at Construction 55. Very cheap: teak planks and steel bars only. | Repair degradable gear (Barrows, Crystal, Void Knight pieces) at a fraction of Bob the Axe's price — discount scales with your Construction level. Pays for itself after one Barrows set repair. Essential for any account regularly using degradable armour.",
+    "info": "Built in Workshop room at Construction 55. Very cheap: teak planks and steel bars only. | Repair degradable gear (Barrows, Crystal, Void Knight pieces) at a fraction of Bob the Axe's price \u2014 discount scales with your Construction level. Pays for itself after one Barrows set repair. Essential for any account regularly using degradable armour.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Repair Station"
+    "unlockCategory": "POH \u2014 Repair Station"
   },
   {
     "order": 217,
@@ -3016,7 +2984,7 @@ const SPINE_DATA = [
     "questPrereqs": "Bone Voyage",
     "skillReqs": "Mining 50 (unboostable); 150 Kudos; Museum Camp fully built",
     "qp": 0,
-    "info": "Costs 30 numulites per game. Best Mining XP from 50–70 (before Amethyst). Best played in teams for higher XP. Rewards Volcanic Mine outfit pieces (5% XP bonus set).",
+    "info": "Costs 30 numulites per game. Best Mining XP from 50\u201370 (before Amethyst). Best played in teams for higher XP. Rewards Volcanic Mine outfit pieces (5% XP bonus set).",
     "location": "Fossil Island Volcano",
     "entryType": "activity",
     "bossTier": ""
@@ -3177,12 +3145,43 @@ const SPINE_DATA = [
   },
   {
     "order": 230,
-    "name": "Crazy archaeologist & Chaos Fanatic",
+    "name": "Crazy Archaeologist",
     "type": "Boss",
     "questPrereqs": "",
     "skillReqs": "Ranged 65; Magic 65; Prayer 43",
     "qp": 0,
-    "info": "Medium tier | Malediction shard 1 & Malediction shard 2 Odium shard 1 & Odium shard 2",
+    "info": "Medium tier wilderness boss. Drops Fedora, Odium shard 2, Malediction shard 2. Located at Forgotten Cemetery.",
+    "location": "",
+    "entryType": "boss",
+    "bossTier": "Medium tier",
+    "notableDrops": [
+      [
+        "Malediction shard 1",
+        "1/256"
+      ],
+      [
+        "Malediction shard 2",
+        "1/256"
+      ],
+      [
+        "Odium shard 1",
+        "1/256"
+      ],
+      [
+        "Odium shard 2",
+        "1/256"
+      ]
+    ],
+    "kc": 0
+  },
+  {
+    "order": 231,
+    "name": "Chaos Fanatic",
+    "type": "Boss",
+    "questPrereqs": "",
+    "skillReqs": "Ranged 65; Magic 65; Prayer 43",
+    "qp": 0,
+    "info": "Medium tier wilderness boss. Drops Odium shard 1, Malediction shard 1, Anarchy staff. Located west of Lava Maze.",
     "location": "",
     "entryType": "boss",
     "bossTier": "Medium tier",
@@ -3674,7 +3673,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "None to start",
     "qp": 0,
-    "info": "Speak to the NPC at the Forthos Dungeon entrance to begin. Full completion requires 5 book pages from dungeon monsters — do this passively on Slayer tasks.",
+    "info": "Speak to the NPC at the Forthos Dungeon entrance to begin. Full completion requires 5 book pages from dungeon monsters \u2014 do this passively on Slayer tasks.",
     "location": "Forthos Dungeon entrance (Great Kourend)",
     "entryType": "quest",
     "bossTier": ""
@@ -3687,7 +3686,7 @@ const SPINE_DATA = [
     "skillReqs": "Agility 45 (unboostable); Ranged 47 (unboostable); Slayer 56 (unboostable); Strength 60 (unboostable); Thieving 56 (unboostable)",
     "qp": 2,
     "info": "Required for Song of the Elves. Most skill reqs are unboostable.",
-    "location": "Tree Gnome Village‎",
+    "location": "Tree Gnome Village\u200e",
     "entryType": "quest",
     "bossTier": ""
   },
@@ -3737,11 +3736,11 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Construction 75; Firemaking 30 (to light burners)",
     "qp": 0,
-    "info": "Built in Chapel room at Construction 75. Materials ~8M GP (marble blocks, gold leaf, candelabras, etc.). Requires Firemaking 30 to light marble incense burners for full 350% XP bonus. | 350% Prayer XP per bone — the fastest Prayer training in the game aside from Chaos Altar. World 330 public houses available if not yet built personally. The single most impactful POH build for levelling Prayer efficiently. Target this early.",
+    "info": "Built in Chapel room at Construction 75. Materials ~8M GP (marble blocks, gold leaf, candelabras, etc.). Requires Firemaking 30 to light marble incense burners for full 350% XP bonus. | 350% Prayer XP per bone \u2014 the fastest Prayer training in the game aside from Chaos Altar. World 330 public houses available if not yet built personally. The single most impactful POH build for levelling Prayer efficiently. Target this early.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Prayer Training"
+    "unlockCategory": "POH \u2014 Prayer Training"
   },
   {
     "order": 269,
@@ -3750,11 +3749,11 @@ const SPINE_DATA = [
     "questPrereqs": "The Grand Tree; Tree Gnome Village",
     "skillReqs": "Construction 75 (or 95 for combined hotspot); Farming 83",
     "qp": 0,
-    "info": "Built in Superior Garden at Construction 75. Requires Spirit Sapling (Farming 83), 10 mushrooms. The combined Spirit Tree + Fairy Ring hotspot requires Construction 95. | Access to the spirit tree network from your house — Gnome Stronghold, West Ardougne, Khazard, Prifddinas and more. Build in a separate Superior Garden at 70 Con if not yet going for the combined hotspot. Excellent for western region travel and farming patch runs.",
+    "info": "Built in Superior Garden at Construction 75. Requires Spirit Sapling (Farming 83), 10 mushrooms. The combined Spirit Tree + Fairy Ring hotspot requires Construction 95. | Access to the spirit tree network from your house \u2014 Gnome Stronghold, West Ardougne, Khazard, Prifddinas and more. Build in a separate Superior Garden at 70 Con if not yet going for the combined hotspot. Excellent for western region travel and farming patch runs.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Spirit Tree"
+    "unlockCategory": "POH \u2014 Spirit Tree"
   },
   {
     "order": 270,
@@ -3823,14 +3822,13 @@ const SPINE_DATA = [
   {
     "order": 274,
     "name": "God Wars Dungeon bosses (Teams)",
-    "type": "Boss",
+    "type": "Activity/Goal",
     "questPrereqs": "",
     "skillReqs": "Attack 70; Strength 70; Defence 70; Hitpoints 70; Ranged 70; Agility 70",
     "qp": 0,
-    "info": "Medium tier | God Wars Dungeon uniques",
+    "info": "Intro to God Wars Dungeon \u2014 all 4 generals can be done in teams before soloing. Good stepping stone for mid-game uniques.",
     "location": "",
-    "entryType": "boss",
-    "bossTier": "Medium tier",
+    "entryType": "activity",
     "notableDrops": [
       [
         "Bandos chestplate",
@@ -3878,7 +3876,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Defence 60",
     "qp": 0,
-    "info": "Drop from Spiritual warriors in God Wars Dungeon (1/128). Buy from GE (~375k GP). | Standard melee boot upgrade. +4 Str bonus. Cheap relative to value. Worth buying from GE — no reason to grind specifically for these.",
+    "info": "Drop from Spiritual warriors in God Wars Dungeon (1/128). Buy from GE (~375k GP). | Standard melee boot upgrade. +4 Str bonus. Cheap relative to value. Worth buying from GE \u2014 no reason to grind specifically for these.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -4100,7 +4098,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "80+ Combat stats recommended",
     "qp": 0,
-    "info": "No quest req but needs GWD-tier gear. Drops Spirit Shield, Elysian/Arcane/Spectral sigils. Use a spear or halberd — all other weapons deal 50% damage.",
+    "info": "No quest req but needs GWD-tier gear. Drops Spirit Shield, Elysian/Arcane/Spectral sigils. Use a spear or halberd \u2014 all other weapons deal 50% damage.",
     "location": "",
     "entryType": "boss",
     "bossTier": "Hard tier",
@@ -4135,7 +4133,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "No equip req",
     "qp": 0,
-    "info": "Craft from Onyx (91 Crafting) or buy from GE (~1.9M GP). Obtained from Onyx gem or TzHaar shop. | +8 Str, all-around combat bonuses. Standard mid-game combat amulet until Torture/Anguish/Occult. Good value from GE — no specific boss grind required.",
+    "info": "Craft from Onyx (91 Crafting) or buy from GE (~1.9M GP). Obtained from Onyx gem or TzHaar shop. | +8 Str, all-around combat bonuses. Standard mid-game combat amulet until Torture/Anguish/Occult. Good value from GE \u2014 no specific boss grind required.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -4160,7 +4158,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Completed TzTok-Jad; Defence/Ranged/Prayer 70/70/43 recommended",
     "qp": 0,
-    "info": "6 escalating challenges up to 6 simultaneous Jads. Good Jad practice. Rewards TzKot-Zotz pet (rare) and tokkul. No gear rewards — primarily for pet hunters and Inferno prep.",
+    "info": "6 escalating challenges up to 6 simultaneous Jads. Good Jad practice. Rewards TzKot-Zotz pet (rare) and tokkul. No gear rewards \u2014 primarily for pet hunters and Inferno prep.",
     "location": "Mor Ul Rek (TzHaar City)",
     "entryType": "activity",
     "bossTier": ""
@@ -4306,7 +4304,7 @@ const SPINE_DATA = [
   },
   {
     "order": 294,
-    "name": "Commander Zilyana (Solo)",
+    "name": "Commander Zilyana",
     "type": "Boss",
     "questPrereqs": "",
     "skillReqs": "Defence 70; Ranged 80; Agility 70",
@@ -4367,7 +4365,7 @@ const SPINE_DATA = [
     "questPrereqs": "King's Ransom; Knight Waves Training Grounds",
     "skillReqs": "Prayer 70; Defence 65",
     "qp": 0,
-    "info": "Complete King's Ransom + Knight Waves Training Grounds miniquest. | +25% Melee accuracy, +23% Str, +25% Defence. The core bossing prayer for melee. Unlocking this is a major account milestone — dramatically changes melee DPS.",
+    "info": "Complete King's Ransom + Knight Waves Training Grounds miniquest. | +25% Melee accuracy, +23% Str, +25% Defence. The core bossing prayer for melee. Unlocking this is a major account milestone \u2014 dramatically changes melee DPS.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -4392,7 +4390,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "",
     "qp": 0,
-    "info": "Replaced the Duel Arena. PvP staking and practice area. No unique skilling rewards. Use for safe PvP practice only — staking is high risk.",
+    "info": "Replaced the Duel Arena. PvP staking and practice area. No unique skilling rewards. Use for safe PvP practice only \u2014 staking is high risk.",
     "location": "Al Kharid",
     "entryType": "activity",
     "bossTier": ""
@@ -4416,7 +4414,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "",
     "qp": 0,
-    "info": "Refers to the Minigame Grouping teleport system and Games necklace destinations. Not an activity itself — use this to quickly navigate to minigame locations.",
+    "info": "Refers to the Minigame Grouping teleport system and Games necklace destinations. Not an activity itself \u2014 use this to quickly navigate to minigame locations.",
     "location": "Various (via Games necklace)",
     "entryType": "activity",
     "bossTier": ""
@@ -4428,7 +4426,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Fishing 15 (to receive Angler outfit pieces)",
     "qp": 0,
-    "info": "Cooperative minigame — fix leaks and pump water for 5 minutes. Main reason to do this is the Angler's outfit (2.5% Fishing XP bonus). Use world 370 for active games.",
+    "info": "Cooperative minigame \u2014 fix leaks and pump water for 5 minutes. Main reason to do this is the Angler's outfit (2.5% Fishing XP bonus). Use world 370 for active games.",
     "location": "Port Khazard",
     "entryType": "activity",
     "bossTier": "",
@@ -4471,7 +4469,7 @@ const SPINE_DATA = [
     "questPrereqs": "Pandemonium (to unlock Sailing)",
     "skillReqs": "Sailing 30 (unboostable)",
     "qp": 0,
-    "info": "First Barracuda Trial. Sail south of The Pandemonium and collect rum shipments + lost supplies within the time limit. Three tiers: Swordfish, Shark, Marlin. Requires iron helm + oak mast. Rewards include Barrel Stand (Shark tier) for boat construction. Best Sailing XP from 30–55 (~20-25k/hr).",
+    "info": "First Barracuda Trial. Sail south of The Pandemonium and collect rum shipments + lost supplies within the time limit. Three tiers: Swordfish, Shark, Marlin. Requires iron helm + oak mast. Rewards include Barrel Stand (Shark tier) for boat construction. Best Sailing XP from 30\u201355 (~20-25k/hr).",
     "location": "Storm Tempor (south of The Pandemonium)",
     "entryType": "activity",
     "bossTier": ""
@@ -4483,11 +4481,11 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Construction 77",
     "qp": 0,
-    "info": "Built in Study room at Construction 77. Materials: 1 marble block + 1 magic stone + 1 gold leaf (~1.5M GP total). | Craft all standard spellbook teleport tablets AND Bones to Peaches tablets. Bones to Peaches is outstanding for HP restoration during Prayer training or mid-boss without food. Tablets are sellable on GE — minor passive income from crafting extras.",
+    "info": "Built in Study room at Construction 77. Materials: 1 marble block + 1 magic stone + 1 gold leaf (~1.5M GP total). | Craft all standard spellbook teleport tablets AND Bones to Peaches tablets. Bones to Peaches is outstanding for HP restoration during Prayer training or mid-boss without food. Tablets are sellable on GE \u2014 minor passive income from crafting extras.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Tablet Crafting"
+    "unlockCategory": "POH \u2014 Tablet Crafting"
   },
   {
     "order": 306,
@@ -4496,7 +4494,7 @@ const SPINE_DATA = [
     "questPrereqs": "Pandemonium; Troubled Tortugans (recommended for area access)",
     "skillReqs": "Sailing 55 (unboostable)",
     "qp": 0,
-    "info": "Second Barracuda Trial. Navigate fetid waters while collecting frogs and throwing them at flags to lure Jubblies. Requires Mithril helm + Inoculation Station on your skiff. Rewards Captured Wind Mote (Shark tier) for Wind Catcher facility. Best Sailing XP from 55–72 (~60-90k/hr).",
+    "info": "Second Barracuda Trial. Navigate fetid waters while collecting frogs and throwing them at flags to lure Jubblies. Requires Mithril helm + Inoculation Station on your skiff. Rewards Captured Wind Mote (Shark tier) for Wind Catcher facility. Best Sailing XP from 55\u201372 (~60-90k/hr).",
     "location": "Backwater region",
     "entryType": "activity",
     "bossTier": ""
@@ -4532,7 +4530,7 @@ const SPINE_DATA = [
     "questPrereqs": "Gertrude's Cat; Ratcatchers",
     "skillReqs": "Cat required (from Gertrude's Cat + Ratcatchers)",
     "qp": 0,
-    "info": "Train your cat to fight rats for cat upgrades (lazy → wily). No valuable rewards beyond cat progression. Collection log/completionist activity.",
+    "info": "Train your cat to fight rats for cat upgrades (lazy \u2192 wily). No valuable rewards beyond cat progression. Collection log/completionist activity.",
     "location": "Port Sarim (and other locations)",
     "entryType": "activity",
     "bossTier": ""
@@ -4566,7 +4564,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Agility varies per piece (60+ recommended for Seers)",
     "qp": 0,
-    "info": "Purchase all pieces from Rooftop Agility courses using Marks of Grace. Full set costs 260 marks. Best rates at Seers/Ardougne course. | -25% weight (full set). Run energy replenishes significantly faster. Essential for skilling, questing, and daily runs. Prioritise early — marks accumulate naturally while training Agility.",
+    "info": "Purchase all pieces from Rooftop Agility courses using Marks of Grace. Full set costs 260 marks. Best rates at Seers/Ardougne course. | -25% weight (full set). Run energy replenishes significantly faster. Essential for skilling, questing, and daily runs. Prioritise early \u2014 marks accumulate naturally while training Agility.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -4615,7 +4613,7 @@ const SPINE_DATA = [
     "questPrereqs": "In Aid of the Myreque; Darkness of Hallowvale",
     "skillReqs": "Woodcutting 44 (for pieces)",
     "qp": 0,
-    "info": "Drop from undead lumberjacks during Temple Trekking minigame (Morytania). Full set ~2.5% Woodcutting XP bonus. | 2.5% WC XP bonus. Useful for any WC training. Temple Trekking can be tedious — do it alongside Morytania diary tasks to maximise efficiency.",
+    "info": "Drop from undead lumberjacks during Temple Trekking minigame (Morytania). Full set ~2.5% Woodcutting XP bonus. | 2.5% WC XP bonus. Useful for any WC training. Temple Trekking can be tedious \u2014 do it alongside Morytania diary tasks to maximise efficiency.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -4712,7 +4710,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Thieving 50; Agility 50",
     "qp": 0,
-    "info": "Complete the one-time maze to unlock Rogue equipment. Full Rogue set doubles coin drops while pickpocketing — essential for efficient Thieving training long-term.",
+    "info": "Complete the one-time maze to unlock Rogue equipment. Full Rogue set doubles coin drops while pickpocketing \u2014 essential for efficient Thieving training long-term.",
     "location": "Burthorpe",
     "entryType": "activity",
     "bossTier": "",
@@ -4919,7 +4917,7 @@ const SPINE_DATA = [
     "name": "Hunters' Rumours",
     "type": "Activity/Goal",
     "questPrereqs": "At First Light (for Master tier only)",
-    "skillReqs": "Hunter 46 (Novice); 61 (Adept); 76 (Expert); 91 (Master — requires At First Light quest)",
+    "skillReqs": "Hunter 46 (Novice); 61 (Adept); 76 (Expert); 91 (Master \u2014 requires At First Light quest)",
     "qp": 0,
     "info": "Hunt assigned creatures to find a rare body part. Pity mechanic guarantees drop eventually. Rewards Hunter XP, loot sacks, Guild Hunter outfit (catch rate bonus), and Quetzin pet.",
     "location": "Hunter Guild, Avium Savannah (Varlamore)",
@@ -4993,7 +4991,7 @@ const SPINE_DATA = [
     "questPrereqs": "Sins of the Father",
     "skillReqs": "Agility 52 (Floor 1); 62 (Floor 2); 72 (Floor 3); 82 (Floor 4); 92 (Floor 5)",
     "qp": 0,
-    "info": "Best Agility XP in the game at 92+ (85–95k/hr). Timed obstacle course with 5 floors. Rewards Ring of Endurance, Dark Graceful dye, Strange old lockpick. Steep learning curve but worth it.",
+    "info": "Best Agility XP in the game at 92+ (85\u201395k/hr). Timed obstacle course with 5 floors. Rewards Ring of Endurance, Dark Graceful dye, Strange old lockpick. Steep learning curve but worth it.",
     "location": "Darkmeyer",
     "entryType": "activity",
     "bossTier": "",
@@ -5110,7 +5108,7 @@ const SPINE_DATA = [
     "questPrereqs": "Monkey Madness II (for Demonic Gorillas)",
     "skillReqs": "Crafting 98 (to craft); No equip req",
     "qp": 0,
-    "info": "Craft Zenyte Shard (Demonic Gorilla drop) into Amulet at 98 Crafting. Zenyte from GE (~13M GP). | +15 Str, +10 Slash/Stab/Crush attack. BiS melee amulet. Huge damage upgrade over Fury. Crafting 98 is the only barrier — use Zenyte from GE if not an Ironman.",
+    "info": "Craft Zenyte Shard (Demonic Gorilla drop) into Amulet at 98 Crafting. Zenyte from GE (~13M GP). | +15 Str, +10 Slash/Stab/Crush attack. BiS melee amulet. Huge damage upgrade over Fury. Crafting 98 is the only barrier \u2014 use Zenyte from GE if not an Ironman.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -5235,7 +5233,7 @@ const SPINE_DATA = [
     "questPrereqs": "Dragon Slayer II",
     "skillReqs": "Many skill reqs via Dragon Slayer II (Combat 200 QP, Defence 65, Magic 70, Smithing 70, Mining 68, Crafting 62, Agility 60, Strength 65, Firemaking 60, Woodcutting 60)",
     "qp": 0,
-    "info": "Reward from Dragon Slayer II. Unlimited teleports to the Myths' Guild on Corsair Cove island. | Unlimited teleport to Myths' Guild — access to Corsair Cove, southern Feldip Hills, and the Ava's Assembler upgrade from Vorkath's head. Secondary benefit to completing DS2, but the cape itself is a useful travel item for the area.",
+    "info": "Reward from Dragon Slayer II. Unlimited teleports to the Myths' Guild on Corsair Cove island. | Unlimited teleport to Myths' Guild \u2014 access to Corsair Cove, southern Feldip Hills, and the Ava's Assembler upgrade from Vorkath's head. Secondary benefit to completing DS2, but the cape itself is a useful travel item for the area.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -5287,7 +5285,7 @@ const SPINE_DATA = [
     "skillReqs": "Agility 68 (boostable); Construction 35 (boostable); Firemaking 66 (unboostable); Mining 72 (boostable)",
     "qp": 2,
     "info": "Use a dragon pickaxe or spicy stew to boost Mining.",
-    "location": "Troll Stronghold‎",
+    "location": "Troll Stronghold\u200e",
     "entryType": "quest",
     "bossTier": ""
   },
@@ -5607,7 +5605,7 @@ const SPINE_DATA = [
     "questPrereqs": "Regicide; Song of the Elves (recommended for Prifddinas port access)",
     "skillReqs": "Sailing 72 (unboostable)",
     "qp": 0,
-    "info": "Best Sailing XP in the game (180k+/hr at Marlin tier). Navigate crystal-flecked waters near Porth Gwenith using portals and wind motes. Three difficulty tiers: Swordfish, Shark, Marlin. Requires adamant keel or better. Solo only — no crewmates.",
+    "info": "Best Sailing XP in the game (180k+/hr at Marlin tier). Navigate crystal-flecked waters near Porth Gwenith using portals and wind motes. Three difficulty tiers: Swordfish, Shark, Marlin. Requires adamant keel or better. Solo only \u2014 no crewmates.",
     "location": "Porth Gwenith (Western Ocean, near Prifddinas)",
     "entryType": "activity",
     "bossTier": ""
@@ -5724,7 +5722,7 @@ const SPINE_DATA = [
     "order": 379,
     "name": "Dragon Warhammer",
     "type": "Unlock",
-    "questPrereqs": "None (shamans in Shayzien territory — favour needed for Chambers)",
+    "questPrereqs": "None (shamans in Shayzien territory \u2014 favour needed for Chambers)",
     "skillReqs": "Attack 60",
     "qp": 0,
     "info": "Drop from Lizardman Shamans (~1/5000). Buy from GE (~12M GP). | -30% Defence spec. The most impactful spec weapon for raids and team bosses. One spec can save minutes of DPS in CoX/ToB/ToA. Often the highest value buy for a bossing account.",
@@ -5763,7 +5761,7 @@ const SPINE_DATA = [
     "questPrereqs": "None (GE purchase available)",
     "skillReqs": "Attack 70; Slayer 85 (to obtain via Slayer)",
     "qp": 0,
-    "info": "Rare drop from Abyssal demons (Slayer). ~1/512 drop rate. Also purchasable from GE (~1.4M GP). | Standard melee training weapon for most of mid-game. +82 Slash, fast 4-tick attack speed. No Strength bonus — pair with Fighter Torso + Berserker Ring (i).",
+    "info": "Rare drop from Abyssal demons (Slayer). ~1/512 drop rate. Also purchasable from GE (~1.4M GP). | Standard melee training weapon for most of mid-game. +82 Slash, fast 4-tick attack speed. No Strength bonus \u2014 pair with Fighter Torso + Berserker Ring (i).",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -5864,7 +5862,7 @@ const SPINE_DATA = [
     "questPrereqs": "None (Slayer 93 for Thermonuclear, or Slayer 85 for Smoke Devils)",
     "skillReqs": "No equip req",
     "qp": 0,
-    "info": "Drop from Smoke Devils or Thermonuclear Smoke Devil (~1/350). Buy from GE (~750k GP). | +10% Magic damage. The largest single source of magic damage% in the game. Massive upgrade from Amulet of Fury for magic. Buy from GE — no reason to farm specifically.",
+    "info": "Drop from Smoke Devils or Thermonuclear Smoke Devil (~1/350). Buy from GE (~750k GP). | +10% Magic damage. The largest single source of magic damage% in the game. Massive upgrade from Amulet of Fury for magic. Buy from GE \u2014 no reason to farm specifically.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -5938,7 +5936,7 @@ const SPINE_DATA = [
   },
   {
     "order": 389,
-    "name": "General Graardor (Solo)",
+    "name": "General Graardor",
     "type": "Boss",
     "questPrereqs": "",
     "skillReqs": "Attack 85; Strength 85; Defence 80; Ranged 80",
@@ -5973,7 +5971,7 @@ const SPINE_DATA = [
   },
   {
     "order": 390,
-    "name": "K'ril Tsutsaroth (Solo)",
+    "name": "K'ril Tsutsaroth",
     "type": "Boss",
     "questPrereqs": "",
     "skillReqs": "Attack 85; Strength 85; Defence 80; Ranged 80",
@@ -6017,7 +6015,7 @@ const SPINE_DATA = [
   },
   {
     "order": 392,
-    "name": "Kree'arra (Solo)",
+    "name": "Kree'arra",
     "type": "Boss",
     "questPrereqs": "",
     "skillReqs": "Defence 80; Ranged 85",
@@ -6159,7 +6157,7 @@ const SPINE_DATA = [
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Fairy Ring"
+    "unlockCategory": "POH \u2014 Fairy Ring"
   },
   {
     "order": 402,
@@ -6184,7 +6182,7 @@ const SPINE_DATA = [
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Stat Restoration"
+    "unlockCategory": "POH \u2014 Stat Restoration"
   },
   {
     "order": 404,
@@ -6193,11 +6191,11 @@ const SPINE_DATA = [
     "questPrereqs": "Lunar Diplomacy; Desert Treasure I",
     "skillReqs": "Construction 90 (boostable from 84); Lunar Diplomacy; Desert Treasure I; 100% Arceuus favour",
     "qp": 0,
-    "info": "Built in Achievement Gallery at Construction 90. Requires Lunar signet, Ancient signet, Arceuus signet + various runes + Magic stone (~15M GP). Also requires completing Lunar Diplomacy, Desert Treasure I, and 100% Arceuus favour. | Switch between all 4 spellbooks (Standard, Ancient, Lunar, Arceuus) instantly and for free from your house. No more travelling to spellbook altars. Invaluable for any account using multiple spellbooks for different content — bossing, Slayer, utility, clues.",
+    "info": "Built in Achievement Gallery at Construction 90. Requires Lunar signet, Ancient signet, Arceuus signet + various runes + Magic stone (~15M GP). Also requires completing Lunar Diplomacy, Desert Treasure I, and 100% Arceuus favour. | Switch between all 4 spellbooks (Standard, Ancient, Lunar, Arceuus) instantly and for free from your house. No more travelling to spellbook altars. Invaluable for any account using multiple spellbooks for different content \u2014 bossing, Slayer, utility, clues.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Spellbook Switching"
+    "unlockCategory": "POH \u2014 Spellbook Switching"
   },
   {
     "order": 405,
@@ -6206,11 +6204,11 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Construction 91 (boostable from 83)",
     "qp": 0,
-    "info": "Built in Achievement Gallery at Construction 91. Requires charged jewellery (Glories, Rings of Wealth, Combat Bracelets, Games Necklaces, Skills Necklaces, Rings of Dueling) as materials. ~20M GP total. Boostable from base 83. | Unlimited teleports for all standard jewellery (Glory, Wealth, Combat Bracelet, Games Necklace, Skills Necklace, Ring of Dueling) from one hotspot — no more charging or replacing. Edgeville, Ferox Enclave, Castle Wars, Burthorpe, skilling locations all covered, free and instant.",
+    "info": "Built in Achievement Gallery at Construction 91. Requires charged jewellery (Glories, Rings of Wealth, Combat Bracelets, Games Necklaces, Skills Necklaces, Rings of Dueling) as materials. ~20M GP total. Boostable from base 83. | Unlimited teleports for all standard jewellery (Glory, Wealth, Combat Bracelet, Games Necklace, Skills Necklace, Ring of Dueling) from one hotspot \u2014 no more charging or replacing. Edgeville, Ferox Enclave, Castle Wars, Burthorpe, skilling locations all covered, free and instant.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Jewellery Teleports"
+    "unlockCategory": "POH \u2014 Jewellery Teleports"
   },
   {
     "order": 406,
@@ -6267,7 +6265,7 @@ const SPINE_DATA = [
     "questPrereqs": "Hard Kourend & Kebos Diary",
     "skillReqs": "Various via Hard Kourend & Kebos Diary reqs",
     "qp": 0,
-    "info": "Reward from Hard Kourend & Kebos Diary. Charged with death runes (one charge per ash scattered). | Auto-scatters demonic ashes for half Prayer XP (full XP with Elite Kourend Diary). The ashes equivalent of the Bonecrusher — covers Hellhounds, Abyssal Demons, Fire Giants, etc. Essential for any account doing heavy demon Slayer tasks.",
+    "info": "Reward from Hard Kourend & Kebos Diary. Charged with death runes (one charge per ash scattered). | Auto-scatters demonic ashes for half Prayer XP (full XP with Elite Kourend Diary). The ashes equivalent of the Bonecrusher \u2014 covers Hellhounds, Abyssal Demons, Fire Giants, etc. Essential for any account doing heavy demon Slayer tasks.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -6301,7 +6299,7 @@ const SPINE_DATA = [
     "order": 413,
     "name": "Bonecrusher",
     "type": "Unlock",
-    "questPrereqs": "Hard Morytania Diary — requires In Aid of the Myreque, Haunted Mine, and many others",
+    "questPrereqs": "Hard Morytania Diary \u2014 requires In Aid of the Myreque, Haunted Mine, and many others",
     "skillReqs": "Various via Hard Morytania Diary (see diary reqs)",
     "qp": 0,
     "info": "Reward from Hard Morytania Diary. Speak to Ghost Disciple at Ectofuntus with Ghostspeak Amulet after diary completion. Charged with ecto-tokens (25 charges/token). | Auto-crushes all dropped bones for half Prayer XP (full XP with Elite Morytania Diary). Passive Prayer training throughout every Slayer task. Works in Catacombs of Kourend for Prayer point restoration. One of the best QoL items in the game.",
@@ -6366,7 +6364,7 @@ const SPINE_DATA = [
     "questPrereqs": "",
     "skillReqs": "Champions' scrolls (rare drops from specific monster types)",
     "qp": 0,
-    "info": "Collect 10 champion scrolls — one from each monster type (Goblin, Imp, Jogre, etc.) — then defeat 10 champion NPCs in sequence. Rewards Champion's cape (cosmetic). Very rare drops, long-term grind.",
+    "info": "Collect 10 champion scrolls \u2014 one from each monster type (Goblin, Imp, Jogre, etc.) \u2014 then defeat 10 champion NPCs in sequence. Rewards Champion's cape (cosmetic). Very rare drops, long-term grind.",
     "location": "Champions' Guild (south of Varrock)",
     "entryType": "activity",
     "bossTier": ""
@@ -6474,7 +6472,7 @@ const SPINE_DATA = [
     "questPrereqs": "Elite Kourend & Kebos Diary (extensive quest and skill reqs)",
     "skillReqs": "Farming 95; Fishing 85; Mining 90; Woodcutting 90; Slayer 93; various others",
     "qp": 0,
-    "info": "Reward from completing the Elite Kourend & Kebos Diary — one of the hardest achievement diaries in the game. | Unlimited teleports to Kourend Woodland and Mount Karuulm (Alchemical Hydra). Ash Sanctifier gives full Prayer XP. 10% chance to not consume Hallowed Sepulchre run energy. Additional farming patch access. Coveted diary reward for any dedicated Zeah player.",
+    "info": "Reward from completing the Elite Kourend & Kebos Diary \u2014 one of the hardest achievement diaries in the game. | Unlimited teleports to Kourend Woodland and Mount Karuulm (Alchemical Hydra). Ash Sanctifier gives full Prayer XP. 10% chance to not consume Hallowed Sepulchre run energy. Additional farming patch access. Coveted diary reward for any dedicated Zeah player.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
@@ -6599,6 +6597,20 @@ const SPINE_DATA = [
   },
   {
     "order": 434,
+    "name": "Shellbane Gryphon",
+    "type": "Boss",
+    "questPrereqs": "Troubled Tortugans",
+    "skillReqs": "Slayer 51; Sailing 45",
+    "qp": 0,
+    "info": "Hard tier | Mid-level Slayer boss on Great Conch. Solo instanced, requires Slayer task. Weak to melee (stab). Bring tortugan shield.",
+    "location": "Great Conch (Sailing)",
+    "entryType": "boss",
+    "bossTier": "Hard tier",
+    "notableDrops": [],
+    "kc": 0
+  },
+  {
+    "order": 435,
     "name": "Tombs of Amascut",
     "type": "Boss",
     "questPrereqs": "Beneath Cursed Sands",
@@ -6641,7 +6653,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 435,
+    "order": 436,
     "name": "Chambers of Xeric",
     "type": "Boss",
     "questPrereqs": "",
@@ -6696,8 +6708,8 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 436,
-    "name": "Nex (Small teams)",
+    "order": 437,
+    "name": "Nex",
     "type": "Boss",
     "questPrereqs": "",
     "skillReqs": "Attack 90; Strength 90; Defence 90; Ranged 90; Magic 80",
@@ -6735,20 +6747,20 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 437,
+    "order": 438,
     "name": "Rigour Prayer",
     "type": "Unlock",
     "questPrereqs": "Chambers of Xeric completion (for scroll)",
     "skillReqs": "Prayer 74; Defence 70",
     "qp": 0,
-    "info": "Combine Dexterous prayer scroll (CoX drop) with existing prayers at a prayer altar. | +20% Ranged accuracy, +23% Ranged strength, +25% Defence. Best-in-slot ranged prayer. Scroll is a CoX drop — only accessible once raiding.",
+    "info": "Combine Dexterous prayer scroll (CoX drop) with existing prayers at a prayer altar. | +20% Ranged accuracy, +23% Ranged strength, +25% Defence. Best-in-slot ranged prayer. Scroll is a CoX drop \u2014 only accessible once raiding.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Prayer"
   },
   {
-    "order": 438,
+    "order": 439,
     "name": "Augury Prayer",
     "type": "Unlock",
     "questPrereqs": "Chambers of Xeric completion (for scroll)",
@@ -6761,59 +6773,59 @@ const SPINE_DATA = [
     "unlockCategory": "Prayer"
   },
   {
-    "order": 439,
+    "order": 440,
     "name": "Preserve Prayer",
     "type": "Unlock",
     "questPrereqs": "Chambers of Xeric completion (for scroll)",
     "skillReqs": "Prayer 55",
     "qp": 0,
-    "info": "Combine Torn prayer scroll (CoX drop) with existing prayers. | Boosts last 50% longer. Useful for boosted-stat content. Comes with CoX scroll — low hanging fruit once raiding.",
+    "info": "Combine Torn prayer scroll (CoX drop) with existing prayers. | Boosts last 50% longer. Useful for boosted-stat content. Comes with CoX scroll \u2014 low hanging fruit once raiding.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Prayer"
   },
   {
-    "order": 440,
+    "order": 441,
     "name": "Ancestral Robes",
     "type": "Unlock",
     "questPrereqs": "None (CoX for obtaining)",
     "skillReqs": "Magic 75; Defence 65",
     "qp": 0,
-    "info": "Rare drop from Chambers of Xeric. Buy from GE (~65M for set). | BiS magic armour. +6% Magic damage across the set. Required for endgame magic DPS. Significant investment — prioritise Occult, Tormented Bracelet, and Trident first.",
+    "info": "Rare drop from Chambers of Xeric. Buy from GE (~65M for set). | BiS magic armour. +6% Magic damage across the set. Required for endgame magic DPS. Significant investment \u2014 prioritise Occult, Tormented Bracelet, and Trident first.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Magic Armour"
   },
   {
-    "order": 441,
+    "order": 442,
     "name": "Twisted Bow",
     "type": "Unlock",
-    "questPrereqs": "None (CoX — no hard quest req; recommended 85+ combat stats)",
+    "questPrereqs": "None (CoX \u2014 no hard quest req; recommended 85+ combat stats)",
     "skillReqs": "Ranged 75",
     "qp": 0,
-    "info": "Rare drop from Chambers of Xeric Great Olm. ~1.2B GP on GE. Uses any arrows; dragon arrows recommended for maximum damage. | Accuracy and damage scales with the target's Magic level. BiS against high-Magic bosses — Verzik, Zulrah, Vorkath, Inferno, many CoX bosses. Universally the most powerful weapon in the game for the right targets.",
+    "info": "Rare drop from Chambers of Xeric Great Olm. ~1.2B GP on GE. Uses any arrows; dragon arrows recommended for maximum damage. | Accuracy and damage scales with the target's Magic level. BiS against high-Magic bosses \u2014 Verzik, Zulrah, Vorkath, Inferno, many CoX bosses. Universally the most powerful weapon in the game for the right targets.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Ranged Weapon"
   },
   {
-    "order": 442,
+    "order": 443,
     "name": "Dragon Hunter Lance",
     "type": "Unlock",
     "questPrereqs": "None (CoX for drop; no hard quest req to wield)",
     "skillReqs": "Attack 78",
     "qp": 0,
-    "info": "Drop from Chambers of Xeric unique table. ~71M GP on GE. Combine Zamorakian Hasta with Dragon Hunter Crossbow hilt (both CoX drops or GE purchasable). | +20% accuracy and damage against dragon-type monsters. BiS melee weapon for Vorkath, King Black Dragon, and CoX dragon chambers. Must-have before serious Vorkath farming — pays for itself quickly in scales and Vorkath drops.",
+    "info": "Drop from Chambers of Xeric unique table. ~71M GP on GE. Combine Zamorakian Hasta with Dragon Hunter Crossbow hilt (both CoX drops or GE purchasable). | +20% accuracy and damage against dragon-type monsters. BiS melee weapon for Vorkath, King Black Dragon, and CoX dragon chambers. Must-have before serious Vorkath farming \u2014 pays for itself quickly in scales and Vorkath drops.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Melee Weapon"
   },
   {
-    "order": 443,
+    "order": 444,
     "name": "The Nightmare and Phosani's Nightmare",
     "type": "Boss",
     "questPrereqs": "Priest in Peril",
@@ -6864,7 +6876,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 444,
+    "order": 445,
     "name": "Theatre of Blood",
     "type": "Boss",
     "questPrereqs": "Priest in Peril",
@@ -6911,7 +6923,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 445,
+    "order": 446,
     "name": "Elite Morytania Diary",
     "type": "Diary",
     "questPrereqs": "Desert Treasure I; A Taste of Hope; Theatre of Blood (must complete)",
@@ -6923,7 +6935,7 @@ const SPINE_DATA = [
     "bossTier": ""
   },
   {
-    "order": 446,
+    "order": 447,
     "name": "Ghrazi Rapier",
     "type": "Unlock",
     "questPrereqs": "Priest in Peril (for ToB access)",
@@ -6936,7 +6948,7 @@ const SPINE_DATA = [
     "unlockCategory": "Melee Weapon"
   },
   {
-    "order": 447,
+    "order": 448,
     "name": "Avernic Defender",
     "type": "Unlock",
     "questPrereqs": "Dragon Defender obtained; Priest in Peril (for ToB)",
@@ -6949,7 +6961,7 @@ const SPINE_DATA = [
     "unlockCategory": "Melee Off-hand"
   },
   {
-    "order": 448,
+    "order": 449,
     "name": "Scythe of Vitur",
     "type": "Unlock",
     "questPrereqs": "Priest in Peril (for Morytania / ToB access)",
@@ -6962,20 +6974,20 @@ const SPINE_DATA = [
     "unlockCategory": "Melee Weapon"
   },
   {
-    "order": 449,
+    "order": 450,
     "name": "Inquisitor's Armour + Mace",
     "type": "Unlock",
-    "questPrereqs": "None (The Nightmare — group or solo Phosani's)",
+    "questPrereqs": "None (The Nightmare \u2014 group or solo Phosani's)",
     "skillReqs": "Defence 70 (armour); Attack 75; Strength 70 (mace)",
     "qp": 0,
-    "info": "Drops from The Nightmare and Phosani's Nightmare. Full set ~400M+ GP on GE. Mace from same source. | +2.5% crush accuracy+damage per armour piece worn (+7.5% full set). BiS for crush-weak targets — Kalphite Queen, Sarachnis, Corporeal Beast. Niche but high-value for specific content. Mace is the best crush weapon in the game.",
+    "info": "Drops from The Nightmare and Phosani's Nightmare. Full set ~400M+ GP on GE. Mace from same source. | +2.5% crush accuracy+damage per armour piece worn (+7.5% full set). BiS for crush-weak targets \u2014 Kalphite Queen, Sarachnis, Corporeal Beast. Niche but high-value for specific content. Mace is the best crush weapon in the game.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Melee Armour / Weapon"
   },
   {
-    "order": 450,
+    "order": 451,
     "name": "Sanguinesti Staff",
     "type": "Unlock",
     "questPrereqs": "Priest in Peril (for ToB access)",
@@ -6988,20 +7000,20 @@ const SPINE_DATA = [
     "unlockCategory": "Magic Weapon"
   },
   {
-    "order": 451,
+    "order": 452,
     "name": "Ring of Endurance",
     "type": "Unlock",
     "questPrereqs": "",
     "skillReqs": "Agility 52 (to enter Sepulchre); Agility 70 (recommended for efficiency)",
     "qp": 0,
-    "info": "Crafted by combining Ring of Endurance (500 Hallowed Marks from Hallowed Sepulchre) with 250 stamina potion doses. Hallowed Sepulchre requires Agility 52 to enter. | Doubles stamina potion duration while worn + passively restores 10% run energy per minute. Invaluable for long bossing trips, skilling routes, and Raids. Hallowed Sepulchre is also excellent Agility XP — the ring is a natural reward of training there.",
+    "info": "Crafted by combining Ring of Endurance (500 Hallowed Marks from Hallowed Sepulchre) with 250 stamina potion doses. Hallowed Sepulchre requires Agility 52 to enter. | Doubles stamina potion duration while worn + passively restores 10% run energy per minute. Invaluable for long bossing trips, skilling routes, and Raids. Hallowed Sepulchre is also excellent Agility XP \u2014 the ring is a natural reward of training there.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Agility / QoL Ring"
   },
   {
-    "order": 452,
+    "order": 453,
     "name": "Achievement diary cape",
     "type": "Activity/Goal",
     "questPrereqs": "Easy Ardougne Diary; Easy Karamja Diary; Easy Kandarin Diary; Easy Desert Diary; Easy Falador Diary; Easy Fremennik Diary; Easy Kourend & Kebos Diary; Easy Lumbridge & Draynor Diary; Easy Morytania Diary; Easy Varrock Diary; Easy Western Provinces Diary; Easy Wilderness Diary; Medium Ardougne Diary; Medium Desert Diary; Medium Falador Diary; Medium Fremennik Diary; Medium Kandarin Diary; Medium Kourend & Kebos Diary; Medium Lumbridge & Draynor Diary; Medium Morytania Diary; Medium Varrock Diary; Medium Western Provinces Diary; Medium Karamja Diary; Medium Wilderness Diary; Hard Ardougne Diary; Hard Desert Diary; Hard Falador Diary; Hard Fremennik Diary; Hard Kandarin Diary; Hard Karamja Diary; Hard Kourend & Kebos Diary; Hard Lumbridge & Draynor Diary; Hard Morytania Diary; Hard Varrock Diary; Hard Western Provinces Diary; Hard Wilderness Diary; Elite Ardougne Diary; Elite Desert Diary; Elite Falador Diary; Elite Fremennik Diary; Elite Kandarin Diary; Elite Karamja Diary; Elite Kourend & Kebos Diary; Elite Lumbridge & Draynor Diary; Elite Varrock Diary; Elite Western Provinces Diary; Elite Wilderness Diary; Elite Morytania Diary",
@@ -7013,20 +7025,20 @@ const SPINE_DATA = [
     "bossTier": ""
   },
   {
-    "order": 453,
+    "order": 454,
     "name": "Construction Cape",
     "type": "Unlock",
     "questPrereqs": "",
     "skillReqs": "Construction 99",
     "qp": 0,
-    "info": "Purchase for 99,000 GP from any Master Constructor at level 99 Construction. | Unlimited teleports directly to your POH from anywhere in the game (including above level 20 Wilderness). Effectively provides instant access to your entire house setup — pool, altar, nexus, fairy ring — from any location. Widely considered the most utility-dense skillcape in OSRS.",
+    "info": "Purchase for 99,000 GP from any Master Constructor at level 99 Construction. | Unlimited teleports directly to your POH from anywhere in the game (including above level 20 Wilderness). Effectively provides instant access to your entire house setup \u2014 pool, altar, nexus, fairy ring \u2014 from any location. Widely considered the most utility-dense skillcape in OSRS.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Skillcape Teleport"
   },
   {
-    "order": 454,
+    "order": 455,
     "name": "Base 90",
     "type": "Activity/Goal",
     "questPrereqs": "",
@@ -7038,7 +7050,7 @@ const SPINE_DATA = [
     "bossTier": ""
   },
   {
-    "order": 455,
+    "order": 456,
     "name": "Amulet of Blood Fury",
     "type": "Unlock",
     "questPrereqs": "Sins of the Father (for Darkmeyer / Vyrewatch access)",
@@ -7051,7 +7063,7 @@ const SPINE_DATA = [
     "unlockCategory": "Combat Amulet"
   },
   {
-    "order": 456,
+    "order": 457,
     "name": "Sol Heredit",
     "type": "Boss",
     "questPrereqs": "Children of the Sun",
@@ -7078,20 +7090,20 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 457,
+    "order": 458,
     "name": "Blade of Saeldor",
     "type": "Unlock",
     "questPrereqs": "Song of the Elves (for Gauntlet access)",
     "skillReqs": "Attack 75",
     "qp": 0,
-    "info": "Crafted from Crystal Shard + Crystalline Hunllef drop (Gauntlet/Corrupted Gauntlet). ~152M GP on GE. Charged with crystal shards — upkeep required. | BiS slash weapon for general use. +20 slash attack over Ghrazi Rapier. Superior against slash-weak targets. Corrupted Gauntlet is very high-skill solo content — GE purchase common for non-Ironman accounts.",
+    "info": "Crafted from Crystal Shard + Crystalline Hunllef drop (Gauntlet/Corrupted Gauntlet). ~152M GP on GE. Charged with crystal shards \u2014 upkeep required. | BiS slash weapon for general use. +20 slash attack over Ghrazi Rapier. Superior against slash-weak targets. Corrupted Gauntlet is very high-skill solo content \u2014 GE purchase common for non-Ironman accounts.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Melee Weapon"
   },
   {
-    "order": 458,
+    "order": 459,
     "name": "Bow of Faerdhinen",
     "type": "Unlock",
     "questPrereqs": "Song of the Elves (for Gauntlet access)",
@@ -7104,7 +7116,7 @@ const SPINE_DATA = [
     "unlockCategory": "Ranged Weapon"
   },
   {
-    "order": 459,
+    "order": 460,
     "name": "Yama",
     "type": "Boss",
     "questPrereqs": "A Kingdom Divided",
@@ -7135,7 +7147,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 460,
+    "order": 461,
     "name": "TzKal-Zuk",
     "type": "Boss",
     "questPrereqs": "",
@@ -7158,59 +7170,59 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 461,
+    "order": 462,
     "name": "Tumeken's Shadow",
     "type": "Unlock",
     "questPrereqs": "Beneath Cursed Sands (for ToA access)",
     "skillReqs": "Magic 85",
     "qp": 0,
-    "info": "Rare drop from Tombs of Amascut unique table. ~1.1B GP on GE. Charged with shadow essence — substantial upkeep cost per hour. | Triples magic attack and doubles magic strength bonuses from worn gear — multiplying magic DPS across the board. BiS magic weapon for virtually all content. Transformative for any magic build.",
+    "info": "Rare drop from Tombs of Amascut unique table. ~1.1B GP on GE. Charged with shadow essence \u2014 substantial upkeep cost per hour. | Triples magic attack and doubles magic strength bonuses from worn gear \u2014 multiplying magic DPS across the board. BiS magic weapon for virtually all content. Transformative for any magic build.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Magic Weapon"
   },
   {
-    "order": 462,
+    "order": 463,
     "name": "Masori Armour Set",
     "type": "Unlock",
     "questPrereqs": "Beneath Cursed Sands (for ToA)",
     "skillReqs": "Ranged 80; Defence 30 (base) / 80 (fortified)",
     "qp": 0,
-    "info": "Drops from Tombs of Amascut unique table. Base set ~140M GP on GE. Fortified version requires Armadyl pieces to combine — considerable extra cost. | BiS ranged armour — superior to Armadyl. Fortified version adds defence bonuses. Essential for Twisted Bow / Bowfa setups and Infernal Cape attempts. Priority for any serious ranged account.",
+    "info": "Drops from Tombs of Amascut unique table. Base set ~140M GP on GE. Fortified version requires Armadyl pieces to combine \u2014 considerable extra cost. | BiS ranged armour \u2014 superior to Armadyl. Fortified version adds defence bonuses. Essential for Twisted Bow / Bowfa setups and Infernal Cape attempts. Priority for any serious ranged account.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Ranged Armour"
   },
   {
-    "order": 463,
+    "order": 464,
     "name": "Osmumten's Fang",
     "type": "Unlock",
     "questPrereqs": "Beneath Cursed Sands (for ToA)",
     "skillReqs": "Attack 82",
     "qp": 0,
-    "info": "Rare drop from Tombs of Amascut unique table. ~24M GP on GE. Not degradable — no upkeep cost. | Rolls attack twice, takes the higher result — effectively doubles accuracy. BiS stab weapon and exceptional against high-Defence targets. Remarkably affordable for its power. Usually the first ToA unique to prioritise buying.",
+    "info": "Rare drop from Tombs of Amascut unique table. ~24M GP on GE. Not degradable \u2014 no upkeep cost. | Rolls attack twice, takes the higher result \u2014 effectively doubles accuracy. BiS stab weapon and exceptional against high-Defence targets. Remarkably affordable for its power. Usually the first ToA unique to prioritise buying.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Melee Weapon"
   },
   {
-    "order": 464,
+    "order": 465,
     "name": "Lightbearer",
     "type": "Unlock",
     "questPrereqs": "Beneath Cursed Sands (for ToA)",
     "skillReqs": "No equip req",
     "qp": 0,
-    "info": "Rare drop from Tombs of Amascut unique table. ~11M GP on GE. No stat bonuses — purely a spec attack utility ring. | Doubles special attack regeneration (10% per 15s vs 10% per 30s normally). Exceptional for spec-heavy strategies — Dragon Claws, DWH, BGS, Voidwaker. Pairs with Osmumten's Fang in endgame content. Best ring in the game for spec-focused encounters.",
+    "info": "Rare drop from Tombs of Amascut unique table. ~11M GP on GE. No stat bonuses \u2014 purely a spec attack utility ring. | Doubles special attack regeneration (10% per 15s vs 10% per 30s normally). Exceptional for spec-heavy strategies \u2014 Dragon Claws, DWH, BGS, Voidwaker. Pairs with Osmumten's Fang in endgame content. Best ring in the game for spec-focused encounters.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Ring"
   },
   {
-    "order": 465,
+    "order": 466,
     "name": "Challenge Mode Chambers of Xeric",
     "type": "Boss",
     "questPrereqs": "",
@@ -7233,7 +7245,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 466,
+    "order": 467,
     "name": "Infernal Cape",
     "type": "Unlock",
     "questPrereqs": "",
@@ -7246,10 +7258,10 @@ const SPINE_DATA = [
     "unlockCategory": "Melee Cape"
   },
   {
-    "order": 467,
+    "order": 468,
     "name": "Torva Armour Set",
     "type": "Unlock",
-    "questPrereqs": "None (Nex — Ancient Prison in GWD; 90+ combat recommended)",
+    "questPrereqs": "None (Nex \u2014 Ancient Prison in GWD; 90+ combat recommended)",
     "skillReqs": "Defence 80",
     "qp": 0,
     "info": "Drops from Nex (1/258 per piece). ~640M GP for full set on GE. Requires Bandosian components (break down Bandos gear) to repair broken pieces at Ancient Forge inside GWD. | BiS offensive melee armour. +8/+6/+4 Str across helm/body/legs over Bandos. Significant DPS upgrade for endgame melee bossing. Prioritise weapons (Scythe, Ghrazi Rapier, etc.) before investing in Torva.",
@@ -7259,7 +7271,7 @@ const SPINE_DATA = [
     "unlockCategory": "Melee Armour"
   },
   {
-    "order": 468,
+    "order": 469,
     "name": "Tombs of Amascut (500+ Raid level)",
     "type": "Boss",
     "questPrereqs": "",
@@ -7302,7 +7314,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 469,
+    "order": 470,
     "name": "Hard Mode Theatre of Blood",
     "type": "Boss",
     "questPrereqs": "Priest in Peril",
@@ -7329,7 +7341,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 470,
+    "order": 471,
     "name": "Yama's Contracts",
     "type": "Boss",
     "questPrereqs": "A Kingdom Divided",
@@ -7348,20 +7360,20 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 471,
+    "order": 472,
     "name": "Crystalline Portal Nexus (Tier 3)",
     "type": "Unlock",
     "questPrereqs": "Various quests/Magic levels required for individual teleport destinations",
     "skillReqs": "Construction 92 (boostable from 84 with Crystal Saw + POH Tea + Spicy Stew stacked)",
     "qp": 0,
-    "info": "Built in Portal Nexus room at Construction 92. Requires 2 Magic Stones + 1 Gold Leaf (~25M GP). Must build Tier 1 (72 Con) and Tier 2 (82 Con) first. Each teleport unlock costs 1,000× the rune cost of the spell. | Unlimited teleports to the entire game world from one interface — Standard, Ancient, Lunar, Arceuus spellbook locations all included. Pair with Mounted Xeric's Talisman and Mounted Digsite Pendant in the same room for near-total world coverage from your house.",
+    "info": "Built in Portal Nexus room at Construction 92. Requires 2 Magic Stones + 1 Gold Leaf (~25M GP). Must build Tier 1 (72 Con) and Tier 2 (82 Con) first. Each teleport unlock costs 1,000\u00d7 the rune cost of the spell. | Unlimited teleports to the entire game world from one interface \u2014 Standard, Ancient, Lunar, Arceuus spellbook locations all included. Pair with Mounted Xeric's Talisman and Mounted Digsite Pendant in the same room for near-total world coverage from your house.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
-    "unlockCategory": "POH — Teleport Hub"
+    "unlockCategory": "POH \u2014 Teleport Hub"
   },
   {
-    "order": 472,
+    "order": 473,
     "name": "Awakened Desert Treasure II Bosses",
     "type": "Boss",
     "questPrereqs": "Desert Treasure II - The Fallen Empire",
@@ -7380,10 +7392,10 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 473,
+    "order": 474,
     "name": "Elysian Spirit Shield",
     "type": "Unlock",
-    "questPrereqs": "None (Corp Beast — 90+ combat stats strongly recommended)",
+    "questPrereqs": "None (Corp Beast \u2014 90+ combat stats strongly recommended)",
     "skillReqs": "Defence 75; Prayer 75",
     "qp": 0,
     "info": "Elysian Sigil from Corporeal Beast (1/500). Combine with Blessed Spirit Shield. Sigil ~600M GP on GE. Requires 90 Prayer + 85 Smithing to combine, or pay an NPC. | 30% chance to reduce incoming damage by 25%. The best defensive shield in OSRS. Essential for Infernal Cape attempts and sustained high-damage content. Very expensive but genuinely transforms survivability.",
@@ -7393,20 +7405,20 @@ const SPINE_DATA = [
     "unlockCategory": "Shield"
   },
   {
-    "order": 474,
+    "order": 475,
     "name": "Bonecrusher Necklace",
     "type": "Unlock",
     "questPrereqs": "Hard Morytania Diary (Bonecrusher); Dragon Slayer II (Vorkath for Dragonbone Necklace)",
     "skillReqs": "Prayer 70 (to equip)",
     "qp": 0,
-    "info": "Combine Bonecrusher + Dragonbone Necklace (Vorkath drop) + Hydra Tail (Alchemical Hydra drop). All 3 components required — no GE purchase for the combined item. | Combines auto-bone-crushing with Prayer point restoration per bone. Best-in-slot Prayer amulet (+12) and passive sustain. The endgame Slayer amulet — extends Prayer trips indefinitely at most assignments.",
+    "info": "Combine Bonecrusher + Dragonbone Necklace (Vorkath drop) + Hydra Tail (Alchemical Hydra drop). All 3 components required \u2014 no GE purchase for the combined item. | Combines auto-bone-crushing with Prayer point restoration per bone. Best-in-slot Prayer amulet (+12) and passive sustain. The endgame Slayer amulet \u2014 extends Prayer trips indefinitely at most assignments.",
     "location": "",
     "entryType": "unlock",
     "bossTier": "",
     "unlockCategory": "Prayer QOL"
   },
   {
-    "order": 475,
+    "order": 476,
     "name": "Max cape",
     "type": "Activity/Goal",
     "questPrereqs": "",
@@ -7418,7 +7430,7 @@ const SPINE_DATA = [
     "bossTier": ""
   },
   {
-    "order": 476,
+    "order": 477,
     "name": "Grandmaster Combat Achievements",
     "type": "Boss",
     "questPrereqs": "",
@@ -7441,7 +7453,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 477,
+    "order": 478,
     "name": "Collection log completion",
     "type": "Activity/Goal",
     "questPrereqs": "",
@@ -7453,4 +7465,3 @@ const SPINE_DATA = [
     "bossTier": ""
   }
 ];
-const IRONMAN_DATA = [{"imOrder":1,"name":"Learning the Ropes","type":"direct"},{"imOrder":2,"name":"Cook's Assistant","type":"direct"},{"imOrder":3,"name":"Sheep Shearer","type":"direct"},{"imOrder":4,"name":"Misthalin Mystery","type":"direct"},{"imOrder":5,"name":"The Restless Ghost","type":"direct"},{"imOrder":6,"name":"X Marks the Spot","type":"direct"},{"imOrder":7,"name":"Witch's Potion","type":"direct"},{"imOrder":8,"name":"Client of Kourend","type":"direct"},{"imOrder":9,"name":"Xeric's Talisman","type":"unlock_teleport"},{"imOrder":10,"name":"Pandemonium","type":"direct"},{"imOrder":11,"name":"Pirate's Treasure","type":"partial"},{"imOrder":12,"name":"Stronghold of Security","type":"unlock"},{"imOrder":13,"name":"Children of the Sun","type":"direct"},{"imOrder":14,"name":"Romeo & Juliet","type":"direct"},{"imOrder":15,"name":"Gertrude's Cat","type":"direct"},{"imOrder":16,"name":"Daddy's Home","type":"direct"},{"imOrder":17,"name":"Mahogany Homes","type":"direct"},{"imOrder":18,"name":"Natural History Quiz","type":"direct"},{"imOrder":19,"name":"Demon Slayer","type":"partial"},{"imOrder":20,"name":"Rune Mysteries","type":"direct"},{"imOrder":21,"name":"Enter the Abyss","type":"partial"},{"imOrder":22,"name":"Tree Gnome Village","type":"direct"},{"imOrder":23,"name":"Hazeel Cult","type":"direct"},{"imOrder":24,"name":"Clock Tower","type":"direct"},{"imOrder":25,"name":"Monk's Friend","type":"direct"},{"imOrder":26,"name":"Plague City","type":"direct"},{"imOrder":27,"name":"Biohazard","type":"direct"},{"imOrder":28,"name":"Demon Slayer","type":"direct"},{"imOrder":29,"name":"Enter the Abyss","type":"direct"},{"imOrder":30,"name":"Easy Ardougne Diary","type":"direct"},{"imOrder":31,"name":"Fight Arena","type":"direct"},{"imOrder":32,"name":"Sheep Herder","type":"direct"},{"imOrder":33,"name":"Dwarf Cannon","type":"partial"},{"imOrder":34,"name":"Barbarian Assault","type":"unlock_teleport"},{"imOrder":35,"name":"Wintertodt","type":"direct"},{"imOrder":36,"name":"Pest Control","type":"direct"},{"imOrder":37,"name":"Void Knight Set","type":"unlock"},{"imOrder":38,"name":"Castle Wars","type":"direct"},{"imOrder":39,"name":"Soul Wars","type":"direct"},{"imOrder":40,"name":"Last Man Standing","type":"direct"},{"imOrder":41,"name":"Nightmare Zone","type":"direct"},{"imOrder":42,"name":"Clan Wars","type":"direct"},{"imOrder":43,"name":"Fighter Torso","type":"unlock"},{"imOrder":44,"name":"Alfred Grimhand's Barcrawl","type":"direct"},{"imOrder":45,"name":"Waterfall Quest","type":"direct"},{"imOrder":46,"name":"Murder Mystery","type":"direct"},{"imOrder":47,"name":"Merlin's Crystal","type":"direct"},{"imOrder":48,"name":"Holy Grail","type":"direct"},{"imOrder":49,"name":"Doric's Quest","type":"direct"},{"imOrder":50,"name":"Druidic Ritual","type":"direct"},{"imOrder":51,"name":"Witch's House","type":"direct"},{"imOrder":52,"name":"Obor","type":"direct"},{"imOrder":53,"name":"Bryophyta","type":"direct"},{"imOrder":54,"name":"Dwarf Cannon","type":"direct"},{"imOrder":55,"name":"Below Ice Mountain","type":"direct"},{"imOrder":56,"name":"Black Knights' Fortress","type":"direct"},{"imOrder":57,"name":"Pirate's Treasure","type":"direct"},{"imOrder":58,"name":"The Ides of Milk","type":"direct"},{"imOrder":59,"name":"Observatory Quest","type":"direct"},{"imOrder":60,"name":"Priest in Peril","type":"direct"},{"imOrder":61,"name":"Rag and Bone Man I","type":"partial"},{"imOrder":62,"name":"Nature Spirit","type":"direct"},{"imOrder":63,"name":"Recruitment Drive","type":"direct"},{"imOrder":64,"name":"Alfred Grimhand's Barcrawl","type":"direct"},{"imOrder":65,"name":"Dragon Slayer I","type":"partial"},{"imOrder":66,"name":"Scorpion Catcher","type":"direct"},{"imOrder":67,"name":"Slayer Helmet","type":"unlock"},{"imOrder":68,"name":"Rune Pouch","type":"unlock"},{"imOrder":69,"name":"Herb Sack","type":"unlock"},{"imOrder":70,"name":"Jungle Potion","type":"direct"},{"imOrder":71,"name":"Vampyre Slayer","type":"direct"},{"imOrder":72,"name":"A Porcine of Interest","type":"direct"},{"imOrder":73,"name":"Rag and Bone Man I","type":"direct"},{"imOrder":74,"name":"Rag and Bone Man II","type":"partial"},{"imOrder":75,"name":"Broad Bolts / Amethyst Broad Bolts","type":"unlock"},{"imOrder":76,"name":"Death Plateau","type":"direct"},{"imOrder":77,"name":"Rune Crossbow","type":"unlock"},{"imOrder":78,"name":"The Queen of Thieves","type":"direct"},{"imOrder":79,"name":"The Depths of Despair","type":"direct"},{"imOrder":80,"name":"The Forsaken Tower","type":"direct"},{"imOrder":81,"name":"Kharedst's Memoirs","type":"unlock"},{"imOrder":82,"name":"Tale of the Righteous","type":"direct"},{"imOrder":83,"name":"Mountain Daughter","type":"direct"},{"imOrder":84,"name":"The Grand Tree","type":"direct"},{"imOrder":85,"name":"Tribal Totem","type":"direct"},{"imOrder":86,"name":"The Dig Site","type":"direct"},{"imOrder":87,"name":"Digsite Pendant (Mounted POH)","type":"unlock_teleport"},{"imOrder":88,"name":"The Golem","type":"direct"},{"imOrder":89,"name":"Recipe for Disaster/Another Cook's Quest","type":"direct"},{"imOrder":90,"name":"The Knight's Sword","type":"direct"},{"imOrder":91,"name":"Elemental Workshop I","type":"direct"},{"imOrder":92,"name":"Shadow of the Storm","type":"direct"},{"imOrder":93,"name":"Prying Times","type":"direct"},{"imOrder":94,"name":"Imp Catcher","type":"direct"},{"imOrder":95,"name":"Elemental Workshop II","type":"direct"},{"imOrder":96,"name":"The Ribbiting Tale of a Lily Pad Labour Dispute","type":"direct"},{"imOrder":97,"name":"Lost City","type":"direct"},{"imOrder":98,"name":"Fairytale I - Growing Pains","type":"direct"},{"imOrder":99,"name":"Magic Secateurs","type":"unlock"},{"imOrder":100,"name":"Fairytale II - Cure a Queen","type":"partial"},{"imOrder":101,"name":"Fairy Ring Network Access","type":"unlock_teleport"},{"imOrder":102,"name":"Goblin Diplomacy","type":"direct"},{"imOrder":103,"name":"Recipe for Disaster/Freeing the Goblin generals","type":"direct"},{"imOrder":104,"name":"Sleeping Giants","type":"direct"},{"imOrder":105,"name":"Giants' Foundry","type":"direct"},{"imOrder":106,"name":"Shield of Arrav","type":"direct"},{"imOrder":107,"name":"A Soul's Bane","type":"direct"},{"imOrder":108,"name":"The Lost Tribe","type":"direct"},{"imOrder":109,"name":"Death to the Dorgeshuun","type":"direct"},{"imOrder":110,"name":"The Giant Dwarf","type":"direct"},{"imOrder":111,"name":"Blast Furnace","type":"direct"},{"imOrder":112,"name":"Coal Bag","type":"unlock"},{"imOrder":113,"name":"Gem Bag","type":"unlock"},{"imOrder":114,"name":"Another Slice of H.A.M.","type":"direct"},{"imOrder":115,"name":"Making History","type":"direct"},{"imOrder":116,"name":"Forestry","type":"direct"},{"imOrder":117,"name":"In Search of the Myreque","type":"direct"},{"imOrder":118,"name":"Shades of Mort'ton","type":"direct"},{"imOrder":119,"name":"In Aid of the Myreque","type":"direct"},{"imOrder":120,"name":"Varrock Museum Kudos","type":"unlock"},{"imOrder":121,"name":"Scurrius","type":"direct"},{"imOrder":122,"name":"Unlock: More Varrock Museum Kudos","type":"direct"},{"imOrder":123,"name":"Bone Voyage","type":"direct"},{"imOrder":124,"name":"Deranged archaeologist","type":"direct"},{"imOrder":125,"name":"Museum Camp (Fossil Island)","type":"direct"},{"imOrder":126,"name":"Shooting Stars","type":"direct"},{"imOrder":127,"name":"Prospector Outfit","type":"unlock"},{"imOrder":128,"name":"Volcanic Mine","type":"direct"},{"imOrder":129,"name":"Blast mine","type":"direct"},{"imOrder":130,"name":"In Search of Knowledge (start)","type":"direct"},{"imOrder":131,"name":"In Search of Knowledge","type":"direct"},{"imOrder":132,"name":"Wanted!","type":"direct"},{"imOrder":133,"name":"The Feud","type":"direct"},{"imOrder":134,"name":"Troll Stronghold","type":"direct"},{"imOrder":135,"name":"Troll Romance","type":"direct"},{"imOrder":136,"name":"Dragon Slayer I","type":"direct"},{"imOrder":137,"name":"Horror from the Deep","type":"direct"},{"imOrder":138,"name":"God Books","type":"unlock"},{"imOrder":139,"name":"Ernest the Chicken","type":"direct"},{"imOrder":140,"name":"Animal Magnetism","type":"direct"},{"imOrder":141,"name":"Ava's Accumulator","type":"unlock"},{"imOrder":142,"name":"Shilo Village","type":"direct"},{"imOrder":143,"name":"Tithe Farm","type":"direct"},{"imOrder":144,"name":"Farming contracts","type":"direct"},{"imOrder":145,"name":"Hespori","type":"direct"},{"imOrder":146,"name":"Spirits of the Elid","type":"direct"},{"imOrder":147,"name":"Icthlarin's Little Helper","type":"direct"},{"imOrder":148,"name":"Ethically Acquired Antiquities","type":"direct"},{"imOrder":149,"name":"Twilight's Promise","type":"direct"},{"imOrder":150,"name":"Amoxliatl","type":"direct"},{"imOrder":151,"name":"Death on the Isle","type":"direct"},{"imOrder":152,"name":"Ratcatchers","type":"direct"},{"imOrder":153,"name":"The Garden of Death","type":"direct"},{"imOrder":154,"name":"Enlightened Journey","type":"direct"},{"imOrder":155,"name":"Spirit Tree Network","type":"unlock_teleport"},{"imOrder":156,"name":"Balloon Route: Crafting Guild","type":"unlock"},{"imOrder":157,"name":"Balloon Route: Castle Wars","type":"unlock_teleport"},{"imOrder":158,"name":"Sea Slug","type":"direct"},{"imOrder":159,"name":"Tempoross","type":"direct"},{"imOrder":160,"name":"Current Affairs","type":"direct"},{"imOrder":161,"name":"Fishing Contest","type":"direct"},{"imOrder":162,"name":"Recipe for Disaster/Freeing the Mountain Dwarf","type":"direct"},{"imOrder":163,"name":"Ghosts Ahoy","type":"direct"},{"imOrder":164,"name":"Ectophial","type":"unlock_teleport"},{"imOrder":165,"name":"Forgettable Tale...","type":"direct"},{"imOrder":166,"name":"Garden of Tranquillity","type":"direct"},{"imOrder":167,"name":"Recipe for Disaster/Freeing Evil Dave","type":"direct"},{"imOrder":168,"name":"Big Chompy Bird Hunting","type":"direct"},{"imOrder":169,"name":"Zogre Flesh Eaters","type":"direct"},{"imOrder":170,"name":"Easy Varrock Diary","type":"direct"},{"imOrder":171,"name":"Easy Desert Diary","type":"direct"},{"imOrder":172,"name":"Darkness of Hallowvale","type":"direct"},{"imOrder":173,"name":"Barrows","type":"direct"},{"imOrder":174,"name":"Tower of Life","type":"direct"},{"imOrder":175,"name":"Recipe for Disaster/Freeing Pirate Pete","type":"direct"},{"imOrder":176,"name":"Easy Falador Diary","type":"direct"},{"imOrder":177,"name":"Tai Bwo Wannai Trio","type":"direct"},{"imOrder":178,"name":"The Tourist Trap","type":"direct"},{"imOrder":179,"name":"Eadgar's Ruse","type":"direct"},{"imOrder":180,"name":"My Arm's Big Adventure","type":"direct"},{"imOrder":181,"name":"The Fremennik Trials","type":"direct"},{"imOrder":182,"name":"Graceful Outfit","type":"unlock"},{"imOrder":183,"name":"The Fremennik Isles","type":"direct"},{"imOrder":184,"name":"Helm of Neitiznot","type":"unlock"},{"imOrder":185,"name":"Getting Ahead","type":"direct"},{"imOrder":186,"name":"Armour Stand (Workshop)","type":"unlock"},{"imOrder":187,"name":"Recipe for Disaster/Freeing the Lumbridge Guide","type":"direct"},{"imOrder":188,"name":"Recipe for Disaster/Freeing Skrach Uglogwee","type":"direct"},{"imOrder":189,"name":"Haunted Mine","type":"direct"},{"imOrder":190,"name":"Creature of Fenkenstrain","type":"direct"},{"imOrder":191,"name":"Easy Karamja Diary","type":"direct"},{"imOrder":192,"name":"Base 30","type":"direct"},{"imOrder":193,"name":"Base 40","type":"direct"},{"imOrder":194,"name":"Watchtower","type":"direct"},{"imOrder":195,"name":"Prince Ali Rescue","type":"direct"},{"imOrder":196,"name":"Contact!","type":"direct"},{"imOrder":197,"name":"The Eyes of Glouphrie","type":"direct"},{"imOrder":198,"name":"Temple of the Eye","type":"direct"},{"imOrder":199,"name":"Balloon Route: Varrock","type":"unlock"},{"imOrder":200,"name":"Olaf's Quest","type":"direct"},{"imOrder":201,"name":"Tears of Guthix","type":"direct"},{"imOrder":202,"name":"Giant Mole","type":"direct"},{"imOrder":203,"name":"Temple of Ikov","type":"direct"},{"imOrder":204,"name":"One Small Favour","type":"direct"},{"imOrder":205,"name":"A Tail of Two Cats","type":"direct"},{"imOrder":206,"name":"The Slug Menace","type":"direct"},{"imOrder":207,"name":"Between a Rock...","type":"direct"},{"imOrder":208,"name":"Monkey Madness I","type":"direct"},{"imOrder":209,"name":"Dragon Scimitar","type":"unlock"},{"imOrder":210,"name":"Cold War","type":"direct"},{"imOrder":211,"name":"The Ascent of Arceuus","type":"direct"},{"imOrder":212,"name":"Brutus","type":"direct"},{"imOrder":213,"name":"Eagles' Peak","type":"direct"},{"imOrder":214,"name":"Underground Pass","type":"direct"},{"imOrder":215,"name":"Iban's Staff","type":"unlock"},{"imOrder":216,"name":"Skippy and the Mogres","type":"direct"},{"imOrder":217,"name":"Rag and Bone Man II","type":"direct"},{"imOrder":218,"name":"Lair of Tarn Razorlor","type":"direct"},{"imOrder":219,"name":"Salve Amulet (ei)","type":"unlock"},{"imOrder":220,"name":"Rum Deal","type":"direct"},{"imOrder":221,"name":"Cabin Fever","type":"direct"},{"imOrder":222,"name":"His Faithful Servants","type":"direct"},{"imOrder":223,"name":"The Great Brain Robbery","type":"direct"},{"imOrder":224,"name":"Scrambled!","type":"direct"},{"imOrder":225,"name":"The Hand in the Sand","type":"direct"},{"imOrder":226,"name":"Enakhra's Lament","type":"direct"},{"imOrder":227,"name":"Meat and Greet","type":"direct"},{"imOrder":228,"name":"Heroes' Quest","type":"direct"},{"imOrder":229,"name":"Dragon Defender","type":"unlock"},{"imOrder":230,"name":"Throne of Miscellania","type":"direct"},{"imOrder":231,"name":"Royal Trouble","type":"direct"},{"imOrder":232,"name":"Gilded Altar","type":"unlock"},{"imOrder":233,"name":"Spirit Tree (POH)","type":"unlock"},{"imOrder":234,"name":"Desert Treasure I","type":"direct"},{"imOrder":235,"name":"Ancient Magicks Spellbook","type":"unlock"},{"imOrder":236,"name":"The Mimic","type":"direct"},{"imOrder":237,"name":"A Taste of Hope","type":"direct"},{"imOrder":238,"name":"Family Crest","type":"direct"},{"imOrder":239,"name":"Amulet of Glory","type":"unlock"},{"imOrder":240,"name":"Legends' Quest","type":"direct"},{"imOrder":241,"name":"Recipe for Disaster/Freeing Sir Amik Varze","type":"direct"},{"imOrder":242,"name":"Curse of the Empty Lord","type":"direct"},{"imOrder":243,"name":"The General's Shadow","type":"direct"},{"imOrder":244,"name":"Easy Ardougne Diary","type":"direct"},{"imOrder":245,"name":"Easy Varrock Diary","type":"direct"},{"imOrder":246,"name":"Easy Desert Diary","type":"direct"},{"imOrder":247,"name":"Easy Falador Diary","type":"direct"},{"imOrder":248,"name":"Easy Karamja Diary","type":"direct"},{"imOrder":249,"name":"Easy Kandarin Diary","type":"direct"},{"imOrder":250,"name":"Easy Fremennik Diary","type":"direct"},{"imOrder":251,"name":"Easy Kourend & Kebos Diary","type":"direct"},{"imOrder":252,"name":"Easy Lumbridge & Draynor Diary","type":"direct"},{"imOrder":253,"name":"Easy Morytania Diary","type":"direct"},{"imOrder":254,"name":"Easy Western Provinces Diary","type":"direct"},{"imOrder":255,"name":"Easy Wilderness Diary","type":"direct"},{"imOrder":256,"name":"Medium Ardougne Diary","type":"direct"},{"imOrder":257,"name":"Medium Falador Diary","type":"direct"},{"imOrder":258,"name":"Medium Varrock Diary","type":"direct"},{"imOrder":259,"name":"Medium Kandarin Diary","type":"direct"},{"imOrder":260,"name":"Land of the Goblins","type":"direct"},{"imOrder":261,"name":"Fairytale II - Cure a Queen","type":"direct"},{"imOrder":262,"name":"A Kingdom Divided","type":"direct"},{"imOrder":263,"name":"Arceuus Spellbook","type":"unlock"},{"imOrder":264,"name":"The Heart of Darkness","type":"direct"},{"imOrder":265,"name":"Perilous Moons","type":"direct"},{"imOrder":266,"name":"Moons of Peril","type":"direct"},{"imOrder":267,"name":"Recipe for Disaster/Freeing King Awowogei","type":"direct"},{"imOrder":268,"name":"Regicide","type":"direct"},{"imOrder":269,"name":"Roving Elves","type":"direct"},{"imOrder":270,"name":"Mourning's End Part I","type":"direct"},{"imOrder":271,"name":"Mourning's End Part II","type":"direct"},{"imOrder":272,"name":"Lunar Diplomacy","type":"direct"},{"imOrder":273,"name":"Mage Training Arena","type":"direct"},{"imOrder":274,"name":"Slayer Helmet (i)","type":"unlock"},{"imOrder":275,"name":"Imbued God Cape (Magic)","type":"unlock"},{"imOrder":276,"name":"Lunar Spellbook","type":"unlock"},{"imOrder":277,"name":"What Lies Below","type":"direct"},{"imOrder":278,"name":"King's Ransom","type":"direct"},{"imOrder":279,"name":"Swan Song","type":"direct"},{"imOrder":280,"name":"Recipe for Disaster/Defeating the Culinaromancer","type":"direct"},{"imOrder":281,"name":"Barrows Gloves","type":"unlock"},{"imOrder":282,"name":"Grim Tales","type":"direct"},{"imOrder":283,"name":"Dream Mentor","type":"direct"},{"imOrder":284,"name":"At First Light","type":"direct"},{"imOrder":285,"name":"Defender of Varrock","type":"direct"},{"imOrder":286,"name":"Medium Wilderness Diary","type":"direct"},{"imOrder":287,"name":"Medium Karamja Diary","type":"direct"},{"imOrder":288,"name":"Medium Kourend & Kebos Diary","type":"direct"},{"imOrder":289,"name":"Medium Lumbridge & Draynor Diary","type":"direct"},{"imOrder":290,"name":"Medium Morytania Diary","type":"direct"},{"imOrder":291,"name":"Medium Desert Diary","type":"direct"},{"imOrder":292,"name":"Medium Western Provinces Diary","type":"direct"},{"imOrder":293,"name":"Devious Minds","type":"direct"},{"imOrder":294,"name":"The Final Dawn","type":"direct"},{"imOrder":295,"name":"Shadows of Custodia","type":"direct"},{"imOrder":296,"name":"The Path of Glouphrie","type":"direct"},{"imOrder":297,"name":"The Fremennik Exiles","type":"direct"},{"imOrder":298,"name":"Sins of the Father","type":"direct"},{"imOrder":299,"name":"Beneath Cursed Sands","type":"direct"},{"imOrder":300,"name":"The Curse of Arrav","type":"direct"},{"imOrder":301,"name":"Making Friends with My Arm","type":"direct"},{"imOrder":302,"name":"Troubled Tortugans","type":"direct"},{"imOrder":303,"name":"Monkey Madness II","type":"direct"},{"imOrder":304,"name":"Medium Fremennik Diary","type":"direct"},{"imOrder":305,"name":"A Night at the Theatre","type":"direct"},{"imOrder":306,"name":"Dragon Slayer II","type":"direct"},{"imOrder":307,"name":"Secrets of the North","type":"direct"},{"imOrder":308,"name":"While Guthix Sleeps","type":"direct"},{"imOrder":309,"name":"Dragon Boots","type":"unlock"},{"imOrder":310,"name":"Dragonfire Shield","type":"unlock"},{"imOrder":311,"name":"God Wars Dungeon bosses (Teams)","type":"direct"},{"imOrder":312,"name":"King Black Dragon","type":"direct"},{"imOrder":313,"name":"Crazy archaeologist & Chaos Fanatic","type":"direct"},{"imOrder":314,"name":"Sarachnis","type":"direct"},{"imOrder":315,"name":"The Hueycoatl","type":"direct"},{"imOrder":316,"name":"Song of the Elves","type":"direct"},{"imOrder":317,"name":"Royal Titans","type":"direct"},{"imOrder":318,"name":"TzTok-Jad","type":"direct"},{"imOrder":319,"name":"Fire Cape","type":"unlock"},{"imOrder":320,"name":"Desert Treasure II - The Fallen Empire","type":"direct"},{"imOrder":321,"name":"The Corsair Curse","type":"direct"},{"imOrder":322,"name":"Quest point cape!","type":"direct"},{"imOrder":323,"name":"Dorgesh-Kaan market trading","type":"direct"},{"imOrder":324,"name":"Tai Bwo Wannai Cleanup","type":"direct"},{"imOrder":325,"name":"Temple Trekking","type":"direct"},{"imOrder":326,"name":"Chaos Elemental","type":"direct"},{"imOrder":327,"name":"Vet'ion and Calvar'ion","type":"direct"},{"imOrder":328,"name":"Venenatis and Spindel","type":"direct"},{"imOrder":329,"name":"Dagannoth Kings","type":"direct"},{"imOrder":330,"name":"Ring of the Gods (i) / Berserker Ring (i) / Archers Ring (i) / Seers Ring (i)","type":"unlock"},{"imOrder":331,"name":"Corporeal Beast","type":"direct"},{"imOrder":332,"name":"Amulet of Fury","type":"unlock"},{"imOrder":333,"name":"TzHaar Fight Pit","type":"direct"},{"imOrder":334,"name":"TzHaar-Ket-Rak's Challenges","type":"direct"},{"imOrder":335,"name":"Kalphite Queen","type":"direct"},{"imOrder":336,"name":"Grotesque Guardians","type":"direct"},{"imOrder":337,"name":"Skotizo","type":"direct"},{"imOrder":338,"name":"Scorpia","type":"direct"},{"imOrder":339,"name":"Callisto and Artio","type":"direct"},{"imOrder":340,"name":"Commander Zilyana (Solo)","type":"direct"},{"imOrder":341,"name":"Armadyl Crossbow","type":"unlock"},{"imOrder":342,"name":"Knight Waves Training Grounds (miniquest)","type":"direct"},{"imOrder":343,"name":"Piety Prayer","type":"unlock"},{"imOrder":344,"name":"Gnome Ball","type":"direct"},{"imOrder":345,"name":"Emir's Arena","type":"direct"},{"imOrder":346,"name":"Burthorpe Games Room","type":"direct"},{"imOrder":347,"name":"Games Zone","type":"direct"},{"imOrder":348,"name":"Fishing Trawler","type":"direct"},{"imOrder":349,"name":"Angler's Outfit","type":"unlock"},{"imOrder":350,"name":"The Tempor Tantrum","type":"direct"},{"imOrder":351,"name":"Marble Lectern (Study)","type":"unlock"},{"imOrder":352,"name":"The Jubbly Jive","type":"direct"},{"imOrder":353,"name":"Sled Racing","type":"direct"},{"imOrder":354,"name":"Keldagrim tasks","type":"direct"},{"imOrder":355,"name":"Rat Pits","type":"direct"},{"imOrder":356,"name":"Brimhaven Agility Arena","type":"direct"},{"imOrder":357,"name":"Lumberjack Outfit","type":"unlock"},{"imOrder":358,"name":"Trouble Brewing","type":"direct"},{"imOrder":359,"name":"Gnome Restaurant","type":"direct"},{"imOrder":360,"name":"Hopespear's Will","type":"direct"},{"imOrder":361,"name":"Balloon Route: Grand Tree","type":"unlock_teleport"},{"imOrder":362,"name":"Mage Arena","type":"direct"},{"imOrder":363,"name":"Rogues' Den","type":"direct"},{"imOrder":364,"name":"Pyramid Plunder","type":"direct"},{"imOrder":365,"name":"Sorceress's Garden","type":"direct"},{"imOrder":366,"name":"Base 50","type":"direct"},{"imOrder":367,"name":"Mastering Mixology","type":"direct"},{"imOrder":368,"name":"Guardians of the Rift","type":"direct"},{"imOrder":369,"name":"Hunters' Rumours","type":"direct"},{"imOrder":370,"name":"Vale Totems","type":"direct"},{"imOrder":371,"name":"Hallowed Sepulchre","type":"direct"},{"imOrder":372,"name":"Base 60","type":"direct"},{"imOrder":373,"name":"Demonic gorillas","type":"direct"},{"imOrder":374,"name":"Into the Tombs  (miniquest)","type":"direct"},{"imOrder":375,"name":"Amulet of Torture","type":"unlock"},{"imOrder":376,"name":"Necklace of Anguish","type":"unlock"},{"imOrder":377,"name":"Vorkath","type":"direct"},{"imOrder":378,"name":"Zulrah","type":"direct"},{"imOrder":379,"name":"Ava's Assembler","type":"unlock"},{"imOrder":380,"name":"Mythical Cape","type":"unlock"},{"imOrder":381,"name":"Toxic Blowpipe","type":"unlock"},{"imOrder":382,"name":"Serpentine Helmet","type":"unlock"},{"imOrder":383,"name":"Phantom Muspah","type":"direct"},{"imOrder":384,"name":"Tormented Demon","type":"direct"},{"imOrder":385,"name":"Demonic Brutus","type":"direct"},{"imOrder":386,"name":"Duke Sucellus","type":"direct"},{"imOrder":387,"name":"The Whisperer","type":"direct"},{"imOrder":388,"name":"The Leviathan","type":"direct"},{"imOrder":389,"name":"Vardorvis","type":"direct"},{"imOrder":390,"name":"Enchantment Ritual","type":"direct"},{"imOrder":391,"name":"The Gwenith Glide","type":"direct"},{"imOrder":392,"name":"Zalcano","type":"direct"},{"imOrder":393,"name":"The Gauntlet","type":"direct"},{"imOrder":394,"name":"The Corrupted Gauntlet","type":"direct"},{"imOrder":395,"name":"Kraken","type":"direct"},{"imOrder":396,"name":"Dragon Warhammer","type":"unlock"},{"imOrder":397,"name":"Abyssal Sire","type":"direct"},{"imOrder":398,"name":"Abyssal Whip","type":"unlock"},{"imOrder":399,"name":"Abyssal Tentacle (Whip upgrade)","type":"unlock"},{"imOrder":400,"name":"Trident of the Seas","type":"unlock"},{"imOrder":401,"name":"Thermonuclear smoke devil","type":"direct"},{"imOrder":402,"name":"Cerberus","type":"direct"},{"imOrder":403,"name":"Occult Necklace","type":"unlock"},{"imOrder":404,"name":"Araxxor","type":"direct"},{"imOrder":405,"name":"Alchemical Hydra","type":"direct"},{"imOrder":406,"name":"General Graardor (Solo)","type":"direct"},{"imOrder":407,"name":"K'ril Tsutsaroth (Solo)","type":"direct"},{"imOrder":408,"name":"Bandos Chestplate & Tassets","type":"unlock"},{"imOrder":409,"name":"Kree'arra (Solo)","type":"direct"},{"imOrder":410,"name":"Armadyl Armour Set","type":"unlock"},{"imOrder":411,"name":"Base 70","type":"direct"},{"imOrder":412,"name":"Hard Ardougne Diary","type":"direct"},{"imOrder":413,"name":"Hard Desert Diary","type":"direct"},{"imOrder":414,"name":"Ectoplasmator","type":"unlock"},{"imOrder":415,"name":"Fairy Ring (POH)","type":"unlock"},{"imOrder":416,"name":"Hard Falador Diary","type":"direct"},{"imOrder":417,"name":"Ornate Rejuvenation Pool","type":"unlock"},{"imOrder":418,"name":"Occult Altar","type":"unlock"},{"imOrder":419,"name":"Ornate Jewellery Box","type":"unlock"},{"imOrder":420,"name":"Hard Fremennik Diary","type":"direct"},{"imOrder":421,"name":"Hard Kandarin Diary","type":"direct"},{"imOrder":422,"name":"Hard Karamja Diary","type":"direct"},{"imOrder":423,"name":"Hard Kourend & Kebos Diary","type":"direct"},{"imOrder":424,"name":"Ash Sanctifier","type":"unlock"},{"imOrder":425,"name":"Hard Lumbridge & Draynor Diary","type":"direct"},{"imOrder":426,"name":"Hard Morytania Diary","type":"direct"},{"imOrder":427,"name":"Bonecrusher","type":"unlock"},{"imOrder":428,"name":"Hard Varrock Diary","type":"direct"},{"imOrder":429,"name":"Hard Western Provinces Diary","type":"direct"},{"imOrder":430,"name":"Elite Void Knight Set","type":"unlock"},{"imOrder":431,"name":"Hard Wilderness Diary","type":"direct"},{"imOrder":432,"name":"Champions' Challenge","type":"direct"},{"imOrder":433,"name":"Base 80","type":"direct"},{"imOrder":434,"name":"Elite Ardougne Diary","type":"direct"},{"imOrder":435,"name":"Elite Desert Diary","type":"direct"},{"imOrder":436,"name":"Elite Falador Diary","type":"direct"},{"imOrder":437,"name":"Elite Fremennik Diary","type":"direct"},{"imOrder":438,"name":"Elite Kandarin Diary","type":"direct"},{"imOrder":439,"name":"Elite Karamja Diary","type":"direct"},{"imOrder":440,"name":"Elite Kourend & Kebos Diary","type":"direct"},{"imOrder":441,"name":"Rada's Blessing 4","type":"unlock"},{"imOrder":442,"name":"Elite Lumbridge & Draynor Diary","type":"direct"},{"imOrder":443,"name":"Elite Varrock Diary","type":"direct"},{"imOrder":444,"name":"Elite Western Provinces Diary","type":"direct"},{"imOrder":445,"name":"Elite Wilderness Diary","type":"direct"},{"imOrder":446,"name":"Fortis Colosseum","type":"direct"},{"imOrder":447,"name":"Doom of Mokhaiotl","type":"direct"},{"imOrder":448,"name":"Tombs of Amascut","type":"direct"},{"imOrder":449,"name":"Chambers of Xeric","type":"direct"},{"imOrder":450,"name":"Nex (Small teams)","type":"direct"},{"imOrder":451,"name":"Rigour Prayer","type":"unlock"},{"imOrder":452,"name":"Augury Prayer","type":"unlock"},{"imOrder":453,"name":"Preserve Prayer","type":"unlock"},{"imOrder":454,"name":"Ancestral Robes","type":"unlock"},{"imOrder":455,"name":"Twisted Bow","type":"unlock"},{"imOrder":456,"name":"Dragon Hunter Lance","type":"unlock"},{"imOrder":457,"name":"The Nightmare and Phosani's Nightmare","type":"direct"},{"imOrder":458,"name":"Theatre of Blood","type":"direct"},{"imOrder":459,"name":"Elite Morytania Diary","type":"direct"},{"imOrder":460,"name":"Ghrazi Rapier","type":"unlock"},{"imOrder":461,"name":"Avernic Defender","type":"unlock"},{"imOrder":462,"name":"Scythe of Vitur","type":"unlock"},{"imOrder":463,"name":"Inquisitor's Armour + Mace","type":"unlock"},{"imOrder":464,"name":"Sanguinesti Staff","type":"unlock"},{"imOrder":465,"name":"Ring of Endurance","type":"unlock"},{"imOrder":466,"name":"Achievement diary cape","type":"direct"},{"imOrder":467,"name":"Construction Cape","type":"unlock"},{"imOrder":468,"name":"Base 90","type":"direct"},{"imOrder":469,"name":"Amulet of Blood Fury","type":"unlock"},{"imOrder":470,"name":"Sol Heredit","type":"direct"},{"imOrder":471,"name":"Blade of Saeldor","type":"unlock"},{"imOrder":472,"name":"Bow of Faerdhinen","type":"unlock"},{"imOrder":473,"name":"Yama","type":"direct"},{"imOrder":474,"name":"TzKal-Zuk","type":"direct"},{"imOrder":475,"name":"Tumeken's Shadow","type":"unlock"},{"imOrder":476,"name":"Masori Armour Set","type":"unlock"},{"imOrder":477,"name":"Osmumten's Fang","type":"unlock"},{"imOrder":478,"name":"Lightbearer","type":"unlock"},{"imOrder":479,"name":"Challenge Mode Chambers of Xeric","type":"direct"},{"imOrder":480,"name":"Infernal Cape","type":"unlock"},{"imOrder":481,"name":"Torva Armour Set","type":"unlock"},{"imOrder":482,"name":"Tombs of Amascut (500+ Raid level)","type":"direct"},{"imOrder":483,"name":"Hard Mode Theatre of Blood","type":"direct"},{"imOrder":484,"name":"Yama's Contracts","type":"direct"},{"imOrder":485,"name":"Crystalline Portal Nexus (Tier 3)","type":"unlock"},{"imOrder":486,"name":"Awakened Desert Treasure II Bosses","type":"direct"},{"imOrder":487,"name":"Elysian Spirit Shield","type":"unlock"},{"imOrder":488,"name":"Bonecrusher Necklace","type":"unlock"},{"imOrder":489,"name":"Max cape","type":"direct"},{"imOrder":490,"name":"Grandmaster Combat Achievements","type":"direct"},{"imOrder":491,"name":"Collection log completion","type":"direct"}];
