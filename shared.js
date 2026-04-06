@@ -44,6 +44,7 @@ var currentClogOracleItem = null;
 var clogOracleHistory = [];
 let userNotes = {};
 let ironmanMode = false;
+var currentDetailOrder = null; // tracks which boss modal is currently open
 // Track which accordion tiers are open (by tier id)
 let openTiers = new Set();
 let planMode = 'custom'; // tracks current planner modal mode
@@ -280,21 +281,16 @@ function parseDropRate(rateStr) {
   // Guaranteed drops — count as 1/1
   if (s === 'guaranteed' || s === 'always' || s === 'always (wave 12)' || s === '1/1') return 1;
 
-  // Explicitly unquantifiable — skip these entirely (no dry tracking, no GP/hr)
-  // Covers: raids point-weighted, BA/BA pts shops, Wintertodt/Colosseum mechanics,
-  // Unsired conversions (now use effective rates), invocation-scaled ToA, etc.
-  var skip = [
-    'via unsired', 'invocation-weighted', 'rare', 'reward tier',
-    'kill all four awakened bosses', 'kill all 4 awakened',
-    'bought with spirit flakes', '150 pts (each role)', '375 pts (each role)',
-    ' pts', 'gamble', 'wave 12', 'of unique', 'common',
-    'untradeable', 'take pages', 'per run'
-  ];
+  // Explicitly unquantifiable — skip these from GP/hr
+  var skip = ['guaranteed', 'via unsired', 'invocation-weighted unique',
+              'rare', 'reward tier', 'kill all four awakened bosses',
+              'kill all 4 awakened', 'bought with spirit flakes',
+              '150 pts (each role)', '375 pts (each role)'];
   for (var i = 0; i < skip.length; i++) {
     if (s.indexOf(skip[i]) !== -1) return null;
   }
 
-  // Strip leading ~ and trailing qualifiers like " per kill", " each", " per jad",
+  // Strip leading ~ and trailing qualifiers like " per kill", " each", " per jad", " per run",
   // " per blood moon kill", " unique", " eclipse moon" etc.
   s = s.replace(/^~/, '').replace(/\s+(per\b.*|each.*|unique.*|eclipse.*|blood.*|blue.*)$/, '').trim();
 
@@ -303,14 +299,6 @@ function parseDropRate(rateStr) {
   if (match) {
     var denom = parseFloat(match[1]);
     return denom > 0 ? 1 / denom : null;
-  }
-
-  // General N/M fraction (e.g. 7/2448, 2/128, 75/100, 3/512)
-  var matchNM = s.match(/^([\d.]+)\s*\/\s*([\d.]+)$/);
-  if (matchNM) {
-    var num = parseFloat(matchNM[1]);
-    var den = parseFloat(matchNM[2]);
-    return (num > 0 && den > 0) ? num / den : null;
   }
 
   return null;
@@ -506,6 +494,8 @@ function toggleIronman() {
 
 function getActiveData() {
   if (!ironmanMode) return SPINE_DATA;
+  // IRONMAN_DATA not yet implemented — fall back to normal order
+  if (typeof IRONMAN_DATA === 'undefined' || !IRONMAN_DATA || !IRONMAN_DATA.length) return SPINE_DATA;
   // Build ordered list using IRONMAN_DATA
   const nameToSpine = {};
   SPINE_DATA.forEach(e => { nameToSpine[e.name] = e; });
@@ -1416,6 +1406,7 @@ function openDetail(order) {
     </div>
   `;
   document.getElementById('detail-overlay').classList.add('open');
+  currentDetailOrder = order;
 }
 
 function switchDetailTab(tabId) {
@@ -1731,6 +1722,18 @@ function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
   } else {
     openDetail(sourceOrder);
   }
+  // If a boss modal is open, refresh its drops tab in place
+  // (covers both bosses page and progression page modal)
+  var overlay = document.getElementById('detail-overlay');
+  if (overlay && overlay.classList.contains('open') && currentDetailOrder === sourceOrder) {
+    var dropsPanel = overlay.querySelector('.detail-tab-panel[data-tab="drops"]');
+    if (dropsPanel) {
+      // Re-render just the drops panel content by re-opening to the same tab
+      var wasOnDrops = dropsPanel.classList.contains('active');
+      openDetail(sourceOrder);
+      if (wasOnDrops) switchDetailTab('drops');
+    }
+  }
 }
 
 function closeDetail(e) {
@@ -1739,6 +1742,7 @@ function closeDetail(e) {
 
 function closeDetailBtn() {
   document.getElementById('detail-overlay').classList.remove('open');
+  currentDetailOrder = null;
 }
 
 // ============================================================
@@ -3877,15 +3881,11 @@ function renderClogMain() {
       var obtained = isObtained(item.name);
       var iconName = item.name.replace(/ /g, '_').replace(/'/g, '%27');
       var iconUrl = 'https://oldschool.runescape.wiki/images/' + iconName + '.png';
-      var rateHtml = '';
-      if (item.rate && !obtained) {
-        rateHtml = '<span class="clog-item-rate">' + item.rate + '</span>';
-      }
       html += '<div class="clog-item-tile' + (obtained ? ' obtained' : '') + '" ' +
         'onclick="toggleClogItem(\'' + item.name.replace(/'/g, "\\'") + '\')" title="Click to toggle obtained">' +
         '<img class="clog-item-icon" src="' + iconUrl + '" alt="" onerror="this.style.display=\'none\'">' +
         '<span class="clog-item-name">' + item.name + '</span>' +
-        (obtained ? '<span class="clog-item-hint">✓ obtained</span>' : rateHtml) +
+        '<span class="clog-item-hint">' + (obtained ? '✓ obtained' : '') + '</span>' +
         '</div>';
     });
     html += '</div>';
