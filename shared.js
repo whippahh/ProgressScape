@@ -44,7 +44,6 @@ var currentClogOracleItem = null;
 var clogOracleHistory = [];
 let userNotes = {};
 let ironmanMode = false;
-var currentDetailOrder = null; // tracks which boss modal is currently open
 // Track which accordion tiers are open (by tier id)
 let openTiers = new Set();
 let planMode = 'custom'; // tracks current planner modal mode
@@ -118,11 +117,27 @@ function init() {
   loadFilterFromURL();
   fetchGEPrices(); // non-blocking — fires and forgets, page works fine if it fails
   buildBossDropLookup();
+  migrateBossDropsToClog();
 }
 
-// ============================================================
-// BOSS ↔ CLOG SYNC
-// ============================================================
+// One-time migration: push any existing obtainedDrops into clogObtained.
+// Runs on every init but is a no-op once already migrated (idempotent).
+// Fixes the case where a user had boss drops ticked before boss↔clog sync existed.
+function migrateBossDropsToClog() {
+  if (typeof clogObtained === 'undefined') return;
+  var changed = false;
+  Object.keys(obtainedDrops).forEach(function(dropKey) {
+    if (!obtainedDrops[dropKey]) return;
+    // dropKey format: "order-dropName"
+    var dropName = dropKey.slice(dropKey.indexOf('-') + 1);
+    var key = dropName.toLowerCase();
+    if (!clogObtained[key]) {
+      clogObtained[key] = true;
+      changed = true;
+    }
+  });
+  if (changed) saveClogObtained();
+}
 
 // Maps item name (lowercase) → [{order, dropName}] for all boss drops.
 // Built once at init so sync lookups are O(1).
@@ -494,8 +509,6 @@ function toggleIronman() {
 
 function getActiveData() {
   if (!ironmanMode) return SPINE_DATA;
-  // IRONMAN_DATA not yet implemented — fall back to normal order
-  if (typeof IRONMAN_DATA === 'undefined' || !IRONMAN_DATA || !IRONMAN_DATA.length) return SPINE_DATA;
   // Build ordered list using IRONMAN_DATA
   const nameToSpine = {};
   SPINE_DATA.forEach(e => { nameToSpine[e.name] = e; });
@@ -1406,7 +1419,6 @@ function openDetail(order) {
     </div>
   `;
   document.getElementById('detail-overlay').classList.add('open');
-  currentDetailOrder = order;
 }
 
 function switchDetailTab(tabId) {
@@ -1722,18 +1734,6 @@ function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
   } else {
     openDetail(sourceOrder);
   }
-  // If a boss modal is open, refresh its drops tab in place
-  // (covers both bosses page and progression page modal)
-  var overlay = document.getElementById('detail-overlay');
-  if (overlay && overlay.classList.contains('open') && currentDetailOrder === sourceOrder) {
-    var dropsPanel = overlay.querySelector('.detail-tab-panel[data-tab="drops"]');
-    if (dropsPanel) {
-      // Re-render just the drops panel content by re-opening to the same tab
-      var wasOnDrops = dropsPanel.classList.contains('active');
-      openDetail(sourceOrder);
-      if (wasOnDrops) switchDetailTab('drops');
-    }
-  }
 }
 
 function closeDetail(e) {
@@ -1742,7 +1742,6 @@ function closeDetail(e) {
 
 function closeDetailBtn() {
   document.getElementById('detail-overlay').classList.remove('open');
-  currentDetailOrder = null;
 }
 
 // ============================================================
