@@ -44,6 +44,7 @@ var currentClogOracleItem = null;
 var clogOracleHistory = [];
 let userNotes = {};
 let ironmanMode = false;
+var currentDetailOrder = null;
 // Track which accordion tiers are open (by tier id)
 let openTiers = new Set();
 let planMode = 'custom'; // tracks current planner modal mode
@@ -117,18 +118,18 @@ function init() {
   loadFilterFromURL();
   fetchGEPrices(); // non-blocking — fires and forgets, page works fine if it fails
   buildBossDropLookup();
-  migrateBossDropsToClog();
 }
 
-// One-time migration: push any existing obtainedDrops into clogObtained.
-// Runs on every init but is a no-op once already migrated (idempotent).
-// Fixes the case where a user had boss drops ticked before boss↔clog sync existed.
+// ============================================================
+// BOSS ↔ CLOG SYNC
+// ============================================================
+
+// One-time migration: push existing obtainedDrops into clogObtained.
+// Called after clogObtained is loaded from localStorage. Idempotent.
 function migrateBossDropsToClog() {
-  if (typeof clogObtained === 'undefined') return;
   var changed = false;
   Object.keys(obtainedDrops).forEach(function(dropKey) {
     if (!obtainedDrops[dropKey]) return;
-    // dropKey format: "order-dropName"
     var dropName = dropKey.slice(dropKey.indexOf('-') + 1);
     var key = dropName.toLowerCase();
     if (!clogObtained[key]) {
@@ -292,30 +293,29 @@ function refreshGEPriceSurfaces() {
 function parseDropRate(rateStr) {
   if (!rateStr) return null;
   var s = String(rateStr).trim().toLowerCase();
-
-  // Guaranteed drops — count as 1/1
   if (s === 'guaranteed' || s === 'always' || s === 'always (wave 12)' || s === '1/1') return 1;
-
-  // Explicitly unquantifiable — skip these from GP/hr
-  var skip = ['guaranteed', 'via unsired', 'invocation-weighted unique',
-              'rare', 'reward tier', 'kill all four awakened bosses',
-              'kill all 4 awakened', 'bought with spirit flakes',
-              '150 pts (each role)', '375 pts (each role)'];
+  var skip = [
+    'via unsired', 'invocation-weighted', 'rare', 'reward tier',
+    'kill all four awakened bosses', 'kill all 4 awakened',
+    'bought with spirit flakes', '150 pts (each role)', '375 pts (each role)',
+    ' pts', 'gamble', 'wave 12', 'of unique', 'common',
+    'untradeable', 'take pages', 'per run', 'milestone'
+  ];
   for (var i = 0; i < skip.length; i++) {
     if (s.indexOf(skip[i]) !== -1) return null;
   }
-
-  // Strip leading ~ and trailing qualifiers like " per kill", " each", " per jad", " per run",
-  // " per blood moon kill", " unique", " eclipse moon" etc.
   s = s.replace(/^~/, '').replace(/\s+(per\b.*|each.*|unique.*|eclipse.*|blood.*|blue.*)$/, '').trim();
-
-  // Standard fraction: 1/N or 1/N.N
-  var match = s.match(/^1\s*\/\s*([\d.]+)$/);
+  var match = s.match(/^1\s*\/\s*([\d,.]+)$/);
   if (match) {
-    var denom = parseFloat(match[1]);
+    var denom = parseFloat(match[1].replace(/,/g, ''));
     return denom > 0 ? 1 / denom : null;
   }
-
+  var matchNM = s.match(/^([\d.]+)\s*\/\s*([\d,.]+)$/);
+  if (matchNM) {
+    var num = parseFloat(matchNM[1]);
+    var den = parseFloat(matchNM[2].replace(/,/g, ''));
+    return (num > 0 && den > 0) ? num / den : null;
+  }
   return null;
 }
 
@@ -509,6 +509,7 @@ function toggleIronman() {
 
 function getActiveData() {
   if (!ironmanMode) return SPINE_DATA;
+  if (typeof IRONMAN_DATA === 'undefined' || !IRONMAN_DATA || !IRONMAN_DATA.length) return SPINE_DATA;
   // Build ordered list using IRONMAN_DATA
   const nameToSpine = {};
   SPINE_DATA.forEach(e => { nameToSpine[e.name] = e; });
@@ -1419,6 +1420,7 @@ function openDetail(order) {
     </div>
   `;
   document.getElementById('detail-overlay').classList.add('open');
+  currentDetailOrder = order;
 }
 
 function switchDetailTab(tabId) {
@@ -1734,6 +1736,16 @@ function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
   } else {
     openDetail(sourceOrder);
   }
+  // Refresh open modal drops tab in place
+  var overlay = document.getElementById('detail-overlay');
+  if (overlay && overlay.classList.contains('open') && currentDetailOrder === sourceOrder) {
+    var dropsPanel = overlay.querySelector('.detail-tab-panel[data-tab="drops"]');
+    if (dropsPanel) {
+      var wasOnDrops = dropsPanel.classList.contains('active');
+      openDetail(sourceOrder);
+      if (wasOnDrops) switchDetailTab('drops');
+    }
+  }
 }
 
 function closeDetail(e) {
@@ -1742,6 +1754,7 @@ function closeDetail(e) {
 
 function closeDetailBtn() {
   document.getElementById('detail-overlay').classList.remove('open');
+  currentDetailOrder = null;
 }
 
 // ============================================================
@@ -3736,6 +3749,7 @@ var clogState = {
 // When Supabase plugin data arrives, populate this from the sync:
 //   clogObtained['abyssal whip'] = true;
 var clogObtained = JSON.parse(localStorage.getItem('ps_clog_obtained') || '{}');
+migrateBossDropsToClog();
 
 function saveClogObtained() {
   localStorage.setItem('ps_clog_obtained', JSON.stringify(clogObtained));
@@ -3880,11 +3894,15 @@ function renderClogMain() {
       var obtained = isObtained(item.name);
       var iconName = item.name.replace(/ /g, '_').replace(/'/g, '%27');
       var iconUrl = 'https://oldschool.runescape.wiki/images/' + iconName + '.png';
+      var rateHtml = '';
+      if (item.rate && !obtained) {
+        rateHtml = '<span class="clog-item-rate">' + item.rate + '</span>';
+      }
       html += '<div class="clog-item-tile' + (obtained ? ' obtained' : '') + '" ' +
         'onclick="toggleClogItem(\'' + item.name.replace(/'/g, "\\'") + '\')" title="Click to toggle obtained">' +
         '<img class="clog-item-icon" src="' + iconUrl + '" alt="" onerror="this.style.display=\'none\'">' +
         '<span class="clog-item-name">' + item.name + '</span>' +
-        '<span class="clog-item-hint">' + (obtained ? '✓ obtained' : '') + '</span>' +
+        (obtained ? '<span class="clog-item-hint">✓ obtained</span>' : rateHtml) +
         '</div>';
     });
     html += '</div>';
