@@ -729,9 +729,8 @@ async function lookupRSN(inputId, statusDivId, statusInnerId) {
     // ── Step 1: Hiscores (always runs, baseline for all users) ──
     const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
     const proxies = [
-      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`,
-      `https://corsfix.com/${hiscoresUrl}`,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`,
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`
     ];
     let data = null;
     for (const proxyUrl of proxies) {
@@ -4162,9 +4161,8 @@ function initCompareSlots() {
 async function fetchHiscoresForCompare(rsn) {
   const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
   const proxies = [
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`,
-    `https://corsfix.com/${hiscoresUrl}`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`
   ];
   const skillMap = {
     'Attack':'attack','Defence':'defence','Strength':'strength','Hitpoints':'hitpoints',
