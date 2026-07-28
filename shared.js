@@ -730,7 +730,7 @@ async function lookupRSN(inputId, statusDivId, statusInnerId) {
     const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
     const proxies = [
       `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`,
-      `https://corsproxy.io/?url=${encodeURIComponent(hiscoresUrl)}`,
+      `https://corsfix.com/${hiscoresUrl}`,
       `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`
     ];
     let data = null;
@@ -4163,7 +4163,7 @@ async function fetchHiscoresForCompare(rsn) {
   const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
   const proxies = [
     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`,
-    `https://corsproxy.io/?url=${encodeURIComponent(hiscoresUrl)}`,
+    `https://corsfix.com/${hiscoresUrl}`,
     `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`
   ];
   const skillMap = {
