@@ -727,20 +727,17 @@ async function lookupRSN(inputId, statusDivId, statusInnerId) {
   statusInner.textContent = '⏳ Looking up ' + rsn + '…';
   try {
     // ── Step 1: Hiscores (always runs, baseline for all users) ──
-    const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
-    const proxies = [
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`,
-      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`
-    ];
+    // Fetched via our own Cloudflare Worker proxy (no third-party CORS proxies).
+    const HISCORES_PROXY_URL = 'https://progressscape-hiscores-proxy.whippahh.workers.dev';
+    const proxyUrl = `${HISCORES_PROXY_URL}?player=${encodeURIComponent(rsn)}`;
     let data = null;
-    for (const proxyUrl of proxies) {
-      try {
-        const resp = await fetch(proxyUrl);
-        if (!resp.ok) continue;
+    try {
+      const resp = await fetch(proxyUrl);
+      if (resp.ok) {
         const parsed = await resp.json();
-        if (parsed && (parsed.skills || parsed.activities)) { data = parsed; break; }
-      } catch { /* try next */ }
-    }
+        if (parsed && (parsed.skills || parsed.activities)) data = parsed;
+      }
+    } catch { /* falls through to error below */ }
     if (!data) throw new Error('Player not found');
     const skillMap = {
       'Attack':'attack','Defence':'defence','Strength':'strength','Hitpoints':'hitpoints',
@@ -4159,11 +4156,9 @@ function initCompareSlots() {
 // ── Hiscores fetch (unchanged, still isolated) ────────────────
 
 async function fetchHiscoresForCompare(rsn) {
-  const hiscoresUrl = `https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=${encodeURIComponent(rsn)}`;
-  const proxies = [
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(hiscoresUrl)}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hiscoresUrl)}`
-  ];
+  // Fetched via our own Cloudflare Worker proxy (no third-party CORS proxies).
+  const HISCORES_PROXY_URL = 'https://progressscape-hiscores-proxy.whippahh.workers.dev';
+  const proxyUrl = `${HISCORES_PROXY_URL}?player=${encodeURIComponent(rsn)}`;
   const skillMap = {
     'Attack':'attack','Defence':'defence','Strength':'strength','Hitpoints':'hitpoints',
     'Ranged':'ranged','Prayer':'prayer','Magic':'magic','Cooking':'cooking',
@@ -4173,36 +4168,36 @@ async function fetchHiscoresForCompare(rsn) {
     'Slayer':'slayer','Farming':'farming','Runecraft':'runecraft','Hunter':'hunter',
     'Construction':'construction','Sailing':'sailing'
   };
-  for (const proxyUrl of proxies) {
-    try {
-      const resp = await fetch(proxyUrl);
-      if (!resp.ok) continue;
+  try {
+    const resp = await fetch(proxyUrl);
+    if (resp.ok) {
       const data = await resp.json();
-      if (!data || (!data.skills && !data.activities)) continue;
-      const stats = {};
-      (data.skills || []).forEach(s => {
-        const key = skillMap[s.name];
-        if (key && s.level > 0) stats[key] = Math.max(1, s.level);
-      });
-      const kc = {};
-      const spineNameMap = {};
-      SPINE_DATA.forEach(item => {
-        if (item.entryType === 'boss' || item.type === 'Boss') {
-          spineNameMap[item.name.toLowerCase().replace(/[^a-z0-9]/g, '')] = item.order;
-        }
-      });
-      (data.activities || []).forEach(activity => {
-        const score = activity.score;
-        if (!score || score < 1) return;
-        const norm = activity.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (spineNameMap[norm] !== undefined) { kc[spineNameMap[norm]] = score; return; }
-        for (const [spineName, order] of Object.entries(spineNameMap)) {
-          if (norm.includes(spineName) || spineName.includes(norm)) { kc[order] = score; break; }
-        }
-      });
-      return { stats, kc };
-    } catch { /* try next */ }
-  }
+      if (data && (data.skills || data.activities)) {
+        const stats = {};
+        (data.skills || []).forEach(s => {
+          const key = skillMap[s.name];
+          if (key && s.level > 0) stats[key] = Math.max(1, s.level);
+        });
+        const kc = {};
+        const spineNameMap = {};
+        SPINE_DATA.forEach(item => {
+          if (item.entryType === 'boss' || item.type === 'Boss') {
+            spineNameMap[item.name.toLowerCase().replace(/[^a-z0-9]/g, '')] = item.order;
+          }
+        });
+        (data.activities || []).forEach(activity => {
+          const score = activity.score;
+          if (!score || score < 1) return;
+          const norm = activity.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (spineNameMap[norm] !== undefined) { kc[spineNameMap[norm]] = score; return; }
+          for (const [spineName, order] of Object.entries(spineNameMap)) {
+            if (norm.includes(spineName) || spineName.includes(norm)) { kc[order] = score; break; }
+          }
+        });
+        return { stats, kc };
+      }
+    }
+  } catch { /* falls through to error below */ }
   throw new Error('Player not found or Hiscores unavailable');
 }
 
