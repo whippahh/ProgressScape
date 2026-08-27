@@ -20,6 +20,12 @@
         a { color: #1a6ead; }
         .updated { color: #888; font-size: 13px; margin-bottom: 40px; }
     </style>
+<script>
+(function(){try{var t=localStorage.getItem('ps_theme');
+if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<meta name="color-scheme" content="dark light">
 </head>
 <body>
 

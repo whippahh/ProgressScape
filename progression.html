@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ===== SEO ===== -->
+<title>ProgressScape — Free OSRS Progression Tracker | Quests, Bosses &amp; Diaries</title>
+<meta name="description" content="Track your Old School RuneScape account through quests, bosses, achievement diaries and collection log. Free OSRS tracker with live GE prices, skill requirements and group comparison.">
+<meta name="keywords" content="OSRS tracker, Old School RuneScape progression, OSRS quest tracker, OSRS boss tracker, OSRS diary tracker, OSRS collection log, OSRS account progress, RuneScape tracker, OSRS skill requirements, OSRS goal planner">
+<link rel="canonical" href="https://progressscape.net/">
+
+<!-- ===== OPEN GRAPH (Discord, Reddit, Facebook) ===== -->
+<meta property="og:type"         content="website">
+<meta property="og:url"          content="https://progressscape.net/">
+<meta property="og:title"        content="ProgressScape — Free OSRS Progression Tracker">
+<meta property="og:description"  content="Track your Old School RuneScape account through quests, bosses, achievement diaries and collection log. Free OSRS tracker with live GE prices and group comparison.">
+<meta property="og:image"        content="https://progressscape.net/og-image.png">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt"    content="ProgressScape — OSRS Progression Tracker">
+<meta property="og:site_name"    content="ProgressScape">
+<meta property="og:locale"       content="en_GB">
+
+<!-- ===== TWITTER CARD ===== -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="ProgressScape — Free OSRS Progression Tracker">
+<meta name="twitter:description" content="Track your Old School RuneScape account through quests, bosses, achievement diaries and collection log. Free OSRS tracker with live GE prices and group comparison.">
+<meta name="twitter:image"       content="https://progressscape.net/og-image.png">
+<meta name="twitter:image:alt"   content="ProgressScape — OSRS Progression Tracker">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script>
+(function(){try{var t=localStorage.getItem('ps_theme');
+if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="shared.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8YXGC1W0GW');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" title="Home"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
+        <nav>
+      <a href="progression.html" class="nav-btn active">Progression</a>
+      <a href="stats.html"  class="nav-btn">My Stats</a>
+      <a href="bosses.html" class="nav-btn">Bosses</a>
+      <a href="combat.html" class="nav-btn">Combat Tasks</a>
+      <a href="clog.html"   class="nav-btn">Collection Log</a>
+      <a href="planner.html" class="nav-btn">Custom Path</a>
+      <a href="compare.html" class="nav-btn">Compare</a>
+    </nav>
+    <div class="header-right">
+      <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
+        <img class="im-icon" src="https://oldschool.runescape.wiki/images/Ironman_chat_badge.png" alt="Ironman" style="width:16px;height:16px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin-right:2px;"> Ironman
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== PROGRESSION PAGE ===== -->
+<div id="page-progression" class="page active">
+
+  <!-- Page heading — visible to search engines, unobtrusive in UI -->
+  <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap">ProgressScape — OSRS Progression Tracker for Old School RuneScape quests, bosses, achievement diaries and collection log</h1>
+
+  <div class="lookup-bar">
+    <div class="lookup-inner">
+      <div class="lookup-group">
+        <label>RSN Lookup</label>
+        <input type="text" id="rsn-input" placeholder="Enter username…" onkeydown="if(event.key==='Enter') lookupRSN()">
+      </div>
+      <button class="btn" onclick="lookupRSN()">Lookup</button>
+      <span class="lookup-sep">or</span>
+      <button class="btn btn-ghost" onclick="location.href='stats.html'">Enter Stats Manually</button>
+    </div>
+  </div>
+
+  <div id="lookup-status" style="display:none">
+    <div class="status-msg">
+      <div id="lookup-status-inner" class="status-inner"></div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><strong id="prog-done">0</strong> / <span id="prog-total">477</span> completed</div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="progress-label"><strong id="prog-pct">0%</strong></div>
+    <div style="margin-left:auto; display:flex; gap:0.5rem; flex-shrink:0;">
+      <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.8rem" onclick="toggleShowCompleted()">
+        <span id="toggle-completed-label">Hide Completed</span>
+      </button>
+      <button class="btn btn-ghost" style="font-size:0.72rem;padding:0.35rem 0.8rem" onclick="clearProgress()">Clear Progress</button>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="chip active" data-filter="all" onclick="setFilter('all')">All</button>
+    <button class="chip type-quest" data-filter="Quest" onclick="setFilter('Quest')">Quests</button>
+    <button class="chip type-boss" data-filter="Boss" onclick="setFilter('Boss')">Bosses</button>
+    <button class="chip type-activity" data-filter="Activity/Goal" onclick="setFilter('Activity/Goal')">Activities</button>
+    <button class="chip type-unlock" data-filter="Unlock" onclick="setFilter('Unlock')">Unlocks</button>
+    <button class="chip type-miniquest" data-filter="Miniquest" onclick="setFilter('Miniquest')">Miniquests</button>
+    <button class="chip type-diary" data-filter="Diary" onclick="setFilter('Diary')">Diaries</button>
+    <button class="chip" data-filter="locked" onclick="setFilter('locked')">🔒 Locked</button>
+    <button class="chip" data-filter="available" onclick="setFilter('available')">✅ Available Now</button>
+  </div>
+
+  <div class="search-row">
+    <input class="search-input" type="text" id="search-input" placeholder="Search… (press / to focus)" oninput="renderTable(); pushFilterState()">
+    <span class="results-count" id="results-count"></span>
+  </div>
+
+  <div class="table-wrap">
+  <div class="table-scroll">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>#</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Skill Req.</th>
+          <th>Quest Prereqs</th>
+          <th>QP</th>
+          <th>Location</th>
+          <th>Notes</th>
+          <th>Notable Drops</th>
+        </tr>
+      </thead>
+      <tbody id="main-tbody"></tbody>
+    </table>
+  </div>
+  </div>
+</div>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+      <div>
+        <div class="detail-title" id="detail-title"></div>
+        <div id="detail-subtitle" style="margin-top:0.3rem"></div>
+      </div>
+      <button class="detail-close" onclick="closeDetailBtn()">✕</button>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+    <div class="detail-actions" id="detail-actions"></div>
+  </div>
+</div>
+
+<!-- ===== ORACLE LAUNCHER ===== -->
+<div id="oracle-launcher" onclick="toggleOracleLauncher()" title="Oracles">
+  <span id="oracle-launcher-icon">🎲</span>
+  <span>Oracles</span>
+</div>
+<div id="trigger-task" class="floating-rand-trigger" onclick="toggleRandomPanel()" title="Task Oracle">
+  🎲 <span>Task Oracle</span>
+</div>
+<div id="trigger-combat" class="floating-rand-trigger" onclick="toggleCombatPanel()" title="Combat Oracle">
+  ⚔️ <span>Combat Oracle</span>
+</div>
+<div id="trigger-clog" class="floating-rand-trigger" onclick="toggleClogOraclePanel()" title="Collection Oracle">
+  📦 <span>Collection Oracle</span>
+</div>
+
+<div id="floating-rand-panel" class="floating-rand-panel">
+  <div class="frand-header">
+    <span class="frand-title">⚔ Task Oracle</span>
+    <button class="frand-close" onclick="closeRandomPanel()">✕</button>
+  </div>
+
+  <div class="frand-filters">
+    <button class="chip type-quest active" data-rfilter="Quest" onclick="toggleRandFilter('Quest')">Quests</button>
+    <button class="chip type-boss active" data-rfilter="Boss" onclick="toggleRandFilter('Boss')">Bosses</button>
+    <button class="chip type-activity active" data-rfilter="Activity/Goal" onclick="toggleRandFilter('Activity/Goal')">Activities</button>
+    <button class="chip type-unlock active" data-rfilter="Unlock" onclick="toggleRandFilter('Unlock')">Unlocks</button>
+    <button class="chip type-diary active" data-rfilter="Diary" onclick="toggleRandFilter('Diary')">Diaries</button>
+    <button class="chip active" data-rfilter="incomplete" onclick="toggleRandFilter('incomplete')">Skip Done</button>
+  </div>
+
+  <div class="frand-result-area">
+    <div id="float-spin-idle" class="frand-idle">Press a button to receive your task…</div>
+    <div id="float-spin-result" style="display:none">
+      <div id="float-spin-order" class="frand-order"></div>
+      <div id="float-spin-name" class="frand-name"></div>
+      <div id="float-spin-type" style="margin:0.4rem 0"></div>
+      <div id="float-spin-meta" class="frand-meta"></div>
+    </div>
+  </div>
+
+  <div class="frand-btns">
+    <button class="spin-btn frand-spin-btn" onclick="floatSpin(false)">🎲 Surprise Me</button>
+    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="floatSpin(true)" title="Suggests tasks within ±10 levels of your stats">💡 Suggest Task</button>
+  </div>
+  <div class="frand-subbtns">
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="floatMarkDone()">✓ Mark Done & Roll Again</button>
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearSpinHistory()">🗑 Clear</button>
+  </div>
+  <div id="frand-buildpath-bar" style="display:none;padding:0.4rem 1rem 0.6rem">
+    <button class="btn" style="width:100%;font-size:0.8rem;padding:0.35rem 0;border-color:#4a7fc8;color:#8abcf8;background:rgba(74,127,200,0.08)" onclick="floatBuildPath()">🗺 Build Path to This</button>
+  </div>
+
+  <div id="float-history-wrap" style="display:none">
+    <div class="frand-hist-title">Recent Rolls</div>
+    <div id="float-history-list" class="frand-hist-list"></div>
+  </div>
+</div>
+
+<!-- ===== COMBAT ORACLE PANEL ===== -->
+<div id="combat-oracle-panel" class="floating-rand-panel">
+  <div class="frand-header">
+    <span class="frand-title">⚔️ Combat Oracle</span>
+    <button class="frand-close" onclick="closeCombatPanel()">✕</button>
+  </div>
+
+  <div class="frand-filters">
+    <button class="chip active" data-cafilter="Easy"        onclick="toggleCAFilter('Easy')">Easy</button>
+    <button class="chip active" data-cafilter="Medium"      onclick="toggleCAFilter('Medium')">Medium</button>
+    <button class="chip active" data-cafilter="Hard"        onclick="toggleCAFilter('Hard')">Hard</button>
+    <button class="chip active" data-cafilter="Elite"       onclick="toggleCAFilter('Elite')">Elite</button>
+    <button class="chip active" data-cafilter="Master"      onclick="toggleCAFilter('Master')">Master</button>
+    <button class="chip active" data-cafilter="Grandmaster" onclick="toggleCAFilter('Grandmaster')">GM</button>
+    <button class="chip active" data-cafilter="ca-incomplete" onclick="toggleCAFilter('ca-incomplete')">Skip Done</button>
+  </div>
+
+  <div class="frand-result-area" style="flex-direction:column;align-items:flex-start">
+    <div id="combat-spin-idle" class="frand-idle" style="width:100%;text-align:center">Press a button to receive your task…</div>
+    <div id="combat-spin-result" style="display:none;width:100%">
+      <div id="combat-spin-name" class="frand-name"></div>
+      <div id="combat-spin-badges" style="margin:0.3rem 0 0.2rem"></div>
+      <div id="combat-spin-boss" class="frand-source"></div>
+      <div id="combat-spin-desc" class="frand-desc"></div>
+    </div>
+  </div>
+
+  <div class="frand-btns">
+    <button class="spin-btn frand-spin-btn" onclick="combatSpin(false)">🎲 Surprise Me</button>
+    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="combatSpin(true)" title="Suggests lowest incomplete tier first">💡 Suggest Task</button>
+  </div>
+  <div class="frand-subbtns">
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="combatMarkDone()">✓ Mark Done & Roll Again</button>
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearCombatHistory()">🗑 Clear</button>
+  </div>
+
+  <div id="combat-history-wrap" style="display:none">
+    <div class="frand-hist-title">Recent Rolls</div>
+    <div id="combat-history-list" class="frand-hist-list"></div>
+  </div>
+</div>
+
+<!-- ===== COLLECTION ORACLE PANEL ===== -->
+<div id="clog-oracle-panel" class="floating-rand-panel">
+  <div class="frand-header">
+    <span class="frand-title">📦 Collection Oracle</span>
+    <button class="frand-close" onclick="closeClogOraclePanel()">✕</button>
+  </div>
+
+  <div class="frand-filters">
+    <button class="chip active" data-clogfilter="Bosses"    onclick="toggleClogOracleFilter('Bosses')">Bosses</button>
+    <button class="chip active" data-clogfilter="Raids"     onclick="toggleClogOracleFilter('Raids')">Raids</button>
+    <button class="chip active" data-clogfilter="Clues"     onclick="toggleClogOracleFilter('Clues')">Clues</button>
+    <button class="chip active" data-clogfilter="Minigames" onclick="toggleClogOracleFilter('Minigames')">Minigames</button>
+    <button class="chip active" data-clogfilter="Other"     onclick="toggleClogOracleFilter('Other')">Other</button>
+    <button class="chip active" data-clogfilter="clog-missing" onclick="toggleClogOracleFilter('clog-missing')">Skip Obtained</button>
+  </div>
+
+  <div class="frand-result-area" style="flex-direction:column;align-items:flex-start">
+    <div id="clog-oracle-idle" class="frand-idle" style="width:100%;text-align:center">Press a button to receive your task…</div>
+    <div id="clog-oracle-result" style="display:none;width:100%">
+      <div id="clog-oracle-name" class="frand-name"></div>
+      <div id="clog-oracle-source" class="frand-source"></div>
+      <div id="clog-oracle-progress" class="frand-clog-progress"></div>
+    </div>
+  </div>
+
+  <div class="frand-btns">
+    <button class="spin-btn frand-spin-btn" onclick="clogOracleSpin(false)">🎲 Surprise Me</button>
+    <button class="spin-btn frand-spin-btn frand-suggest-btn" onclick="clogOracleSpin(true)" title="Suggests the source closest to completion">💡 Suggest Item</button>
+  </div>
+  <div class="frand-subbtns">
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clogOracleMarkObtained()">✓ Mark Obtained & Roll Again</button>
+    <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.75rem" onclick="clearClogOracleHistory()">🗑 Clear</button>
+  </div>
+
+  <div id="clog-oracle-history-wrap" style="display:none">
+    <div class="frand-hist-title">Recent Rolls</div>
+    <div id="clog-oracle-history-list" class="frand-hist-list"></div>
+  </div>
+</div>
+
+
+
+<!-- ===== PATH PREVIEW MODAL ===== -->
+<div id="path-preview-overlay" class="planner-modal-overlay" onclick="pathPreviewOverlayClick(event)">
+  <div class="planner-modal path-preview-modal" id="path-preview-modal">
+    <div class="planner-modal-header">
+      <span class="planner-modal-title" id="path-preview-title">Path to Goal</span>
+      <div style="display:flex;gap:0.4rem;align-items:center">
+        <button class="btn btn-ghost" style="font-size:0.75rem;padding:0.25rem 0.65rem;border-color:rgba(160,140,100,0.35);color:var(--text-muted)" onclick="openTreeViewFromPreview()" title="View dependency tree">&#x1F333; Tree View</button>
+        <button class="planner-modal-close" onclick="closePathPreview()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="path-preview-summary" id="path-preview-summary"></div>
+    <div class="path-preview-list" id="path-preview-list"></div>
+    <div class="path-preview-footer" id="path-preview-footer"></div>
+  </div>
+</div>
+
+<!-- ===== TREE VIEW MODAL ===== -->
+<div id="tree-view-overlay" class="planner-modal-overlay" onclick="treeViewOverlayClick(event)">
+  <div class="planner-modal tree-view-modal">
+    <div class="planner-modal-header">
+      <div>
+        <span class="planner-modal-title" id="tree-view-title">Dependency Tree</span>
+        <div id="tree-view-subtitle" style="font-size:0.72rem;color:var(--text-muted);margin-top:0.15rem;font-family:'Source Sans 3',sans-serif"></div>
+      </div>
+      <div class="tree-view-toolbar">
+        <button class="btn btn-ghost" onclick="treeExpandAll()">Expand All</button>
+        <button class="btn btn-ghost" onclick="treeCollapseAll()">Collapse All</button>
+        <button class="planner-modal-close" onclick="closeTreeView()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="tree-view-body" id="tree-view-body"></div>
+    <div class="tree-view-legend" id="tree-view-legend">
+      <span><span style="color:#5aae5a">&#x2713;</span> Completed</span>
+      <span><span style="color:#ae5a5a">&#x2717;</span> Incomplete</span>
+      <span style="opacity:0.55">Completed nodes collapsed by default &mdash; click &#x25B6; to expand</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== BACK TO TOP ===== -->
+<button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">▲</button>
+
+
+<script src="data.js"></script>
+<script src="ironman_data.js"></script>
+<script src="clog_data.js"></script>
+<script src="ca_data.js"></script>
+<script src="shared.js"></script>
+
+<div id="tier-float"></div>
+
+<!-- ===== SPLASH / WELCOME MODAL ===== -->
+<div id="splash-overlay" aria-hidden="true" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,8,4,0.92);align-items:center;justify-content:center;padding:24px 16px;">
+<div id="splash-modal">
+
+    <div class="sp-header">
+      <div class="sp-divrow"><div class="sp-divline"></div><div class="sp-gem"></div><div class="sp-divline"></div></div>
+      <img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" style="height:52px;width:auto;display:block;margin:0 auto 6px;object-fit:contain;">
+      <div class="sp-sub">Your OSRS Progression Companion</div>
+      <div class="sp-divrow" style="margin-top:12px;margin-bottom:0;"><div class="sp-divline"></div><div class="sp-gem"></div><div class="sp-divline"></div></div>
+    </div>
+
+    <div class="sp-tabs">
+      <button class="sp-tab sp-active" onclick="spShowTab(0)">Overview</button>
+      <button class="sp-tab" onclick="spShowTab(1)">Getting Started</button>
+      <button class="sp-tab" onclick="spShowTab(2)">Features</button>
+      <button class="sp-tab" onclick="spShowTab(3)">Tips</button>
+    </div>
+
+    <div class="sp-panel sp-active" id="sp-tab-0">
+      <div class="sp-feat-grid">
+        <div class="sp-feat-card"><span class="sp-feat-icon">📋</span><div class="sp-feat-title">Progression List</div><div class="sp-feat-desc">477+ bosses, quests, diaries &amp; activities. Filter by type, lock status, and availability.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">🎲</span><div class="sp-feat-title">Task Oracle</div><div class="sp-feat-desc">Can't decide what to do next? Roll a random task or ask for a smart suggestion.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">🗺</span><div class="sp-feat-title">Custom Path</div><div class="sp-feat-desc">Build your own goal list with dependency trees. Add tasks, custom entries, and notes.</div></div>
+        <div class="sp-feat-card"><span class="sp-feat-icon">📤</span><div class="sp-feat-title">Share &amp; Import</div><div class="sp-feat-desc">Share your path with friends via a compact code or .json file. Import theirs instantly.</div></div>
+      </div>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-1">
+      <ul class="sp-step-list">
+        <li class="sp-step-item"><div class="sp-step-num">I</div><div><div class="sp-step-title">Set your stats</div><div class="sp-step-detail">Head to <span class="sp-pill">My Stats</span> and enter your skill levels, or use RSN Lookup to auto-fill from the hiscores.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">II</div><div><div class="sp-step-title">See what's available</div><div class="sp-step-detail">On <span class="sp-pill">Progression</span>, filter by <span class="sp-pill sp-pill-green">✅ Available Now</span> to see everything unlocked for your account today.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">III</div><div><div class="sp-step-title">Mark things done</div><div class="sp-step-detail">Tick any entry's checkbox to track your progress. Everything saves automatically in your browser.</div></div></li>
+        <li class="sp-step-item"><div class="sp-step-num">IV</div><div><div class="sp-step-title">Build a plan</div><div class="sp-step-detail">Use <span class="sp-pill">Custom Path</span> to map out goals with a dependency tree, then share with friends.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-2">
+      <div class="sp-tip-list">
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🪓 Ironman Mode</div><div class="sp-tip-text">Toggle Ironman mode in the header to switch filters and content to Ironman-relevant entries.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🔍 Stacked Filters</div><div class="sp-tip-text">Filter by Quests, Bosses, Activities, Diaries, Miniquests, and Unlocks — combine them freely to narrow your view.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🎲 Task Oracle</div><div class="sp-tip-text">Use <span class="sp-pill">Suggest Task</span> for an intelligent pick, or <span class="sp-pill">Random</span> to spin the wheel. Hit Mark Done &amp; Roll Again to chain sessions.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">🌳 Dependency Tree</div><div class="sp-tip-text">In Custom Path, use <span class="sp-pill">Path to Goal</span> on any entry to generate a full tree of everything needed to unlock it.</div></div></div>
+      </div>
+    </div>
+
+    <div class="sp-panel" id="sp-tab-3">
+      <div class="sp-tip-list">
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Your data is local</div><div class="sp-tip-text">Progress is stored in your browser. Clearing site data resets it — export your Custom Path as a .json backup regularly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">RSN Lookup vs manual</div><div class="sp-tip-text">RSN Lookup fills from the hiscores but won't update live. Re-run it whenever your levels change significantly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Sharing paths</div><div class="sp-tip-text">Use <span class="sp-pill">Share Code</span> for a compact string to paste in Discord. Use <span class="sp-pill">Download .json</span> to send the full file directly.</div></div></div>
+        <div class="sp-tip-item"><div class="sp-tip-dot"></div><div><div class="sp-tip-head">Hide completed</div><div class="sp-tip-text">Toggle <span class="sp-pill">Hide Completed</span> on the progression list to keep your view clean as your log fills up.</div></div></div>
+      </div>
+    </div>
+
+    <div class="sp-footer">
+      <div class="sp-dots" id="sp-dots">
+        <div class="sp-dot sp-active" onclick="spShowTab(0)"></div>
+        <div class="sp-dot" onclick="spShowTab(1)"></div>
+        <div class="sp-dot" onclick="spShowTab(2)"></div>
+        <div class="sp-dot" onclick="spShowTab(3)"></div>
+      </div>
+      <div style="display:flex;gap:20px;align-items:center;">
+        <button class="sp-skip" onclick="spDismiss(true)">Don't show again</button>
+        <button class="sp-next" id="sp-next-btn" onclick="spNext()">Begin &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var spCurrent = 0;
+  var spTotal = 4;
+
+  function spInit() {
+    if (!localStorage.getItem('progressscape_welcomed')) {
+      document.getElementById('splash-overlay').style.display = 'flex';
+    }
+  }
+
+  window.spShowTab = function(i) {
+    spCurrent = i;
+    document.querySelectorAll('.sp-panel').forEach(function(p,idx){ p.classList.toggle('sp-active', idx===i); });
+    document.querySelectorAll('.sp-tab').forEach(function(t,idx){ t.classList.toggle('sp-active', idx===i); });
+    document.querySelectorAll('.sp-dot').forEach(function(d,idx){ d.classList.toggle('sp-active', idx===i); });
+    document.getElementById('sp-next-btn').innerHTML = i === spTotal-1 ? 'Enter the World ✓' : 'Next &rarr;';
+  };
+
+  window.spNext = function() {
+    if (spCurrent < spTotal - 1) {
+      spShowTab(spCurrent + 1);
+    } else {
+      spDismiss(false);
+    }
+  };
+
+  window.spDismiss = function(permanent) {
+    if (permanent) localStorage.setItem('progressscape_welcomed', '1');
+    document.getElementById('splash-overlay').style.display = 'none';
+  };
+
+  // Close on overlay click (outside modal)
+  document.getElementById('splash-overlay').addEventListener('click', function(e) {
+    if (e.target === this) spDismiss(false);
+  });
+
+  // Run after page init so SPINE_DATA is available
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', spInit);
+  } else {
+    spInit();
+  }
+})();
+
+// ============================================================
+// COMBAT ACHIEVEMENTS
+// ============================================================
+var caCompleted = {};
+var caActiveTier = 'All';
+var caHideDone = false;
+var caOverviewCollapsed = false;
+
+var CA_REWARDS = [
+  { pts: 41,   label: "Hilt 1" },
+  { pts: 161,  label: "Hilt 2" },
+  { pts: 416,  label: "Hilt 3" },
+  { pts: 1064, label: "Hilt 4" },
+  { pts: 1904, label: "Hilt 5" },
+  { pts: 2630, label: "Hilt 6" }
+];
+
+var CA_TIERS = ['Easy','Medium','Hard','Elite','Master','Grandmaster'];
+var CA_TOTAL_PTS = 2630;
+
+function loadCaStorage() {
+  try {
+    var s = localStorage.getItem('osrs_ca_completed');
+    if (s) caCompleted = JSON.parse(s);
+  } catch(e) { caCompleted = {}; }
+  try {
+    var c = localStorage.getItem('osrs_ca_overview_collapsed');
+    if (c !== null) caOverviewCollapsed = JSON.parse(c);
+  } catch(e) {}
+  try {
+    var hd = localStorage.getItem('osrs_ca_hide_done');
+    if (hd !== null) caHideDone = JSON.parse(hd);
+  } catch(e) {}
+}
+
+function saveCaStorage() {
+  localStorage.setItem('osrs_ca_completed', JSON.stringify(caCompleted));
+}
+
+function getCaPoints() {
+  if (typeof CA_DATA === 'undefined') return 0;
+  return CA_DATA.reduce(function(sum, t) {
+    return sum + (caCompleted[t.id] ? t.points : 0);
+  }, 0);
+}
+
+function getCaTierStats() {
+  var stats = {};
+  CA_TIERS.forEach(function(tier) {
+    stats[tier] = { total: 0, done: 0, pts: 0, donePts: 0 };
+  });
+  if (typeof CA_DATA === 'undefined') return stats;
+  CA_DATA.forEach(function(t) {
+    if (!stats[t.tier]) return;
+    stats[t.tier].total++;
+    stats[t.tier].pts += t.points;
+    if (caCompleted[t.id]) { stats[t.tier].done++; stats[t.tier].donePts += t.points; }
+  });
+  return stats;
+}
+
+function toggleCaOverview() {
+  caOverviewCollapsed = !caOverviewCollapsed;
+  localStorage.setItem('osrs_ca_overview_collapsed', JSON.stringify(caOverviewCollapsed));
+  applyCAOverviewState();
+}
+
+function applyCAOverviewState() {
+  var panel = document.getElementById('ca-overview-panel');
+  var chevron = document.getElementById('ca-chevron');
+  if (!panel) return;
+  panel.style.display = caOverviewCollapsed ? 'none' : '';
+  if (chevron) chevron.classList.toggle('collapsed', caOverviewCollapsed);
+}
+
+function toggleCaHideDone() {
+  caHideDone = !caHideDone;
+  localStorage.setItem('osrs_ca_hide_done', JSON.stringify(caHideDone));
+  var btn = document.getElementById('ca-hide-done-btn');
+  if (btn) btn.classList.toggle('active', caHideDone);
+  renderCaTaskList();
+}
+
+function setCaTier(tier) {
+  caActiveTier = tier;
+  document.querySelectorAll('.ca-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tier === tier);
+  });
+  // sync tier card active state
+  document.querySelectorAll('.ca-tier-card').forEach(function(c) {
+    c.classList.toggle('active', c.dataset.tier === tier);
+  });
+  renderCaTaskList();
+  renderCaTierSummary();
+}
+
+function renderCaPage() {
+  if (typeof CA_DATA === 'undefined') return;
+  loadCaStorage();
+  applyCAOverviewState();
+  var btn = document.getElementById('ca-hide-done-btn');
+  if (btn) btn.classList.toggle('active', caHideDone);
+  renderCaOverview();
+  renderCaTabs();
+  renderCaTaskList();
+  renderCaTierSummary();
+}
+
+function renderCaOverview() {
+  var pts = getCaPoints();
+  var tierStats = getCaTierStats();
+
+  // Points summary in toggle header
+  var nextReward = CA_REWARDS.find(function(r) { return pts < r.pts; });
+  var summaryEl = document.getElementById('ca-pts-summary');
+  if (summaryEl) {
+    summaryEl.innerHTML = '<strong>' + pts.toLocaleString() + '</strong> / ' +
+      CA_TOTAL_PTS.toLocaleString() + ' pts' +
+      (nextReward ? ' &nbsp;·&nbsp; next unlock in <strong>' + (nextReward.pts - pts).toLocaleString() + ' pts</strong>' : '');
+  }
+
+  // Bar
+  // Segment-based fill: bar divided into equal segments between reward thresholds
+  // so dots (evenly spaced) and fill always align
+  var allPts = [0].concat(CA_REWARDS.map(function(r) { return r.pts; }));
+  var segCount = CA_REWARDS.length; // number of segments
+  var fillPct = 0;
+  for (var si = 0; si < segCount; si++) {
+    var segStart = allPts[si];
+    var segEnd   = allPts[si + 1];
+    if (pts >= segEnd) {
+      fillPct = (si + 1) / segCount * 100;
+    } else if (pts >= segStart) {
+      var segProgress = (pts - segStart) / (segEnd - segStart);
+      fillPct = (si + segProgress) / segCount * 100;
+      break;
+    }
+  }
+  fillPct = Math.min(100, Math.round(fillPct * 10) / 10);
+  var fillEl = document.getElementById('ca-reward-fill');
+  if (fillEl) fillEl.style.width = fillPct + '%';
+  var barLabel = document.getElementById('ca-bar-label');
+  if (barLabel) barLabel.textContent = pts.toLocaleString() + ' / ' + CA_TOTAL_PTS.toLocaleString();
+
+  // Milestones
+  var msEl = document.getElementById('ca-milestones');
+  if (msEl) {
+    var segCount = CA_REWARDS.length;
+    msEl.innerHTML = CA_REWARDS.map(function(r, idx) {
+      var reached = pts >= r.pts;
+      var isNext = !reached && nextReward && r.pts === nextReward.pts;
+      var leftPct = Math.round((idx + 1) / segCount * 1000) / 10; // e.g. 16.7%, 33.3%...100%
+      return '<div class="ca-milestone" style="left:' + leftPct + '%">' +
+        '<div class="ca-m-dot' + (reached ? ' reached' : isNext ? ' next' : '') + '"></div>' +
+        '<div class="ca-m-label' + (reached ? ' reached' : isNext ? ' next' : '') + '">' +
+          r.label + '<br>' + r.pts.toLocaleString() +
+        '</div></div>';
+    }).join('');
+  }
+
+  // Tier grid
+  var tierGrid = document.getElementById('ca-tier-grid');
+  if (tierGrid) {
+    tierGrid.innerHTML = CA_TIERS.map(function(tier) {
+      var s = tierStats[tier];
+      var pct = s.total > 0 ? Math.round(s.done / s.total * 100) : 0;
+      var tierKey = tier === 'Grandmaster' ? 'gm' : tier.toLowerCase();
+      var isActive = caActiveTier === tier;
+      return '<div class="ca-tier-card' + (isActive ? ' active' : '') + '" data-tier="' + tier + '" onclick="setCaTier(\'' + tier + '\')">' +
+        '<div class="ca-tier-card-header">' +
+          '<span class="ca-tier-name ' + tierKey + '">' + tier + '</span>' +
+          '<span class="ca-tier-pts">' + s.donePts + ' pts</span>' +
+        '</div>' +
+        '<div class="ca-tier-counts">' + s.done + '<span> / ' + s.total + '</span></div>' +
+        '<div class="ca-tier-bar-track"><div class="ca-tier-bar-fill fill-' + tierKey + '" style="width:' + pct + '%"></div></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Combat profile
+  var profileEl = document.getElementById('ca-profile-card');
+  if (profileEl) {
+    var totalTasks = CA_DATA.length;
+    var doneTasks = Object.keys(caCompleted).filter(function(k) { return caCompleted[k]; }).length;
+    var profileRows = [
+      ['Tasks completed', doneTasks.toLocaleString()],
+      ['Total possible', totalTasks.toLocaleString()],
+    ];
+    // Pull from hiscores data if available
+    if (typeof playerStats !== 'undefined' && Object.keys(playerStats).length > 0) {
+      var topBoss = null, topKC = 0;
+      SPINE_DATA.forEach(function(item) {
+        if ((item.type === 'Boss' || item.entryType === 'boss') && bossKC[item.order] > topKC) {
+          topKC = bossKC[item.order];
+          topBoss = item.name;
+        }
+      });
+      var totalKC = Object.values(bossKC).reduce(function(s, v) { return s + (v || 0); }, 0);
+      profileRows.push(['Boss kill count', totalKC.toLocaleString()]);
+      if (topBoss) profileRows.push(['Top boss', '<div class="ca-profile-val">' + topBoss + '</div><div class="ca-profile-sub">' + topKC.toLocaleString() + ' kc</div>']);
+    } else {
+      profileRows.push(['Boss kill count', '<span class="muted">— link RSN —</span>']);
+      profileRows.push(['Top boss', '<span class="muted">— link RSN —</span>']);
+    }
+    profileEl.innerHTML = profileRows.map(function(r) {
+      return '<div class="ca-profile-row">' +
+        '<span class="ca-profile-key">' + r[0] + '</span>' +
+        '<span class="ca-profile-val">' + r[1] + '</span>' +
+      '</div>';
+    }).join('');
+  }
+}
+
+function renderCaTabs() {
+  var tabBar = document.getElementById('ca-tab-bar');
+  if (!tabBar || typeof CA_DATA === 'undefined') return;
+  var tierStats = getCaTierStats();
+  var totalDone = CA_DATA.filter(function(t) { return caCompleted[t.id]; }).length;
+  var allTab = '<button class="ca-tab' + (caActiveTier === 'All' ? ' active' : '') + '" data-tier="All" onclick="setCaTier(\'All\')">' +
+    'All <span class="ca-tab-n">' + totalDone + '/' + CA_DATA.length + '</span>' +
+  '</button>';
+  tabBar.innerHTML = allTab + CA_TIERS.map(function(tier) {
+    var s = tierStats[tier];
+    var isActive = caActiveTier === tier;
+    return '<button class="ca-tab' + (isActive ? ' active' : '') + '" data-tier="' + tier + '" onclick="setCaTier(\'' + tier + '\')">' +
+      tier + ' <span class="ca-tab-n">' + s.done + '/' + s.total + '</span>' +
+    '</button>';
+  }).join('');
+}
+
+function renderCaTierSummary() {
+  var el = document.getElementById('ca-tier-summary');
+  if (!el || typeof CA_DATA === 'undefined') return;
+  var tierStats = getCaTierStats();
+  var summary;
+  if (caActiveTier === 'All') {
+    var allDone = CA_DATA.filter(function(t) { return caCompleted[t.id]; }).length;
+    var allPts = CA_DATA.reduce(function(s,t) { return s + (caCompleted[t.id] ? t.points : 0); }, 0);
+    summary = { done: allDone, total: CA_DATA.length, donePts: allPts, pts: 2630 };
+  } else {
+    summary = tierStats[caActiveTier];
+  }
+  if (!summary) return;
+  el.innerHTML =
+    '<span><strong>' + summary.done + '/' + summary.total + '</strong> tasks done</span>' +
+    '<span><strong>' + summary.donePts + '/' + summary.pts + '</strong> pts earned</span>' +
+    '<span style="color:var(--gold-dark)"><strong>' + (summary.total - summary.done) + '</strong> remaining</span>';
+}
+
+function renderCaTaskList() {
+  var container = document.getElementById('ca-task-list');
+  if (!container || typeof CA_DATA === 'undefined') return;
+
+  var search = (document.getElementById('ca-search') || {}).value || '';
+  search = search.toLowerCase().trim();
+  var typeFilter = (document.getElementById('ca-type-filter') || {}).value || '';
+
+  var tasks = CA_DATA.filter(function(t) {
+    if (caActiveTier !== 'All' && t.tier !== caActiveTier) return false;
+    if (typeFilter && t.type !== typeFilter) return false;
+    if (caHideDone && caCompleted[t.id]) return false;
+    if (search && t.name.toLowerCase().indexOf(search) === -1 &&
+        t.boss.toLowerCase().indexOf(search) === -1 &&
+        t.description.toLowerCase().indexOf(search) === -1) return false;
+    return true;
+  });
+
+  if (!tasks.length) {
+    container.innerHTML = '<div class="ca-empty">No tasks match your filters.</div>';
+    return;
+  }
+
+  // Group by boss
+  var groups = {};
+  var groupOrder = [];
+  tasks.forEach(function(t) {
+    var key = t.boss || 'Other';
+    if (!groups[key]) { groups[key] = []; groupOrder.push(key); }
+    groups[key].push(t);
+  });
+
+  container.innerHTML = groupOrder.map(function(boss) {
+    var bTasks = groups[boss];
+    var totalForBoss = CA_DATA.filter(function(t) { return t.boss === boss && (caActiveTier === 'All' || t.tier === caActiveTier); }).length;
+    var doneForBoss = CA_DATA.filter(function(t) { return t.boss === boss && (caActiveTier === 'All' || t.tier === caActiveTier) && caCompleted[t.id]; }).length;
+    var bPct = totalForBoss > 0 ? Math.round(doneForBoss / totalForBoss * 100) : 0;
+    var allBossDone = doneForBoss === totalForBoss && totalForBoss > 0;
+
+    var tasksHtml = bTasks.map(function(t) {
+      var done = !!caCompleted[t.id];
+      var typeKey = t.type.toLowerCase().replace(' ', '-').replace(' count','').replace('kill-','kc').replace('mechanical','mech').replace('restriction','restrict').replace('perfection','perf').replace('stamina','stam').replace('speed','speed');
+      // normalise type class
+      var typeClassMap = {
+        'Kill Count': 'kc', 'Mechanical': 'mech', 'Speed': 'speed',
+        'Restriction': 'restrict', 'Perfection': 'perf', 'Stamina': 'stam'
+      };
+      var typeClass = 'ca-type-' + (typeClassMap[t.type] || 'kc');
+      var tierKey = t.tier === 'Grandmaster' ? 'gm' : t.tier.toLowerCase();
+      return '<div class="ca-task-row' + (done ? ' done' : '') + '">' +
+        '<div class="ca-task-check' + (done ? ' done' : '') + '" onclick="toggleCaTask(\'' + t.id + '\')">' + (done ? '✓' : '') + '</div>' +
+        '<div class="ca-task-info">' +
+          '<div class="ca-task-name' + (done ? ' done' : '') + '">' + t.name + '</div>' +
+          '<div class="ca-task-desc">' + t.description + '</div>' +
+        '</div>' +
+        '<div class="ca-task-right">' +
+          '<span class="ca-type-badge ' + typeClass + '">' + t.type + '</span>' +
+          '<span class="ca-task-tier-badge ' + tierKey + '">' + t.tier + '</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="ca-boss-group">' +
+      '<div class="ca-boss-hdr">' +
+        '<span class="ca-boss-name">' + boss + '</span>' +
+        '<div class="ca-boss-right">' +
+          '<div class="ca-boss-mini-bar"><div class="ca-boss-mini-fill' + (allBossDone ? ' done' : '') + '" style="width:' + bPct + '%"></div></div>' +
+          '<span class="ca-boss-count' + (allBossDone ? ' done' : '') + '">' + doneForBoss + '/' + totalForBoss + '</span>' +
+        '</div>' +
+      '</div>' +
+      tasksHtml +
+    '</div>';
+  }).join('');
+}
+
+function toggleCaTask(id) {
+  if (caCompleted[id]) {
+    delete caCompleted[id];
+  } else {
+    caCompleted[id] = true;
+  }
+  saveCaStorage();
+  renderCaPage();
+}
+
+// Helper: get CA tasks for a given spineMatch name
+function getCaTasksForBoss(spineName) {
+  if (typeof CA_DATA === 'undefined') return [];
+  return CA_DATA.filter(function(t) { return t.spineMatch === spineName; });
+}
+
+</script>
+<!-- ===== END SPLASH ===== -->
+
+
+</body>
+</html>

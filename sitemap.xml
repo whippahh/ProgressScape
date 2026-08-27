@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://progressscape.net/</loc><priority>1.0</priority></url>
+  <url><loc>https://progressscape.net/progression.html</loc><priority>0.9</priority></url>
+  <url><loc>https://progressscape.net/stats.html</loc><priority>0.7</priority></url>
+  <url><loc>https://progressscape.net/bosses.html</loc><priority>0.7</priority></url>
+  <url><loc>https://progressscape.net/combat.html</loc><priority>0.7</priority></url>
+  <url><loc>https://progressscape.net/clog.html</loc><priority>0.7</priority></url>
+  <url><loc>https://progressscape.net/planner.html</loc><priority>0.7</priority></url>
+  <url><loc>https://progressscape.net/compare.html</loc><priority>0.7</priority></url>
+  <url><loc>https://progressscape.net/privacy.html</loc><priority>0.3</priority></url>
+</urlset>

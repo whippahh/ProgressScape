@@ -3175,7 +3175,7 @@ const SPINE_DATA = [
     "kc": 0
   },
   {
-    "order": 231,
+    "order": 480,
     "name": "Chaos Fanatic",
     "type": "Boss",
     "questPrereqs": "",
@@ -5047,6 +5047,48 @@ const SPINE_DATA = [
     "bossTier": ""
   },
   {
+    "order": 434,
+    "name": "Shellbane Gryphon",
+    "type": "Boss",
+    "questPrereqs": "Troubled Tortugans",
+    "skillReqs": "Slayer 51; Sailing 45",
+    "qp": 0,
+    "info": "Hard tier | Mid-level Slayer boss on Great Conch. Solo instanced, requires Slayer task. Weak to melee (stab). Bring tortugan shield.",
+    "location": "Great Conch (Sailing)",
+    "entryType": "boss",
+    "bossTier": "Hard tier",
+    "notableDrops": [],
+    "kc": 0
+  },
+  {
+    "order": 481,
+    "name": "Fallen From Grace",
+    "type": "Quest",
+    "questPrereqs": "The Red Reef",
+    "skillReqs": "Crafting 66; Mining 60; Runecraft 56; Sailing 62",
+    "qp": 2,
+    "info": "Wyrmscraig questline. Unlocks the Mad Angel boss at Ardeaglais cathedral.",
+    "location": "Wyrmscraig",
+    "entryType": "quest",
+    "bossTier": null,
+    "notableDrops": [],
+    "kc": 0
+  },
+  {
+    "order": 482,
+    "name": "Mad Angel",
+    "type": "Boss",
+    "questPrereqs": "Fallen From Grace",
+    "skillReqs": "Sailing 62",
+    "qp": 0,
+    "info": "Elite tier | Golem boss in Ardeaglais cathedral, Wyrmscraig. Weak to golembane weapons. Protect from Melee reduces standard max hits. Enrage phase below ~350 HP.",
+    "location": "Ardeaglais, Wyrmscraig",
+    "entryType": "boss",
+    "bossTier": "Elite tier",
+    "notableDrops": ["Hallowfell", "Jar of Light", "Ardeaglais teleport", "Granite dust", "Aggy"],
+    "kc": 0
+  },
+  {
     "order": 345,
     "name": "Monkey Madness II",
     "type": "Quest",
@@ -6074,6 +6116,34 @@ const SPINE_DATA = [
     "unlockCategory": "Ranged Armour"
   },
   {
+    "order": 483,
+    "name": "The Blood Moon Rises",
+    "type": "Quest",
+    "questPrereqs": "Sins of the Father",
+    "skillReqs": "Slayer 75",
+    "qp": 4,
+    "info": "Vampyrium questline. Unlocks the Maggot King boss.",
+    "location": "Vampyrium",
+    "entryType": "quest",
+    "bossTier": null,
+    "notableDrops": [],
+    "kc": 0
+  },
+  {
+    "order": 484,
+    "name": "Maggot King",
+    "type": "Boss",
+    "questPrereqs": "The Blood Moon Rises",
+    "skillReqs": "Slayer 75; Construction 70 (bank chest, boostable)",
+    "qp": 0,
+    "info": "Master tier | Solo instanced boss in Vampyrium. Requires a mix of melee and either magic or ranged. On death choose 'open-stomach' for the normal drop table or 'take-eggs' for an increased pet chance.",
+    "location": "Vampyrium",
+    "entryType": "boss",
+    "bossTier": "Master tier",
+    "notableDrops": ["Elder venator fang", "Crimson kisten", "Maggot marquess"],
+    "kc": 0
+  },
+  {
     "order": 395,
     "name": "The Corsair Curse",
     "type": "Quest",
@@ -6593,20 +6663,6 @@ const SPINE_DATA = [
         "1/1000"
       ]
     ],
-    "kc": 0
-  },
-  {
-    "order": 434,
-    "name": "Shellbane Gryphon",
-    "type": "Boss",
-    "questPrereqs": "Troubled Tortugans",
-    "skillReqs": "Slayer 51; Sailing 45",
-    "qp": 0,
-    "info": "Hard tier | Mid-level Slayer boss on Great Conch. Solo instanced, requires Slayer task. Weak to melee (stab). Bring tortugan shield.",
-    "location": "Great Conch (Sailing)",
-    "entryType": "boss",
-    "bossTier": "Hard tier",
-    "notableDrops": [],
     "kc": 0
   },
   {
@@ -7463,5 +7519,4 @@ const SPINE_DATA = [
     "location": "",
     "entryType": "activity",
     "bossTier": ""
-  }
-];
+  }];

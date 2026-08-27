@@ -118,6 +118,8 @@ function init() {
   loadFilterFromURL();
   fetchGEPrices(); // non-blocking — fires and forgets, page works fine if it fails
   buildBossDropLookup();
+  psPrefillRsnInputs(); // restores last-looked-up RSN into any lookup box on this page
+  psAutoSyncRSN(); // non-blocking — throttled background refresh, see PS_AUTO_SYNC_INTERVAL_MS
 }
 
 // ============================================================
@@ -149,7 +151,7 @@ function buildBossDropLookup() {
   if (typeof BOSS_DATA === 'undefined') return;
   SPINE_DATA.forEach(function(spine) {
     if (spine.type !== 'Boss' && spine.entryType !== 'boss') return;
-    var rich = BOSS_DATA[spine.name];
+    var rich = bossFor(spine);
     if (!rich || !rich.drops) return;
     rich.drops.forEach(function(drop) {
       var key = drop.name.toLowerCase();
@@ -478,7 +480,8 @@ function saveNote(order, text) {
     delete userNotes[order];
   }
   localStorage.setItem('osrs_spine_notes', JSON.stringify(userNotes));
-  const row = document.querySelector(`tr[data-order="${order}"]`);
+  const row = document.querySelector(`tr[data-order="${order}"]:not([data-start-marker])`)
+           || document.querySelector(`tr[data-order="${order}"]`);
   if (row) {
     const ind = row.querySelector('.note-indicator');
     if (text.trim()) {
@@ -507,22 +510,75 @@ function toggleIronman() {
   renderTable();
 }
 
+// ---------------------------------------------------------------
+// ID-BASED LOOKUPS
+//   Cross-file links resolve on spine id (item.order), not name, so renaming
+//   a spine entry can never orphan its boss data or CA tasks again.
+//   Name is kept as a fallback and as the human-readable label.
+// ---------------------------------------------------------------
+// Class-safe type key. A slash in a class name needs escaping in CSS and was
+// emitted three different ways, so .badge-Activity\/Goal never matched in the
+// main table. Sanitise once: 'Activity/Goal' -> 'ActivityGoal'.
+function psTypeClass(t) { return String(t || '').replace(/[^A-Za-z]/g, ''); }
+
+var BOSS_BY_ID = null;
+function bossFor(item) {
+  if (!item || typeof BOSS_DATA === 'undefined') return null;
+  if (!BOSS_BY_ID) {
+    BOSS_BY_ID = {};
+    Object.keys(BOSS_DATA).forEach(function (n) {
+      var b = BOSS_DATA[n];
+      if (b && b.spineId != null) BOSS_BY_ID[b.spineId] = b;
+    });
+  }
+  return (item.order != null && BOSS_BY_ID[item.order]) || BOSS_DATA[item.name] || null;
+}
+
+// ---------------------------------------------------------------
+// IDENTITY vs POSITION
+//   item.order = PERMANENT ID. Assigned once, never changes. It is the key
+//                for completedSet, bossKC, obtainedDrops, userNotes.
+//                Reordering the list must NEVER change it.
+//   item._pos  = display position, derived from array order at runtime.
+//                To move an entry in the list, move the object in data.js /
+//                ironman_data.js. Nothing needs renumbering.
+// ---------------------------------------------------------------
+function assignPositions(arr) {
+  arr.forEach((e, i) => { e._pos = i + 1; });
+  return arr;
+}
+
 function getActiveData() {
-  if (!ironmanMode) return SPINE_DATA;
+  if (!ironmanMode) return assignPositions(SPINE_DATA);
   if (typeof IRONMAN_DATA === 'undefined' || !IRONMAN_DATA || !IRONMAN_DATA.length) return SPINE_DATA;
   // Build ordered list using IRONMAN_DATA
   const nameToSpine = {};
   SPINE_DATA.forEach(e => { nameToSpine[e.name] = e; });
   const seen = new Set();
   const result = [];
-  IRONMAN_DATA.forEach((imEntry, idx) => {
+  const unmatched = [];
+  IRONMAN_DATA.forEach((imEntry) => {
     const spine = nameToSpine[imEntry.name];
-    if (!spine) return;
+    if (!spine) { unmatched.push(imEntry.name); return; }
     const key = `${imEntry.name}-${imEntry.type}`;
     if (seen.has(key)) return;
     seen.add(key);
-    result.push({ ...spine, imOrder: imEntry.imOrder, imType: imEntry.type, order: idx + 1 });
+    // NOTE: `order` is deliberately NOT overwritten. It is the stable identity
+    // used as the completion key everywhere (completedSet, notes, KC, drops).
+    // `imOrder` is the display position in Ironman mode.
+    result.push({
+      ...spine,
+      imOrder: imEntry.imOrder,
+      imType: imEntry.type,
+      isStartMarker: imEntry.type === 'partial'
+    });
   });
+  assignPositions(result);
+  if (unmatched.length && !getActiveData._warnedUnmatched) {
+    getActiveData._warnedUnmatched = true;
+    console.warn('[ProgressScape] ' + unmatched.length +
+      ' IRONMAN_DATA name(s) have no SPINE_DATA match and were dropped:', unmatched);
+  }
   return result;
 }
 
@@ -537,7 +593,7 @@ function autoDetectOpenTier() {
   // Find first tier that isn't 100% complete
   for (const tier of TIERS) {
     const tierItems = data.filter(item => {
-      const order = ironmanMode ? item.imOrder || item.order : item.order;
+      const order = item._pos || item.order;
       return order >= tier.minOrder && order <= tier.maxOrder;
     });
     if (tierItems.length === 0) continue;
@@ -684,47 +740,222 @@ function isAchievableNear(item) {
 // ============================================================
 
 // ── ProgressScape Plugin ─────────────────────────────────────
-// When the RuneLite plugin is approved and its endpoint is known,
-// replace PROGRESSSCAPE_PLUGIN_URL with the real address, e.g.:
-//   'http://localhost:8080/progressscape'
-// The plugin should return JSON with at least:
-//   { kc: { [bossName]: number }, completions: [bossName, ...] }
-// Leave as null to disable the plugin override entirely.
-const PROGRESSSCAPE_PLUGIN_URL = null; // TODO: set when plugin endpoint is confirmed
-const PROGRESSSCAPE_TIMEOUT_MS = 1000; // fast fail so first-time users aren't blocked
+// The RuneLite plugin (Plugin Hub: "ProgressScape") does NOT run a local
+// server. It PUSHES a snapshot to Supabase on sync, and the site READS it
+// back here. That means progress is available even when RuneLite is closed,
+// and works across devices.
+//
+// Plugin writes:
+//   players        { username, account_type, quests, diaries, ca_completed, bosses }
+//   collection_log { username, log_data }
+//
+//   quests   : { "Cook's Assistant": "FINISHED" | "IN_PROGRESS" | "NOT_STARTED", ... }
+//   diaries  : { "Ardougne": { easy: bool, medium: bool, hard: bool, elite: bool }, ... }
+//   bosses   : { "Zulrah": 1234, ... }
+//   ca_completed : [ "Noxious Foe", ... ]
+//
+// The anon key is public by design; it is embedded in the published plugin
+// too. Read access only is needed here.
+const PROGRESSSCAPE_SUPABASE_URL = 'https://hbfnvijfjboxhamjmlhm.supabase.co';
+const PROGRESSSCAPE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZm52aWpmamJveGhhbWptbGhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjcwNDYsImV4cCI6MjA4OTA0MzA0Nn0.wg9Ho_rZBXqH7ulFkT4p1pAamC5bpBDTRXI75_rCPAY';
+const PROGRESSSCAPE_TIMEOUT_MS = 6000; // remote call, not localhost — allow for a cold start
 
-async function fetchPluginData(rsn) {
-  if (!PROGRESSSCAPE_PLUGIN_URL) return null;
+async function psSupabaseGet(path) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), PROGRESSSCAPE_TIMEOUT_MS);
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), PROGRESSSCAPE_TIMEOUT_MS);
-    const resp = await fetch(
-      `${PROGRESSSCAPE_PLUGIN_URL}?rsn=${encodeURIComponent(rsn)}`,
-      { signal: controller.signal }
-    );
+    const resp = await fetch(PROGRESSSCAPE_SUPABASE_URL + '/rest/v1/' + path, {
+      signal: controller.signal,
+      headers: {
+        apikey: PROGRESSSCAPE_SUPABASE_KEY,
+        Authorization: 'Bearer ' + PROGRESSSCAPE_SUPABASE_KEY,
+        Accept: 'application/json'
+      }
+    });
     clearTimeout(timer);
     if (!resp.ok) return null;
-    return await resp.json();
-  } catch {
-    return null; // timeout, CORS, plugin not running — silently fall back
+    const rows = await resp.json();
+    return Array.isArray(rows) && rows.length ? rows[0] : null;
+  } catch (e) {
+    clearTimeout(timer);
+    return null; // offline, timeout, CORS — fall back to hiscores silently
   }
+}
+
+// RSN matching is case-insensitive and treats underscores as spaces, because
+// RuneScape display names and typed input differ on both.
+async function fetchPluginData(rsn) {
+  const name = String(rsn || '').trim().replace(/_/g, ' ');
+  if (!name) return null;
+  const enc = encodeURIComponent(name);
+
+  const player = await psSupabaseGet('players?username=ilike.' + enc + '&select=*&limit=1');
+  if (!player) return null;
+
+  const clog = await psSupabaseGet('collection_log?username=ilike.' + enc + '&select=log_data&limit=1');
+
+  return {
+    accountType: player.account_type || 'NORMAL',
+    kc: player.bosses || {},
+    quests: player.quests || {},
+    diaries: player.diaries || {},
+    caCompleted: Array.isArray(player.ca_completed) ? player.ca_completed : [],
+    clog: (clog && clog.log_data) ? clog.log_data : null,
+    syncedAt: player.updated_at || player.created_at || null
+  };
+}
+
+// Applies a plugin snapshot to the in-memory state. Returns a summary of what
+// was matched so the status line can be specific about it.
+function psApplyPluginData(pluginData, spineNameMap, bossKC) {
+  const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const byName = {};
+  SPINE_DATA.forEach(e => { byName[norm(e.name)] = e.order; });
+  const stat = { kc: 0, quests: 0, diaries: 0, ca: 0, clog: 0 };
+
+  // Boss kill counts — these beat the hiscores, which only cover ranked bosses
+  Object.entries(pluginData.kc || {}).forEach(([bossName, kc]) => {
+    if (!kc || kc < 1) return;
+    const n = norm(bossName);
+    if (spineNameMap[n] !== undefined) { bossKC[spineNameMap[n]] = kc; stat.kc++; return; }
+    for (const [spineName, order] of Object.entries(spineNameMap)) {
+      if (n.includes(spineName) || spineName.includes(n)) { bossKC[order] = kc; stat.kc++; break; }
+    }
+  });
+
+  // Quests — the hiscores cannot see these at all
+  Object.entries(pluginData.quests || {}).forEach(([questName, state]) => {
+    if (state !== 'FINISHED') return;
+    const order = byName[norm(questName)];
+    if (order !== undefined && !completedSet.has(order)) { completedSet.add(order); stat.quests++; }
+  });
+
+  // Diaries — plugin gives region + tier; spine names them "Easy Ardougne Diary"
+  Object.entries(pluginData.diaries || {}).forEach(([region, tiers]) => {
+    if (!tiers || typeof tiers !== 'object') return;
+    ['easy', 'medium', 'hard', 'elite'].forEach(tier => {
+      if (!tiers[tier]) return;
+      const label = tier.charAt(0).toUpperCase() + tier.slice(1) + ' ' + region + ' Diary';
+      const order = byName[norm(label)];
+      if (order !== undefined && !completedSet.has(order)) { completedSet.add(order); stat.diaries++; }
+    });
+  });
+
+  // Combat achievements — caCompleted is an object keyed by task id
+  if (typeof CA_DATA !== 'undefined' && typeof caCompleted !== 'undefined'
+      && pluginData.caCompleted.length) {
+    const done = new Set(pluginData.caCompleted.map(norm));
+    CA_DATA.forEach(t => {
+      if (done.has(norm(t.name)) && !caCompleted[t.id]) { caCompleted[t.id] = true; stat.ca++; }
+    });
+    // Was writing to a 'ps_ca_completed' key that loadCaStorage() never
+    // reads — combat.html only ever reads/writes 'osrs_ca_completed', so
+    // the sync appeared to work (in-memory caCompleted was correct for the
+    // rest of this page view) but silently reverted on the next page load.
+    // Route through the same save path the page's own UI uses instead of
+    // duplicating the localStorage call.
+    if (stat.ca && typeof saveCaStorage === 'function') saveCaStorage();
+  }
+
+  // Collection log — the plugin can only read the category currently OPEN in
+  // game, so a snapshot holds one category at a time. Merge rather than
+  // replace, so repeated syncs accumulate instead of overwriting.
+  // clogObtained is an object keyed by lowercase item name.
+  if (pluginData.clog && typeof CLOG_DATA !== 'undefined'
+      && typeof clogObtained !== 'undefined') {
+    const obtained = new Set();
+    Object.values(pluginData.clog).forEach(items => {
+      if (Array.isArray(items)) items.forEach(i => obtained.add(norm(i)));
+    });
+    CLOG_DATA.forEach(item => {
+      const key = item.name.toLowerCase();
+      if (obtained.has(norm(item.name)) && !clogObtained[key]) {
+        clogObtained[key] = true; stat.clog++;
+        // clogObtained and the boss page's obtainedDrops are two separate
+        // structures that only stay in sync when something calls
+        // syncClogToBossDrops() — toggleClogItem() (the manual click
+        // handler) does this, but this sync path didn't, which is why
+        // items obtained via plugin sync showed on the Collection Log page
+        // but never appeared as unlocked on the Boss page.
+        if (typeof syncClogToBossDrops === 'function') syncClogToBossDrops(item.name, true);
+      }
+    });
+    if (stat.clog && typeof saveClogObtained === 'function') saveClogObtained();
+  }
+
+  return stat;
+}
+
+// ── RSN persistence & background auto-refresh ────────────────
+// Mirrors how the wiki's player lookup behaves: the last-looked-up name
+// sticks around in the box across visits, and pages that show synced data
+// (quest list, boss page, etc.) pick up a recent sync without the user
+// having to revisit My Stats and click Lookup every time.
+//
+// The auto-refresh is throttled by PS_AUTO_SYNC_INTERVAL_MS rather than
+// firing on every page load, so normal browsing across the site's several
+// pages doesn't multiply Supabase reads — most page loads see a
+// still-fresh timestamp and skip the network call entirely, using
+// whatever's already in localStorage (which every page already reads on
+// load regardless).
+const PS_RSN_STORAGE_KEY = 'ps_last_rsn';
+const PS_LAST_SYNC_KEY = 'ps_last_sync_ts';
+const PS_AUTO_SYNC_INTERVAL_MS = 10 * 60 * 1000; // 10 min
+
+function psSaveLastRsn(rsn) {
+  try {
+    localStorage.setItem(PS_RSN_STORAGE_KEY, rsn);
+    localStorage.setItem(PS_LAST_SYNC_KEY, String(Date.now()));
+  } catch (e) { /* localStorage unavailable — persistence just won't stick */ }
+}
+
+function psGetLastRsn() {
+  try { return localStorage.getItem(PS_RSN_STORAGE_KEY) || ''; } catch (e) { return ''; }
+}
+
+// Prefills every RSN lookup box on the page (any input whose id starts with
+// "rsn-input") with the last-looked-up name, so it survives closing and
+// reopening the site instead of clearing every time.
+function psPrefillRsnInputs() {
+  const rsn = psGetLastRsn();
+  if (!rsn) return;
+  document.querySelectorAll('input[id^="rsn-input"]').forEach(el => {
+    if (!el.value) el.value = rsn;
+  });
+}
+
+// Silently refreshes the synced snapshot in the background when it's gone
+// stale. Safe to call on every page — lookupRSN's own render calls are all
+// individually guarded against whatever elements the current page doesn't
+// have, so this just updates whichever of them are actually on screen.
+async function psAutoSyncRSN() {
+  const rsn = psGetLastRsn();
+  if (!rsn) return;
+  let lastSync = 0;
+  try { lastSync = parseInt(localStorage.getItem(PS_LAST_SYNC_KEY) || '0', 10); } catch (e) {}
+  if (Date.now() - lastSync < PS_AUTO_SYNC_INTERVAL_MS) return;
+  try { await lookupRSN(null, null, null, { rsn, silent: true }); } catch (e) { /* offline / rename — retried once stale again */ }
 }
 
 async function lookupRSNFromStats() {
   await lookupRSN('rsn-input-stats', 'lookup-status-stats', 'lookup-status-stats-inner');
 }
 
-async function lookupRSN(inputId, statusDivId, statusInnerId) {
+async function lookupRSN(inputId, statusDivId, statusInnerId, opts) {
+  opts = opts || {};
   inputId = inputId || 'rsn-input';
   statusDivId = statusDivId || 'lookup-status';
   statusInnerId = statusInnerId || 'lookup-status-inner';
-  const rsn = document.getElementById(inputId).value.trim();
+  const inputEl = document.getElementById(inputId);
+  const rsn = (opts.rsn || (inputEl ? inputEl.value.trim() : '')).trim();
   if (!rsn) return;
-  const statusDiv = document.getElementById(statusDivId);
-  const statusInner = document.getElementById(statusInnerId);
-  statusDiv.style.display = 'block';
-  statusInner.className = 'status-inner';
-  statusInner.textContent = '⏳ Looking up ' + rsn + '…';
+  const statusDiv = opts.silent ? null : document.getElementById(statusDivId);
+  const statusInner = opts.silent ? null : document.getElementById(statusInnerId);
+  if (statusDiv) statusDiv.style.display = 'block';
+  if (statusInner) {
+    statusInner.className = 'status-inner';
+    statusInner.textContent = '⏳ Looking up ' + rsn + '…';
+  }
   try {
     // ── Step 1: Hiscores (always runs, baseline for all users) ──
     // Fetched via our own Cloudflare Worker proxy (no third-party CORS proxies).
@@ -776,32 +1007,18 @@ async function lookupRSN(inputId, statusDivId, statusInnerId) {
     // Runs concurrently with the render prep above; fails silently
     // if the plugin isn't installed or the user doesn't have it.
     let pluginSource = false;
+    let pluginStat = null;
     const pluginData = await fetchPluginData(rsn);
     if (pluginData) {
-      // Override KC with plugin values (more accurate than hiscores)
-      if (pluginData.kc && typeof pluginData.kc === 'object') {
-        Object.entries(pluginData.kc).forEach(([bossName, kc]) => {
-          const norm = bossName.toLowerCase().replace(/[^a-z0-9]/g, '');
-          if (spineNameMap[norm] !== undefined) {
-            bossKC[spineNameMap[norm]] = kc;
-          } else {
-            for (const [spineName, order] of Object.entries(spineNameMap)) {
-              if (norm.includes(spineName) || spineName.includes(norm)) {
-                bossKC[order] = kc; break;
-              }
-            }
-          }
-        });
-        kcUpdated = Object.keys(pluginData.kc).length;
-      }
-      // Mark completions tracked by the plugin
-      if (Array.isArray(pluginData.completions)) {
-        pluginData.completions.forEach(bossName => {
-          const norm = bossName.toLowerCase().replace(/[^a-z0-9]/g, '');
-          if (spineNameMap[norm] !== undefined) completedSet.add(spineNameMap[norm]);
-        });
-      }
+      pluginStat = psApplyPluginData(pluginData, spineNameMap, bossKC);
+      if (pluginStat.kc) kcUpdated = pluginStat.kc;
       pluginSource = true;
+      // Ironman route follows the account type the plugin reports
+      if (pluginData.accountType && pluginData.accountType !== 'NORMAL'
+          && typeof ironmanMode !== 'undefined' && !ironmanMode) {
+        ironmanMode = true;
+        try { localStorage.setItem('osrs_spine_ironman', 'true'); } catch (e) {}
+      }
     }
 
     // ── Step 3: Finalise & render ───────────────────────────────
@@ -821,15 +1038,40 @@ async function lookupRSN(inputId, statusDivId, statusInnerId) {
     renderTable();
     updateProgress();
     updateCombatDisplay();
-    statusInner.className = 'status-inner success';
-    if (pluginSource) {
-      statusInner.textContent = `✓ Loaded stats for ${rsn} — ${kcUpdated} boss KC synced via ProgressScape plugin`;
-    } else {
-      statusInner.textContent = `✓ Loaded stats for ${rsn} — ${kcUpdated} boss KC synced from Hiscores`;
+    // Refresh whatever page-specific views are on screen too — each of
+    // these no-ops safely if this page doesn't have the elements they
+    // target, so it's safe to call all of them regardless of which page
+    // triggered the sync (including a silent background refresh).
+    renderDashboard();
+    renderClogSidebar();
+    renderClogMain();
+    renderCaPage();
+    renderBossTracker();
+    psSaveLastRsn(rsn);
+    if (statusInner) {
+      statusInner.className = 'status-inner success';
+      if (pluginSource) {
+        const bits = [];
+        if (pluginStat.kc) bits.push(`${pluginStat.kc} boss KC`);
+        if (pluginStat.quests) bits.push(`${pluginStat.quests} quests`);
+        if (pluginStat.diaries) bits.push(`${pluginStat.diaries} diaries`);
+        if (pluginStat.ca) bits.push(`${pluginStat.ca} combat tasks`);
+        if (pluginStat.clog) bits.push(`${pluginStat.clog} log slots`);
+        statusInner.textContent = `✓ Loaded ${rsn} — ` +
+          (bits.length ? bits.join(', ') + ' synced from the ProgressScape plugin'
+                       : 'plugin data found, nothing new to sync');
+      } else {
+        statusInner.textContent = `✓ Loaded ${rsn} from official Hiscores — ${kcUpdated} boss KC synced. ` +
+          `That's all we can pull without the plugin. Install the ProgressScape RuneLite plugin and hit sync ` +
+          `for full quest, diary, combat task and collection log tracking.`;
+      }
     }
   } catch (e) {
-    statusInner.className = 'status-inner error';
-    statusInner.textContent = '✗ Could not load stats. Player may not exist or Hiscores may be unavailable.';
+    if (statusInner) {
+      statusInner.className = 'status-inner error';
+      statusInner.textContent = '✗ Could not load stats. Player may not exist or Hiscores may be unavailable.';
+    }
+    throw e;
   }
 }
 
@@ -900,7 +1142,7 @@ function renderTable() {
 
   for (const tier of TIERS) {
     const tierItems = filteredData.filter(item => {
-      const ord = ironmanMode ? (item.imOrder || item.order) : item.order;
+      const ord = item._pos || item.order;
       return ord >= tier.minOrder && ord <= tier.maxOrder;
     });
     if (tierItems.length === 0) continue;
@@ -973,7 +1215,7 @@ function buildRowHtml(item) {
   // Ironman type badge
   let imBadge = '';
   if (ironmanMode && item.imType && item.imType !== 'direct') {
-    const imLabels = { partial: '⚡ Partial', unlock: '🔓 Unlock', unlock_teleport: '🔓 Teleport' };
+    const imLabels = { partial: '⚡ Start here', unlock: '🔓 Unlock', unlock_teleport: '🔓 Teleport' };
     imBadge = `<span class="im-badge">${imLabels[item.imType] || item.imType}</span>`;
   }
 
@@ -998,17 +1240,27 @@ function buildRowHtml(item) {
   }
   const mobileDetailHtml = mobileDetail.length ? `<div class="card-detail">${mobileDetail.join('')}</div>` : '';
 
-  const displayOrder = ironmanMode ? (item.imOrder || item.order) : item.order;
+  const displayOrder = item._pos || item.order;
 
-  return `<tr class="${rowClass}" data-order="${item.order}" onclick="openDetail(${item.order})">
-    <td>
-      <div class="check-cell" onclick="event.stopPropagation(); toggleDone(${item.order})">
+  // A 'partial' Ironman row is a START MARKER for a quest completed later.
+  // It shares the quest's `order`, so it mirrors completion but is not tickable
+  // in its own right — the real tick lives on the quest's own row.
+  const startMarker = ironmanMode && item.isStartMarker;
+  const checkCell = startMarker
+    ? `<div class="check-cell check-cell-mirror" title="Ticks automatically when the quest is completed">
         <div class="check-box ${done ? 'checked' : ''}"></div>
-      </div>
+      </div>`
+    : `<div class="check-cell" onclick="event.stopPropagation(); toggleDone(${item.order})">
+        <div class="check-box ${done ? 'checked' : ''}"></div>
+      </div>`;
+
+  return `<tr class="${rowClass}${startMarker ? ' row-start-marker' : ''}" data-order="${item.order}"${startMarker ? ' data-start-marker="1"' : ''} onclick="openDetail(${item.order})">
+    <td>
+      ${checkCell}
     </td>
     <td>${displayOrder}</td>
     <td class="td-name">${item.source ? `<a href="${item.source}" target="_blank" onclick="event.stopPropagation()">${item.name}</a>` : item.name}${imBadge}${userNotes[item.order] ? '<span class="note-indicator" title="Has notes">📝</span>' : ''}${mobileDetailHtml}</td>
-    <td><span class="type-badge badge-${item.type.replace('/','\\/')}">${TYPE_ICONS[item.type] ? `<img src="${TYPE_ICONS[item.type]}" alt="" style="width:12px;height:12px;object-fit:contain;vertical-align:middle;margin-right:3px;opacity:0.85">` : ''} ${item.type}</span>${tierHtml}</td>
+    <td><span class="type-badge badge-${psTypeClass(item.type)}">${TYPE_ICONS[item.type] ? `<img src="${TYPE_ICONS[item.type]}" alt="" style="width:12px;height:12px;object-fit:contain;vertical-align:middle;margin-right:3px;opacity:0.85">` : ''} ${item.type}</span>${tierHtml}</td>
     <td class="skill-req">${reqHtml}</td>
     <td class="skill-req">${prereqHtml}</td>
     <td class="qp-badge">${item.qp > 0 ? item.qp : ''}</td>
@@ -1029,7 +1281,7 @@ function toggleDone(order) {
     }
     // For bosses, un-mark all drops
     if (item && (item.type === 'Boss' || item.entryType === 'boss')) {
-      var rich = (typeof BOSS_DATA !== 'undefined') ? BOSS_DATA[item.name] : null;
+      var rich = bossFor(item);
       var drops = rich && rich.drops ? rich.drops : (item.notableDrops || []).map(function(d){ return {name: d[0]}; });
       drops.forEach(function(d) {
         var key = order + '-' + d.name;
@@ -1046,7 +1298,7 @@ function toggleDone(order) {
     }
     // For bosses, mark all drops as obtained
     if (item && (item.type === 'Boss' || item.entryType === 'boss')) {
-      var rich2 = (typeof BOSS_DATA !== 'undefined') ? BOSS_DATA[item.name] : null;
+      var rich2 = bossFor(item);
       var drops2 = rich2 && rich2.drops ? rich2.drops : (item.notableDrops || []).map(function(d){ return {name: d[0]}; });
       drops2.forEach(function(d) {
         var key = order + '-' + d.name;
@@ -1070,7 +1322,7 @@ function markTierDone(tierId, e) {
 
   // Start with all items in this tier
   var tierItems = data.filter(function(item) {
-    var ord = ironmanMode ? (item.imOrder || item.order) : item.order;
+    var ord = item._pos || item.order;
     return ord >= tier.minOrder && ord <= tier.maxOrder;
   });
 
@@ -1152,7 +1404,7 @@ function openDetail(order) {
   const item = SPINE_DATA.find(d => d.order === order);
   if (!item) return;
   document.getElementById('detail-title').textContent = item.name;
-  const badgeHtml = `<span class="type-badge badge-${item.type}">${TYPE_ICONS[item.type] ? '<img src="' + TYPE_ICONS[item.type] + '" alt="" style="width:12px;height:12px;object-fit:contain;vertical-align:middle;margin-right:3px;opacity:0.85">' : ''} ${item.type}</span>`;
+  const badgeHtml = `<span class="type-badge badge-${psTypeClass(item.type)}">${TYPE_ICONS[item.type] ? '<img src="' + TYPE_ICONS[item.type] + '" alt="" style="width:12px;height:12px;object-fit:contain;vertical-align:middle;margin-right:3px;opacity:0.85">' : ''} ${item.type}</span>`;
   document.getElementById('detail-subtitle').innerHTML = badgeHtml +
     (item.bossTier ? ` <span class="boss-tier tier-${item.bossTier.toLowerCase().replace(' tier','').trim()}" style="margin-left:0.5rem">${item.bossTier}</span>` : '');
 
@@ -1161,7 +1413,7 @@ function openDetail(order) {
 
   if (isBoss) {
     // ── TABBED BOSS MODAL ──────────────────────────────────────
-    var richModal = (typeof BOSS_DATA !== 'undefined') ? BOSS_DATA[item.name] : null;
+    var richModal = bossFor(item);
     var currentKC = bossKC[item.order] || 0;
 
     // ── Tab: Info ──
@@ -1275,14 +1527,14 @@ function openDetail(order) {
         if (!dropDone && currentKC > 0) {
           var dryInfo = getDryInfo(drop, currentKC);
           if (dryInfo && dryInfo.prob >= 0.25) {
-            var dryCol = dryInfo.severity === 'very-dry' ? '#c84040' : dryInfo.severity === 'dry' ? '#c8903a' : '#a0a060';
+            var dryCol = dryInfo.severity === 'very-dry' ? 'var(--js-15)' : dryInfo.severity === 'dry' ? 'var(--js-16)' : 'var(--js-17)';
             dryStr = `<span style="font-size:0.68rem;color:${dryCol};margin-left:0.25rem;font-weight:600" title="${dryInfo.pct}% of players would have this by ${currentKC} KC">${dryInfo.pct}% dry</span>`;
           }
         }
         return `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.35rem;padding:0.3rem 0.5rem;background:rgba(0,0,0,0.2);border-radius:3px">
           <div class="check-box ${dropDone ? 'checked' : ''}" style="width:14px;height:14px;flex-shrink:0"
             onclick="toggleDropDone('${dropKey}', ${item.order}, ${mainEntry ? mainEntry.order : 'null'})" title="Mark obtained"></div>
-          <span style="flex:1;font-size:0.83rem;color:${dropDone ? '#6fc96f' : 'var(--text-light)'}${mainEntry ? ';cursor:pointer' : ''}"
+          <span style="flex:1;font-size:0.83rem;color:${dropDone ? 'var(--js-1)' : 'var(--text-light)'}${mainEntry ? ';cursor:pointer' : ''}"
             ${mainEntry ? `onclick="closeDetailBtn(); setTimeout(()=>openDetail(${mainEntry.order}),50)"` : ''}>
             ${dropName}${dropDone ? ' <span style="font-size:0.7rem">✓</span>' : ''}${mainEntry ? ' <span style="color:var(--gold-dark);font-size:0.7rem">→</span>' : ''}
           </span>
@@ -1296,7 +1548,7 @@ function openDetail(order) {
 
     // ── Tab: Combat Tasks ──
     var caTabHtml = '';
-    var caTasks = getCaTasksForBoss(item.name);
+    var caTasks = getCaTasksForBoss(item);
     if (caTasks.length > 0) {
       var caTotal = caTasks.length;
       var caDone = caTasks.filter(function(t) { return caCompleted[t.id]; }).length;
@@ -1379,7 +1631,7 @@ function openDetail(order) {
         return `<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.35rem;padding:0.3rem 0.5rem;background:rgba(0,0,0,0.2);border-radius:3px">
           <div class="check-box ${dropDone ? 'checked' : ''}" style="width:14px;height:14px;flex-shrink:0"
             onclick="toggleDropDone('${dropKey}', ${item.order}, ${mainEntry ? mainEntry.order : 'null'})" title="Mark obtained"></div>
-          <span style="flex:1;font-size:0.83rem;color:${dropDone ? '#6fc96f' : 'var(--text-light)'}${mainEntry ? ';cursor:pointer' : ''}"
+          <span style="flex:1;font-size:0.83rem;color:${dropDone ? 'var(--js-1)' : 'var(--text-light)'}${mainEntry ? ';cursor:pointer' : ''}"
             ${mainEntry ? `onclick="closeDetailBtn(); setTimeout(()=>openDetail(${mainEntry.order}),50)"` : ''}>
             ${dropName}${mainEntry ? ' <span style="color:var(--gold-dark);font-size:0.7rem">→</span>' : ''}
           </span>
@@ -1506,7 +1758,7 @@ function generateBossCard(order) {
 
   // Tier badge
   if (spine.bossTier) {
-    var tierColors = { 'easy': '#1d9e75', 'medium': '#ba7517', 'hard': '#d85a30', 'elite': '#7f77dd', 'master': '#d4537e', 'grandmaster': '#e24b4a' };
+    var tierColors = { 'easy': 'var(--js-18)', 'medium': 'var(--js-19)', 'hard': 'var(--js-20)', 'elite': 'var(--js-21)', 'master': 'var(--js-22)', 'grandmaster': 'var(--js-23)' };
     var tc = (spine.bossTier || '').toLowerCase().replace(' tier','').trim();
     ctx.fillStyle = tierColors[tc] || '#888';
     ctx.font = '10px "Georgia", serif';
@@ -1694,7 +1946,7 @@ function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
     SPINE_DATA.forEach(function(spine) {
       if (spine.order === sourceOrder) return; // skip the source boss
       if (spine.type !== 'Boss' && spine.entryType !== 'boss') return;
-      var rich = BOSS_DATA[spine.name];
+      var rich = bossFor(spine);
       if (!rich || !rich.drops) return;
       var matchingDrop = rich.drops.find(function(d) {
         return d.name.toLowerCase() === dropNameLower;
@@ -1712,7 +1964,7 @@ function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
   // allDone check — use BOSS_DATA drops if available, fall back to notableDrops
   var item = SPINE_DATA.find(function(d) { return d.order === sourceOrder; });
   if (item) {
-    var rich = (typeof BOSS_DATA !== 'undefined') ? BOSS_DATA[item.name] : null;
+    var rich = bossFor(item);
     var drops = rich && rich.drops && rich.drops.length
       ? rich.drops
       : (item.notableDrops || []).map(function(d) { return { name: d[0] }; });
@@ -1867,7 +2119,7 @@ function showPathPreview(goalName, items) {
   listEl.innerHTML = items.map((item, i) => {
     const cls = item._isSkillTask ? 'is-skill-task' : item._isGoal ? 'is-goal' : '';
     const badge = item.type
-      ? '<span class="type-badge badge-' + item.type.replace('/','\/') + '" style="font-size:0.6rem;padding:0.1rem 0.4rem">' + item.type + '</span>'
+      ? '<span class="type-badge badge-' + psTypeClass(item.type) + '" style="font-size:0.6rem;padding:0.1rem 0.4rem">' + item.type + '</span>'
       : '';
     const goalTag = item._isGoal ? ' <span style="font-size:0.65rem;color:var(--gold-dark);font-family:Cinzel,serif">&#9733; GOAL</span>' : '';
     return '<div class="path-preview-item ' + cls + '">' +
@@ -1941,8 +2193,8 @@ function showTreeView(goalName) {
   document.getElementById('tree-view-subtitle').textContent = '';
   document.getElementById('tree-view-body').innerHTML = renderTreeNode(root, true, 0);
   document.getElementById('tree-view-legend').innerHTML =
-    '<span><span style="color:#5aae5a">&#x2713;</span> Completed</span>' +
-    '<span><span style="color:#ae5a5a">&#x2717;</span> Incomplete</span>' +
+    '<span><span style="color:var(--js-7)">&#x2713;</span> Completed</span>' +
+    '<span><span style="color:var(--js-8)">&#x2717;</span> Incomplete</span>' +
     '<span style="opacity:0.55">Completed nodes collapsed by default &mdash; click &#x25B6; to expand</span>';
   document.getElementById('tree-view-overlay').classList.add('open');
 }
@@ -2227,8 +2479,8 @@ function showDownstreamTree(order) {
     '<span style="font-family:\'IM Fell English\',serif;font-style:italic">Opens the path to ' + total + ' further ' + (total === 1 ? 'challenge' : 'challenges') + '</span>';
   document.getElementById('tree-view-body').innerHTML = renderDownstreamNode(root, true, 0);
   document.getElementById('tree-view-legend').innerHTML =
-    '<span><span style="color:#5aae5a">&#x2713;</span> Already conquered</span>' +
-    '<span><span style="color:#ae5a5a">&#x2717;</span> Yet to be done</span>' +
+    '<span><span style="color:var(--js-7)">&#x2713;</span> Already conquered</span>' +
+    '<span><span style="color:var(--js-8)">&#x2717;</span> Yet to be done</span>' +
     '<span style="font-family:\'IM Fell English\',serif;font-style:italic;color:var(--stone-lighter)">Faded names — other deeds required alongside this road</span>';
   document.getElementById('tree-view-overlay').classList.add('open');
 }
@@ -2304,7 +2556,7 @@ function showFloatResult(item) {
   document.getElementById('float-spin-name').textContent = item.name;
   document.getElementById('float-spin-order').textContent = `#${item.order}`;
   document.getElementById('float-spin-type').innerHTML =
-    `<span class="type-badge badge-${item.type.replace('/','\\/')}">${item.type}</span>` +
+    `<span class="type-badge badge-${psTypeClass(item.type)}">${item.type}</span>` +
     (item.bossTier ? ` <span class="boss-tier tier-${item.bossTier.toLowerCase().replace(' tier','').trim()}">${item.bossTier}</span>` : '');
 
   const metaEl = document.getElementById('float-spin-meta');
@@ -2355,7 +2607,7 @@ function renderFloatingHistory() {
     `<div class="float-hist-item" onclick="openDetail(${h.order}); closeRandomPanel()">
       <span class="float-hist-num">${i + 1}</span>
       <span class="float-hist-name">${h.name}</span>
-      <span class="type-badge badge-${h.type.replace('/','\\/')}" style="font-size:0.65rem;padding:0.1rem 0.4rem">${h.type}</span>
+      <span class="type-badge badge-${psTypeClass(h.type)}" style="font-size:0.65rem;padding:0.1rem 0.4rem">${h.type}</span>
     </div>`
   ).join('');
 }
@@ -2559,7 +2811,9 @@ function showCombatResult(ca) {
 function combatMarkDone() {
   if (currentCombatItem) {
     caCompleted[currentCombatItem.id] = true;
-    localStorage.setItem('ps_ca_completed', JSON.stringify(caCompleted));
+    // Same wrong-key bug as the plugin sync path — this must use the same
+    // key loadCaStorage() reads ('osrs_ca_completed'), not 'ps_ca_completed'.
+    if (typeof saveCaStorage === 'function') saveCaStorage();
   }
   combatSpin(false);
 }
@@ -2708,6 +2962,9 @@ function clogOracleMarkObtained() {
     var key = currentClogOracleItem.name.toLowerCase();
     clogObtained[key] = true;
     saveClogObtained();
+    // Same boss-page desync bug as the plugin sync path — without this,
+    // an item marked obtained here never shows as unlocked on Bosses.
+    if (typeof syncClogToBossDrops === 'function') syncClogToBossDrops(currentClogOracleItem.name, true);
     if (document.getElementById('page-clog') && document.getElementById('page-clog').classList.contains('active')) {
       renderClogMain();
       renderClogSidebar();
@@ -2968,9 +3225,9 @@ function renderDashboard() {
 
   const skillColorFn = function(lvl) {
     if (lvl >= 99) return { bg: 'rgba(200,168,75,0.35)', border: 'var(--gold)', text: 'var(--gold)' };
-    if (lvl >= 90) return { bg: 'rgba(42,107,42,0.35)', border: '#3d9e3d', text: '#6fc96f' };
-    if (lvl >= 70) return { bg: 'rgba(26,58,107,0.35)', border: '#2a5aa0', text: '#7ab0f0' };
-    if (lvl >= 50) return { bg: 'rgba(120,80,200,0.2)', border: '#6040a0', text: '#b080f0' };
+    if (lvl >= 90) return { bg: 'rgba(42,107,42,0.35)', border: 'var(--js-4)', text: 'var(--js-1)' };
+    if (lvl >= 70) return { bg: 'rgba(26,58,107,0.35)', border: 'var(--js-24)', text: 'var(--js-2)' };
+    if (lvl >= 50) return { bg: 'rgba(120,80,200,0.2)', border: 'var(--js-25)', text: 'var(--js-9)' };
     if (lvl >= 30) return { bg: 'rgba(61,53,38,0.8)', border: 'var(--stone-lighter)', text: 'var(--text-muted)' };
     return { bg: 'rgba(42,33,24,0.6)', border: 'var(--stone-light)', text: 'var(--stone-lighter)' };
   };
@@ -3001,17 +3258,17 @@ function renderDashboard() {
   const tierBars = TIERS.map(t => {
     const items = SPINE_DATA.filter(i => i.order >= t.minOrder && i.order <= t.maxOrder);
     const done = items.filter(i => completedSet.has(i.order)).length;
-    const colors = { early:'#6fc96f', mid:'#7ab0f0', late:'#e07070', end:'var(--gold)' };
+    const colors = { early:'var(--js-1)', mid:'var(--js-2)', late:'var(--js-3)', end:'var(--gold)' };
     return progBarFn(t.label, done, items.length, colors[t.id] || 'var(--gold)');
   });
 
   const typeBars = [
-    { label:'Quests', type:'Quest', color:'#6fc96f' },
-    { label:'Bosses', type:'Boss', color:'#e07070' },
-    { label:'Activities', type:'Activity/Goal', color:'#7ab0f0' },
-    { label:'Diaries', type:'Diary', color:'#90d8ff' },
-    { label:'Miniquests', type:'Miniquest', color:'#f0c858' },
-    { label:'Unlocks', type:'Unlock', color:'#c090ff' },
+    { label:'Quests', type:'Quest', color:'var(--js-1)' },
+    { label:'Bosses', type:'Boss', color:'var(--js-3)' },
+    { label:'Activities', type:'Activity/Goal', color:'var(--js-2)' },
+    { label:'Diaries', type:'Diary', color:'var(--js-10)' },
+    { label:'Miniquests', type:'Miniquest', color:'var(--js-5)' },
+    { label:'Unlocks', type:'Unlock', color:'var(--js-11)' },
   ].map(t => {
     const items = SPINE_DATA.filter(i => i.type === t.type);
     const done = items.filter(i => completedSet.has(i.order)).length;
@@ -3024,7 +3281,7 @@ function renderDashboard() {
   const clogEl = document.getElementById('dash-clog');
   if (clogEl && window.CLOG_DATA && typeof clogObtained !== 'undefined') {
     const clogCats = ['Bosses','Raids','Clues','Minigames','Other'];
-    const clogColors = { Bosses:'#e07070', Raids:'var(--gold)', Clues:'#f0c858', Minigames:'#7ab0f0', Other:'#b080f0' };
+    const clogColors = { Bosses:'var(--js-3)', Raids:'var(--gold)', Clues:'var(--js-5)', Minigames:'var(--js-2)', Other:'var(--js-9)' };
     clogEl.innerHTML = clogCats.map(cat => {
       const items = window.CLOG_DATA.filter(i => i.category === cat);
       const uniqueNames = [...new Set(items.map(i => i.name.toLowerCase()))];
@@ -3113,9 +3370,9 @@ function updateTierFloat() {
   float.setAttribute('data-tier', active.getAttribute('data-tier') || '');
 
   var cs = getComputedStyle(active);
-  var bgDark  = cs.getPropertyValue('--tier-bg-dark').trim() || '#1a1408';
-  var bg      = cs.getPropertyValue('--tier-bg').trim() || '#1a1408';
-  var color   = cs.getPropertyValue('--tier-color').trim() || '#c8a84b';
+  var bgDark  = cs.getPropertyValue('--tier-bg-dark').trim() || 'var(--js-12)';
+  var bg      = cs.getPropertyValue('--tier-bg').trim() || 'var(--js-12)';
+  var color   = cs.getPropertyValue('--tier-color').trim() || 'var(--js-6)';
   float.style.cssText = 'display:block;position:fixed;left:0;right:0;z-index:18;cursor:pointer;' +
     'top:' + pinTop + 'px;' +
     'background:linear-gradient(90deg,' + bgDark + ' 0%,' + bg + ' 60%,' + bgDark + ' 100%);' +
@@ -3150,7 +3407,8 @@ var planItems = [];
 var planDragSrc = null;
 var planEditId = null;
 
-init();
+// Guarded: shared.js loads on the landing page too, which has no data files.
+if (typeof SPINE_DATA !== "undefined") { init(); }
 
 function planUid() {
   return 'p' + Date.now() + Math.random().toString(36).slice(2, 6);
@@ -3220,15 +3478,15 @@ function buildPlanItemHtml(item, idx) {
     return '<tr class="planner-item item-note' + doneClass + '" data-id="' + item.id + '" draggable="true">' +
       '<td class="pt-drag-cell">&#8942;&#8942;</td>' +
       '<td class="pt-check-cell" onclick="togglePlanDone(\'' + item.id + '\')">' + checkBox + '</td>' +
-      '<td class="pt-note-cell" colspan="5" onclick="openPlannerModal(\'note\', \'' + item.id + '\')">&#128221; ' + noteText + '</td>' +
+      '<td class="pt-note-cell" colspan="5" onclick="openPlannerModal(\'note\', \'' + item.id + '\')">&var(--js-26); ' + noteText + '</td>' +
       '<td class="pt-act-cell">' +
         '<button class="planner-action-btn del" onclick="deletePlanItem(\'' + item.id + '\')" title="Delete">&#x2715;</button>' +
       '</td>' +
     '</tr>';
   }
 
-  var typeBadge = item.type ? '<span class="type-badge badge-' + item.type.replace('/','\/') + '">' + item.type + '</span>' : '—';
-  var customTag = item.itemType === 'custom' ? ' <span style="font-size:0.6rem;padding:0.1rem 0.3rem;background:rgba(74,127,200,0.15);border:1px solid #4a7fc8;border-radius:3px;color:#8abcf8;font-family:\'Cinzel\',serif;vertical-align:middle">Custom</span>' : '';
+  var typeBadge = item.type ? '<span class="type-badge badge-' + psTypeClass(item.type) + '">' + item.type + '</span>' : '—';
+  var customTag = item.itemType === 'custom' ? ' <span style="font-size:0.6rem;padding:0.1rem 0.3rem;background:rgba(74,127,200,0.15);border:1px solid var(--js-27);border-radius:3px;color:var(--js-28);font-family:\'Cinzel\',serif;vertical-align:middle">Custom</span>' : '';
 
   var reqs = item.skillReqs || '—';
   var loc  = item.location  || '—';
@@ -3869,7 +4127,7 @@ function renderClogMain() {
   var total = allItems.length;
   var got = allItems.filter(function(i) { return isObtained(i.name); }).length;
   var pct = total > 0 ? Math.round((got / total) * 100) : 0;
-  var progColor = pct === 100 ? '#3d9e3d' : pct >= 50 ? '#8a9e3d' : pct >= 25 ? '#c8a84b' : '#8b6030';
+  var progColor = pct === 100 ? 'var(--js-4)' : pct >= 50 ? 'var(--js-13)' : pct >= 25 ? 'var(--js-6)' : 'var(--js-14)';
 
   var html = '<div style="margin-bottom:10px">' +
     '<button onclick="setClogSource(null)" style="background:none;border:none;color:var(--text-muted);font-family:\'Cinzel\',serif;font-size:0.7rem;letter-spacing:0.05em;cursor:pointer;padding:0;margin-bottom:10px;" ' +
@@ -3949,7 +4207,7 @@ function renderClogOverview(main) {
       var total = items.length;
       var got = items.filter(function(i) { return isObtained(i.name); }).length;
       var pct = total > 0 ? Math.round((got / total) * 100) : 0;
-      var progColor = pct === 100 ? '#3d9e3d' : pct >= 50 ? '#8a9e3d' : pct >= 25 ? '#c8a84b' : '#8b6030';
+      var progColor = pct === 100 ? 'var(--js-4)' : pct >= 50 ? 'var(--js-13)' : pct >= 25 ? 'var(--js-6)' : 'var(--js-14)';
       var isDone = got === total && total > 0;
       // When search active, show why this source matched
       var matchBadge = '';
@@ -4053,7 +4311,7 @@ const CMP_SKILL_ORDER = [
 ];
 
 // Player slot colours — cycle through for bars/highlights
-const CMP_COLORS = ['#7ab0f0','#6fc96f','#f0c858','#e07070','#c090ff','#90d8ff'];
+const CMP_COLORS = ['var(--js-2)','var(--js-1)','var(--js-5)','var(--js-3)','var(--js-11)','var(--js-10)'];
 
 // Isolated state — array of {id, rsn, stats, kc} | null per slot
 var compareSlots = [];   // array of slot data (null = not yet loaded)
@@ -4266,7 +4524,7 @@ function renderCompare() {
     return;
   }
 
-  const tierColors = { early:'#6fc96f', mid:'#7ab0f0', late:'#e07070', end:'var(--gold)' };
+  const tierColors = { early:'var(--js-1)', mid:'var(--js-2)', late:'var(--js-3)', end:'var(--gold)' };
 
   // ── Summary cards ─────────────────────────────────────────
   function summaryCards() {
@@ -4363,7 +4621,7 @@ function renderCompare() {
       <div class="cmp-coming-soon-overlay">
         <span class="cs-icon">🔌</span>
         <span class="cs-title">${title}</span>
-        <span class="cs-sub">Requires the ProgressScape RuneLite plugin — coming once the plugin hub submission is approved.</span>
+        <span class="cs-sub">Requires the ProgressScape RuneLite plugin — install it from the Plugin Hub and sync to unlock this.</span>
       </div>
     </div>`;
   }
@@ -4415,7 +4673,7 @@ function renderCompare() {
 // Returns a unified boss object with normalised drops:
 //   { name, rate, id, qty, gphr }
 function getBossRichData(spineItem) {
-  var rich = (typeof BOSS_DATA !== 'undefined') ? BOSS_DATA[spineItem.name] : null;
+  var rich = bossFor(spineItem);
   var merged = Object.assign({}, spineItem);
   if (rich) {
     merged.image        = rich.image        || null;
@@ -4495,7 +4753,7 @@ function bossCanKill(spineItem) {
   var hasStats = Object.keys(playerStats).length > 0;
   if (!hasStats) return null;
 
-  var rich = (typeof BOSS_DATA !== 'undefined') ? BOSS_DATA[spineItem.name] : null;
+  var rich = bossFor(spineItem);
   var parsed = rich && rich.skillReqsParsed && Object.keys(rich.skillReqsParsed).length
     ? rich.skillReqsParsed : null;
 
@@ -4691,7 +4949,7 @@ function buildBossCardHtml(boss) {
   }
 
   // CA row
-  var caTasks = getCaTasksForBoss(boss.name);
+  var caTasks = getCaTasksForBoss(boss);
   var caTotal = caTasks.length;
   var caDone = caTasks.filter(function(t) { return caCompleted[t.id]; }).length;
   var caAllDone = caTotal > 0 && caDone === caTotal;
@@ -5323,9 +5581,48 @@ function toggleCaTask(id) {
   renderCaPage();
 }
 
-// Helper: get CA tasks for a given spineMatch name
-function getCaTasksForBoss(spineName) {
+// Helper: get CA tasks for a spine entry. Accepts an entry object (preferred —
+// matches on spineId) or a bare name (legacy fallback).
+function getCaTasksForBoss(entry) {
   if (typeof CA_DATA === 'undefined') return [];
-  return CA_DATA.filter(function(t) { return t.spineMatch === spineName; });
+  if (entry && typeof entry === 'object' && entry.order != null) {
+    var byId = CA_DATA.filter(function(t) { return t.spineId === entry.order; });
+    if (byId.length) return byId;
+    entry = entry.name;
+  }
+  return CA_DATA.filter(function(t) { return t.spineMatch === entry; });
 }
 
+
+// ============================================================
+// THEME TOGGLE
+// The initial theme is set by an inline script in each page's <head>,
+// before shared.css paints. This only handles switching.
+// ============================================================
+function psGetTheme() {
+  return document.documentElement.getAttribute('data-theme') || 'dark';
+}
+function psSetTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  try { localStorage.setItem('ps_theme', t); } catch (e) {}
+  var b = document.getElementById('theme-toggle-btn');
+  if (b) {
+    b.innerHTML = (t === 'light' ? '\u263E' : '\u2600') + ' ' + (t === 'light' ? 'Dark' : 'Light');
+    b.title = 'Switch to ' + (t === 'light' ? 'dark' : 'light') + ' mode';
+  }
+}
+function psToggleTheme() { psSetTheme(psGetTheme() === 'light' ? 'dark' : 'light'); }
+
+function psInjectThemeToggle() {
+  var host = document.querySelector('.header-right');
+  if (!host || document.getElementById('theme-toggle-btn')) return;
+  var b = document.createElement('button');
+  b.id = 'theme-toggle-btn';
+  b.className = 'theme-toggle-btn';
+  b.onclick = psToggleTheme;
+  host.insertBefore(b, host.firstChild);
+  psSetTheme(psGetTheme());
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', psInjectThemeToggle);
+} else { psInjectThemeToggle(); }

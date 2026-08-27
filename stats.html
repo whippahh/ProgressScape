@@ -8,6 +8,12 @@
 <link rel="canonical" href="https://progressscape.net/stats.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script>
+(function(){try{var t=localStorage.getItem('ps_theme');
+if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<meta name="color-scheme" content="dark light">
 <link rel="stylesheet" href="shared.css">
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
@@ -22,16 +28,15 @@
 
 <header>
   <div class="header-inner">
-    <a href="index.html"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
-    <nav>
-      <a href="index.html"   class="nav-btn">Progression</a>
-      <a href="stats.html"   class="nav-btn active">My Stats</a>
-      <a href="bosses.html"  class="nav-btn">Bosses</a>
-      <a href="combat.html"  class="nav-btn">Combat Tasks</a>
-      <a href="clog.html"    class="nav-btn">Collection Log</a>
+    <a href="index.html" title="Home"><img src="./ProgressionScape_Logo_v1.png" alt="ProgressScape" class="site-title-img"></a>
+        <nav>
+      <a href="progression.html" class="nav-btn">Progression</a>
+      <a href="stats.html"  class="nav-btn active">My Stats</a>
+      <a href="bosses.html" class="nav-btn">Bosses</a>
+      <a href="combat.html" class="nav-btn">Combat Tasks</a>
+      <a href="clog.html"   class="nav-btn">Collection Log</a>
       <a href="planner.html" class="nav-btn">Custom Path</a>
       <a href="compare.html" class="nav-btn">Compare</a>
-      <a href="gear.html"    class="nav-btn">Gear</a>
     </nav>
     <div class="header-right">
       <button id="ironman-toggle-btn" class="ironman-toggle-btn" onclick="toggleIronman()" title="Ironman Mode: OFF">
