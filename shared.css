@@ -4718,6 +4718,19 @@
 }
 .theme-toggle-btn:hover { border-color: var(--gold); color: var(--gold); }
 
+/* Sits beside the theme toggle in .header-right, injected by shared.js.
+   Muted by default and only turns red on hover — it wipes everything, so
+   it should be findable without inviting an accidental click. */
+.ps-clear-btn {
+  background: var(--stone-mid); border: 1px solid var(--stone-lighter);
+  border-radius: 4px; color: var(--text-muted); font-family: 'Cinzel', serif;
+  font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.6rem; cursor: pointer;
+  display: flex; align-items: center; gap: 0.35rem; transition: all 0.15s;
+  letter-spacing: 0.04em; white-space: nowrap;
+}
+.ps-clear-btn:hover { border-color: var(--danger-2, #c0504d); color: var(--danger-2, #c0504d); }
+@media (max-width: 640px) { .ps-clear-btn { font-size: 0.68rem; padding: 0.3rem 0.45rem; } }
+
 /* ===== TOKENS FOR COLOURS EMITTED BY shared.js =====================
    These were hardcoded hex values inside JS template strings, so no
    CSS rule could reach them and they stayed light-on-dark in light

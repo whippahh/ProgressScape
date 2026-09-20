@@ -5645,6 +5645,85 @@ function psSetTheme(t) {
 }
 function psToggleTheme() { psSetTheme(psGetTheme() === 'light' ? 'dark' : 'light'); }
 
+// ============================================================
+// CLEAR EVERYTHING
+// ============================================================
+// clearProgress() only ever wiped completedSet/QP/openTiers, and lived on
+// the Progression page alone. Boss KC, collection log ticks, Combat
+// Achievement ticks and obtained drops had no way to be cleared at all —
+// so looking up someone else's RSN left their data stuck on your device,
+// and a later lookup of your own name merged on top of it rather than
+// replacing it. This clears the lot, and is injected on every page.
+//
+// Deliberately kept: ps_theme (a display preference, not data) and the
+// GE price cache (public prices, no account involved).
+var PS_DATA_KEYS = [
+  'osrs_spine_stats', 'osrs_spine_qp', 'osrs_spine_completed',
+  'osrs_spine_notes', 'osrs_spine_kc', 'osrs_spine_drops',
+  'osrs_spine_spinhistory', 'osrs_spine_ironman', 'osrs_spine_opentiers',
+  'osrs_spine_badges_seen', 'osrs_ca_completed', 'osrs_ca_hide_done',
+  'osrs_ca_overview_collapsed', 'osrs_custom_plan', 'ps_clog_obtained',
+  'ps_last_rsn', 'ps_last_sync_ts'
+];
+
+function psClearAllData() {
+  if (!confirm(
+    'Clear all ProgressScape data on this device?\n\n' +
+    'This removes your skills, quest and diary progress, boss kill counts, ' +
+    'collection log, Combat Achievements, custom plans and notes, and the ' +
+    'remembered RSN.\n\nThis cannot be undone.'
+  )) return;
+
+  PS_DATA_KEYS.forEach(function (k) {
+    try { localStorage.removeItem(k); } catch (e) {}
+  });
+
+  // In-memory state has to be reset too, or the next save writes it all back.
+  try { completedSet.clear(); } catch (e) {}
+  try { openTiers.clear(); } catch (e) {}
+  playerStats = {};
+  playerQP = 0;
+  bossKC = {};
+  obtainedDrops = {};
+  userNotes = {};
+  spinHistory = [];
+  ironmanMode = false;
+  if (typeof clogObtained !== 'undefined') clogObtained = {};
+  if (typeof caCompleted !== 'undefined') caCompleted = {};
+  if (typeof customPlan !== 'undefined') customPlan = [];
+
+  psTrack('clear_all_data');
+
+  // Empty any RSN box on screen so the old name doesn't linger.
+  try {
+    document.querySelectorAll('input[id^="rsn-input"], input[id^="cmp-rsn"]')
+      .forEach(function (el) { el.value = ''; });
+  } catch (e) {}
+
+  // Reload rather than trying to re-render every page's widgets by hand —
+  // guarantees a clean slate whichever page this was pressed on.
+  location.reload();
+}
+
+// Injected next to the theme toggle so every page has it, without editing
+// each page's markup (same approach psInjectThemeToggle uses).
+function psInjectClearBtn() {
+  var host = document.querySelector('.header-right');
+  if (!host || document.getElementById('ps-clear-btn')) return;
+  var b = document.createElement('button');
+  b.id = 'ps-clear-btn';
+  b.className = 'ps-clear-btn';
+  b.type = 'button';
+  b.textContent = 'Clear data';
+  b.title = 'Remove all ProgressScape data stored on this device';
+  b.setAttribute('aria-label', 'Clear all ProgressScape data on this device');
+  b.onclick = psClearAllData;
+  host.appendChild(b);
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', psInjectClearBtn);
+} else { psInjectClearBtn(); }
+
 function psInjectThemeToggle() {
   var host = document.querySelector('.header-right');
   if (!host || document.getElementById('theme-toggle-btn')) return;
