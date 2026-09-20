@@ -3,22 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProgressScape – Privacy Policy</title>
+    <title>Privacy Policy — ProgressScape</title>
+<meta name="description" content="How ProgressScape handles your data: what is stored in your browser, what the RuneLite plugin sends, what is never collected, and how to have it deleted.">
+<link rel="canonical" href="https://progressscape.net/privacy.html">
+
     <style>
+        /* Light values are the defaults; the dark block below only swaps the
+           two colours that need it. Without this the page inherited a dark
+           canvas from color-scheme while keeping near-black text. */
+        :root { --pp-bg: #ffffff; --pp-text: #222222; --pp-muted: #888888; --pp-link: #1a6ead; }
+        @media (prefers-color-scheme: dark) {
+          :root:not([data-theme="light"]) { --pp-bg: #14120c; --pp-text: #e8e2d2; --pp-muted: #9b927e; --pp-link: #d9b45a; }
+        }
+        :root[data-theme="dark"] { --pp-bg: #14120c; --pp-text: #e8e2d2; --pp-muted: #9b927e; --pp-link: #d9b45a; }
         body {
             font-family: Georgia, serif;
             max-width: 720px;
             margin: 60px auto;
             padding: 0 24px;
-            color: #222;
+            background: var(--pp-bg);
+            color: var(--pp-text);
             line-height: 1.8;
         }
         h1 { font-size: 28px; margin-bottom: 4px; }
         h2 { font-size: 18px; margin-top: 36px; }
         p, li { font-size: 15px; }
         ul { padding-left: 20px; }
-        a { color: #1a6ead; }
-        .updated { color: #888; font-size: 13px; margin-bottom: 40px; }
+        a { color: var(--pp-link); }
+        .updated { color: var(--pp-muted); font-size: 13px; margin-bottom: 40px; }
+        .back { display: inline-block; margin-top: 48px; font-size: 14px; }
     </style>
 <script>
 (function(){try{var t=localStorage.getItem('ps_theme');
@@ -26,71 +39,151 @@ if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
 document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 </script>
 <meta name="color-scheme" content="dark light">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YXGC1W0GW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8YXGC1W0GW');
+</script>
 </head>
 <body>
 
 <h1>ProgressScape Privacy Policy</h1>
-<p class="updated">Last updated: March 2026</p>
+<p class="updated">Last updated: 20 September 2026</p>
 
 <p>
-    ProgressScape is a RuneLite plugin that syncs your Old School RuneScape progression data
-    to the ProgressScape web tracker. This policy explains what data is collected, how it is
-    stored, and how you can request its deletion.
+    ProgressScape is a free Old School RuneScape progression tracker at
+    <a href="https://progressscape.net/">progressscape.net</a>, plus an optional RuneLite
+    plugin that syncs your in-game progress to it. This policy covers both, and explains
+    what is collected, what is stored only on your own device, who can see it, and how to
+    have it deleted.
+</p>
+<p>
+    ProgressScape is a fan-made project run by one person. It is not affiliated with or
+    endorsed by Jagex Ltd.
 </p>
 
-<h2>What data is collected</h2>
-<p>When you use the ProgressScape plugin, the following data is collected from your RuneLite client:</p>
+<h2>Using the website without the plugin</h2>
+<p>
+    You do not need an account, and you do not need the plugin. If you just tick things off
+    on the site, that progress is saved in your own browser's local storage and is never
+    sent anywhere. It includes things like which entries you have completed, your skill
+    levels, boss kill counts, collection log ticks, Combat Achievement ticks, custom plans
+    and notes, your last looked-up RSN, and your light/dark preference.
+</p>
+<p>
+    Because it lives in your browser, clearing your site data or switching device or browser
+    will lose it. The Export option on the Progression page saves a file you can import
+    elsewhere.
+</p>
+
+<h2>What the RuneLite plugin sends</h2>
+<p>
+    If you install the plugin, it uploads the following to the ProgressScape database. Most
+    of it is sent automatically when you log in and log out; the collection log is only sent
+    when you press the sync button with your collection log open in game.
+</p>
 <ul>
     <li>Your OSRS account username</li>
     <li>Your account type (Normal, Ironman, Hardcore Ironman, Ultimate Ironman, Group Ironman)</li>
     <li>Quest completion status for all quests</li>
     <li>Achievement Diary completion status (Easy, Medium, Hard, Elite) for all diary regions</li>
-    <li>Boss kill counts, as reported by in-game chat messages</li>
-    <li>Collection log items obtained, only when you manually trigger a sync with your collection log open</li>
+    <li>Combat Achievement tasks you have completed</li>
+    <li>Boss kill counts, taken from the public OSRS hiscores and from in-game kill count chat messages</li>
+    <li>Collection log items obtained, only when you manually trigger a sync</li>
 </ul>
 
-<h2>What data is NOT collected</h2>
+<h2>What is never collected</h2>
 <ul>
     <li>Bank contents</li>
     <li>Grand Exchange history</li>
-    <li>Any data from other players</li>
-    <li>Any personally identifiable information beyond your OSRS username</li>
+    <li>Your password, email address or any payment information</li>
+    <li>Chat logs, private messages, or anything about other players</li>
+    <li>Your real name or any personally identifying information beyond your OSRS username</li>
 </ul>
 
-<h2>How data is stored</h2>
+<h2>Your progress is public by username</h2>
 <p>
-    Data is stored in a Supabase-hosted PostgreSQL database located in the
-    Asia-Pacific (Sydney, Australia) region. Data is stored against your OSRS username only.
-    No account passwords or payment information are ever collected or stored.
+    This is the part worth reading twice. ProgressScape works by letting anyone type in an
+    RSN and see that account's progression, so anything the plugin uploads is readable by
+    anyone who knows or guesses your username. That is the point of the tracker, but it does
+    mean you should not install the plugin if you would rather your progress stayed private.
+    If you change your mind, you can have your data deleted using the contact details below.
+</p>
+
+<h2>Analytics and cookies</h2>
+<p>
+    The site uses Google Analytics (GA4) to count visits and to see which features get used,
+    so time goes into the parts people actually use. This sets cookies in your browser and
+    sends Google your IP address, approximate location, device and browser type, and the
+    pages you visit.
+</p>
+<p>
+    It also records anonymous events such as a lookup being performed, an entry being ticked
+    off, or a tool being opened. These deliberately do not include your RSN or any other
+    identifying detail — the record is that a lookup happened and whether plugin data was
+    found, never whose account it was for.
+</p>
+<p>
+    If you would rather not be counted, a browser ad blocker or tracking blocker will stop
+    it, and the site is built to work normally when it is blocked.
+</p>
+
+<h2>Other services the site contacts</h2>
+<ul>
+    <li><strong>Supabase</strong> — hosts the database your progression is stored in and read back from.</li>
+    <li><strong>Cloudflare Workers</strong> — a small proxy used to fetch the official OSRS hiscores. Your RSN is passed through it to perform the lookup.</li>
+    <li><strong>prices.runescape.wiki</strong> — live Grand Exchange prices. No personal data is sent.</li>
+    <li><strong>oldschool.runescape.wiki</strong> — item and boss images.</li>
+    <li><strong>Google Fonts</strong> — the fonts the site is set in.</li>
+    <li><strong>Google Analytics</strong> — as described above.</li>
+</ul>
+<p>
+    Any service your browser contacts can see your IP address as part of making the request.
+    Each of these has its own privacy policy.
+</p>
+
+<h2>Where data is stored</h2>
+<p>
+    Uploaded progression data is stored in a Supabase-hosted PostgreSQL database in the
+    Asia-Pacific (Sydney, Australia) region, against your OSRS username only. No passwords
+    or payment information are ever collected or stored, because there are no accounts and
+    nothing is for sale.
 </p>
 
 <h2>How data is used</h2>
 <p>
-    Your data is used solely to power the ProgressScape web tracker at
-    <a href="https://whippahh.github.io/ProgressScape/">whippahh.github.io/ProgressScape</a>.
-    It allows you and others you share your profile with to view your OSRS progression.
+    Solely to power the tracker at <a href="https://progressscape.net/">progressscape.net</a>
+    — so you, and anyone you share your username with, can see your progression. Your data
+    is never sold, rented, or shared with anyone for commercial purposes.
 </p>
 
-<h2>Data sharing</h2>
+<h2>Retention and deletion</h2>
 <p>
-    Your data is never sold, rented, or shared with any third party for commercial purposes.
-    Your progression data is readable publicly by username, consistent with the purpose of
-    the tracker. If you do not wish your data to be publicly visible, please request deletion
-    using the contact details below.
+    Uploaded data is kept for as long as you use the plugin. To have all data for your
+    account removed, email the address below with your OSRS username. Deletion will be
+    completed within 7 days. Uninstalling the plugin stops any further uploads, but does not
+    by itself remove what has already been sent — ask for deletion if you want it gone.
+</p>
+<p>
+    Progress stored only in your browser is yours to clear at any time through your
+    browser's site data settings.
 </p>
 
-<h2>Data retention and deletion</h2>
+<h2>Changes to this policy</h2>
 <p>
-    Your data is retained for as long as you use the plugin. To request deletion of all data
-    associated with your account, email us at the address below with your OSRS username.
-    Deletion will be completed within 7 days.
+    If what is collected changes, this page and the date at the top will be updated.
 </p>
 
 <h2>Contact</h2>
 <p>
-    For any privacy-related requests or questions, contact:
+    For any privacy request or question, including deletion, contact:
     <a href="mailto:whippahh@gmail.com">whippahh@gmail.com</a>
 </p>
+
+<p class="back"><a href="index.html">&larr; Back to ProgressScape</a></p>
 
 </body>
 </html>

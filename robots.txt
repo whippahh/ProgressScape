@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /gear.html
+
+Sitemap: https://progressscape.net/sitemap.xml

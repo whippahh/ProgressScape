@@ -123,6 +123,33 @@ function init() {
 }
 
 // ============================================================
+// ANALYTICS
+// ============================================================
+// Thin wrapper over GA4's gtag. Every call is optional — if the tag is
+// blocked, still loading, or the user runs an ad blocker, this no-ops
+// rather than throwing and taking the calling feature down with it.
+//
+// PRIVACY: never pass an RSN, a player name, or anything else that
+// identifies a person. Track that a lookup happened and how it turned
+// out, never who it was for. The privacy page says so — keep it true.
+function psTrack(eventName, params) {
+  try {
+    if (typeof gtag !== 'function') return;
+    var p = params || {};
+    p.page_area = psPage();
+    gtag('event', eventName, p);
+  } catch (e) { /* analytics must never break a feature */ }
+}
+
+// Which page fired the event, so funnels can be split by page.
+function psPage() {
+  try {
+    var p = (location.pathname || '').split('/').pop() || 'index.html';
+    return p.replace(/\.html$/, '') || 'index';
+  } catch (e) { return 'unknown'; }
+}
+
+// ============================================================
 // BOSS ↔ CLOG SYNC
 // ============================================================
 
@@ -140,6 +167,33 @@ function migrateBossDropsToClog() {
     }
   });
   if (changed) saveClogObtained();
+}
+
+// The mirror of migrateBossDropsToClog(): pushes clogObtained back into
+// obtainedDrops.
+//
+// obtainedDrops and clogObtained are two separate stores that only stay in
+// step when something calls a sync function. syncClogToBossDrops() needs
+// bossDropLookup, which is only built where BOSS_DATA is loaded — so before
+// every page started loading boss_data.js, a plugin lookup run from My Stats
+// or Progression wrote the collection log and silently skipped the boss half,
+// leaving the Bosses page blank. Running this on load repairs saved data that
+// already diverged that way, and costs nothing when the two are in step.
+function reconcileClogToBossDrops() {
+  if (typeof clogObtained === 'undefined' || !clogObtained) return;
+  if (!bossDropLookup || !Object.keys(bossDropLookup).length) return;
+  var changed = false;
+  Object.keys(clogObtained).forEach(function(key) {
+    if (!clogObtained[key]) return;
+    (bossDropLookup[key] || []).forEach(function(entry) {
+      var dropKey = entry.order + '-' + entry.dropName;
+      if (!obtainedDrops[dropKey]) {
+        obtainedDrops[dropKey] = true;
+        changed = true;
+      }
+    });
+  });
+  if (changed) saveToStorage();
 }
 
 // Maps item name (lowercase) → [{order, dropName}] for all boss drops.
@@ -500,6 +554,7 @@ function saveNote(order, text) {
 // ============================================================
 function toggleIronman() {
   ironmanMode = !ironmanMode;
+  psTrack('ironman_toggle', { state: ironmanMode ? 'on' : 'off' });
   const btn = document.getElementById('ironman-toggle-btn');
   if (btn) {
     btn.classList.toggle('active', ironmanMode);
@@ -1035,6 +1090,17 @@ async function lookupRSN(inputId, statusDivId, statusInnerId, opts) {
       }
     });
     autoDetectOpenTier();
+    // Lookup outcome — the headline metric. `has_plugin` is the plugin
+    // adoption rate; `account_type` splits normal vs ironman routes.
+    // No RSN is sent, deliberately.
+    psTrack('rsn_lookup', {
+      has_plugin: pluginSource ? 'yes' : 'no',
+      account_type: (pluginData && pluginData.accountType) ? pluginData.accountType : 'unknown',
+      kc_found: kcUpdated,
+      silent: (opts && opts.silent) ? 'auto_sync' : 'manual',
+      clog_items: pluginStat ? pluginStat.clog : 0,
+      ca_tasks: pluginStat ? pluginStat.ca : 0
+    });
     renderTable();
     updateProgress();
     updateCombatDisplay();
@@ -1272,6 +1338,11 @@ function buildRowHtml(item) {
 
 function toggleDone(order) {
   const item = SPINE_DATA.find(d => d.order === order);
+  psTrack('tick_entry', {
+    entry_type: item ? (item.type || item.entryType || 'unknown') : 'unknown',
+    action: completedSet.has(order) ? 'untick' : 'tick',
+    ironman: (typeof ironmanMode !== 'undefined' && ironmanMode) ? 'yes' : 'no'
+  });
   if (completedSet.has(order)) {
     completedSet.delete(order);
     if (item && item.qp > 0) {
@@ -1401,6 +1472,8 @@ function clearProgress() {
 // DETAIL MODAL
 // ============================================================
 function openDetail(order) {
+  (function(){ var it = SPINE_DATA.find(function(d){ return d.order === order; });
+    psTrack('open_detail', { entry_type: it ? (it.type || it.entryType || 'unknown') : 'unknown' }); })();
   const item = SPINE_DATA.find(d => d.order === order);
   if (!item) return;
   document.getElementById('detail-title').textContent = item.name;
@@ -1924,6 +1997,7 @@ function generateBossCard(order) {
 }
 
 function toggleDropDone(dropKey, sourceOrder, mainEntryOrder) {
+  psTrack('tick_boss_drop', { action: obtainedDrops[dropKey] ? 'untick' : 'tick' });
   var obtained;
   if (obtainedDrops[dropKey]) {
     delete obtainedDrops[dropKey];
@@ -2727,6 +2801,7 @@ function closeCombatPanel() {
 }
 
 function toggleCAFilter(f) {
+  psTrack('ca_filter', { filter: String(f) });
   if (caFilters.has(f)) {
     caFilters.delete(f);
   } else {
@@ -2910,6 +2985,7 @@ function getClogOraclePoolSuggested() {
 }
 
 function clogOracleSpin(suggest) {
+  psTrack('clog_oracle_spin', { mode: suggest ? 'suggested' : 'random' });
   var pool = suggest ? getClogOraclePoolSuggested() : getClogOraclePool(false);
   var resultEl = document.getElementById('clog-oracle-result');
   var idleEl   = document.getElementById('clog-oracle-idle');
@@ -3422,6 +3498,7 @@ function loadPlan() {
 }
 
 function savePlan() {
+  psTrack('plan_save');
   localStorage.setItem('osrs_custom_plan', JSON.stringify(planItems));
 }
 
@@ -3934,7 +4011,7 @@ function importPlan(e) {
 }
 
 // Legacy export shim (keeps any old onclick="exportPlan()" references working)
-function exportPlan() { openShareModal(); }
+function exportPlan() { psTrack('export_plan'); openShareModal(); }
 
 // ============================================================
 // URL FILTER STATE
@@ -4003,7 +4080,8 @@ var clogState = {
 // When Supabase plugin data arrives, populate this from the sync:
 //   clogObtained['abyssal whip'] = true;
 var clogObtained = JSON.parse(localStorage.getItem('ps_clog_obtained') || '{}');
-migrateBossDropsToClog();
+migrateBossDropsToClog();   // boss drops → collection log
+reconcileClogToBossDrops(); // collection log → boss drops (repairs old divergence)
 
 function saveClogObtained() {
   localStorage.setItem('ps_clog_obtained', JSON.stringify(clogObtained));
@@ -4011,6 +4089,7 @@ function saveClogObtained() {
 
 function toggleClogItem(name) {
   var key = name.toLowerCase();
+  psTrack('tick_clog_item', { action: clogObtained[key] ? 'untick' : 'tick' });
   var obtained;
   if (clogObtained[key]) {
     delete clogObtained[key];
@@ -4383,6 +4462,7 @@ function renderCompareSlotInputs() {
 
 function addCompareSlot() {
   if (compareSlots.length >= 6) return;
+  psTrack('compare_add_slot', { slots: compareSlots.length + 1 });
   compareSlotCount++;
   compareSlots.push({ id: compareSlotCount, rsn: '', stats: null, kc: null, statusCls: '', statusMsg: '' });
   renderCompareSlotInputs();
@@ -5197,55 +5277,6 @@ function renderRotation() {
 
 
 
-(function() {
-  var spCurrent = 0;
-  var spTotal = 4;
-
-  function spInit() {
-    var overlay = document.getElementById('splash-overlay');
-    if (!overlay) return;
-    if (!localStorage.getItem('progressscape_welcomed')) {
-      overlay.style.display = 'flex';
-    }
-  }
-
-  window.spShowTab = function(i) {
-    spCurrent = i;
-    document.querySelectorAll('.sp-panel').forEach(function(p,idx){ p.classList.toggle('sp-active', idx===i); });
-    document.querySelectorAll('.sp-tab').forEach(function(t,idx){ t.classList.toggle('sp-active', idx===i); });
-    document.querySelectorAll('.sp-dot').forEach(function(d,idx){ d.classList.toggle('sp-active', idx===i); });
-    document.getElementById('sp-next-btn').innerHTML = i === spTotal-1 ? 'Enter the World ✓' : 'Next &rarr;';
-  };
-
-  window.spNext = function() {
-    if (spCurrent < spTotal - 1) {
-      spShowTab(spCurrent + 1);
-    } else {
-      spDismiss(false);
-    }
-  };
-
-  window.spDismiss = function(permanent) {
-    if (permanent) localStorage.setItem('progressscape_welcomed', '1');
-    var overlay = document.getElementById('splash-overlay');
-    if (overlay) overlay.style.display = 'none';
-  };
-
-  // Close on overlay click (outside modal)
-  var splashOverlay = document.getElementById('splash-overlay');
-  if (splashOverlay) {
-    splashOverlay.addEventListener('click', function(e) {
-      if (e.target === this) spDismiss(false);
-    });
-  }
-
-  // Run after page init so SPINE_DATA is available
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', spInit);
-  } else {
-    spInit();
-  }
-})();
 
 // ============================================================
 // COMBAT ACHIEVEMENTS
@@ -5572,6 +5603,7 @@ function renderCaTaskList() {
 }
 
 function toggleCaTask(id) {
+  psTrack('tick_ca_task', { action: caCompleted[id] ? 'untick' : 'tick' });
   if (caCompleted[id]) {
     delete caCompleted[id];
   } else {
