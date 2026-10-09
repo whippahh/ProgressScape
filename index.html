@@ -255,7 +255,7 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 <div class="lp-notice">
   <div class="lp-notice-inner">
     <span class="lp-notice-tag">Notice</span>
-    <span>The ProgressScape RuneLite plugin is live on the Plugin Hub. Install it, hit sync, then look yourself up here — quests, diaries, KC and combat tasks come across automatically.</span>
+    <span>Plugin update is live! Restart RuneLite to update it, log in, then open your Collection Log in-game and click <b>Sync Collection Log</b>. Quests, diaries, KC and combat tasks come across automatically.</span>
   </div>
 </div>
 
@@ -264,7 +264,7 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
     <span class="lp-devnote-eyebrow">A note from the dev</span>
     <p>Hey! Thanks for stopping by ProgressScape. I hope you are finding it helpful.</p>
     <p>The RuneLite plugin is live on the Plugin Hub now, so instead of ticking everything off by hand, you can install it, hit sync, and look yourself up here. It's still early though, and I'm finding rough edges as more people try it.</p>
-    <p>I have just pushed another update to the plugin hub. This should fix clogs, bosses and CAs from not syncing properly. Just allow some time for updates to be approved.</p>
+    <p><b>Update 9 Oct 2026:</b> The plugin update is now live on the Plugin Hub. It fixes the Sync Collection Log button getting stuck on "Syncing...", combat achievements showing as missing when you'd already done them, and the plugin re-syncing every time you hopped worlds. If you tried it before and it didn't work, restart RuneLite to pick up the update and give it another go.</p>
     <p class="lp-devnote-sign">If you spot anything else broken: a CA that looks wrong, a boss not tracking, etc then <a href="https://discord.gg/P4Gnn9jmGe" target="_blank" rel="noopener noreferrer">Discord</a> is the fastest way to reach me, the link is at the top of the front page. I really appreciate the feedback as it helps me improve the planner for everyone.</p>
       <p class="lp-devnote-sign" style="margin-top:.4rem !important">Whippahh</p>
   </div>
@@ -393,7 +393,8 @@ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
 
 /* Changelog — edit this array by hand. */
 var LP_CHANGELOG = [
-  { date:'20 Sep 2026', type:'fix',  text:'Combat Achievements were reading the wrong data, so tasks you had finished showed as missing. Fixed — update the plugin from the Plugin Hub.' },
+  { date:'9 Oct 2026',  type:'fix',  text:'Plugin update is live: the Sync Collection Log button works again, combat achievements read correctly, and syncing happens once per login instead of every world hop. Restart RuneLite to update, then open your Collection Log and click Sync.' },
+  { date:'20 Sep 2026', type:'fix',  text:'Combat Achievements were reading the wrong data, so tasks you had finished showed as missing.' },
   { date:'20 Sep 2026', type:'fix',  text:'Collection log and boss pages now tick each other off properly, including progress that arrives from the plugin. Anything already out of step repairs itself next time you load the site.' },
   { date:'20 Sep 2026', type:'fix',  text:'Light mode: completed rows, Combat Achievement descriptions and a few badges were too pale to read against their background.' },
   { date:'13 Sep 2026', type:'new',  text:'Your RSN now sticks between visits, and pages that rely on lookup data refresh themselves in the background.' },
